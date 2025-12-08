@@ -7,10 +7,7 @@ import ExplorePage from "@/pages/explore";
 import BabyCareWelcome from "@/pages/babycare/welcome";
 import BabyCareHospitalWelcome from "@/pages/babycare/hospital-welcome";
 import BabyCareProfileSetup from "@/pages/babycare/profile-setup";
-import BabyCareOnboarding from "@/pages/babycare/onboarding";
 import BabyCareHome from "@/pages/babycare/home";
-import BabyDashboard from "@/pages/babycare/baby-dashboard";
-import MotherDashboard from "@/pages/babycare/mother-dashboard";
 import BabyCareVaccines from "@/pages/babycare/vaccines";
 import BabyCareGrowth from "@/pages/babycare/growth";
 import BabyCareMilestones from "@/pages/babycare/milestones";
@@ -30,11 +27,8 @@ function Router() {
       <Route path="/babycare" component={BabyCareWelcome} />
       <Route path="/babycare/hospital" component={BabyCareHospitalWelcome} />
       <Route path="/babycare/setup" component={BabyCareProfileSetup} />
-      <Route path="/babycare/onboarding" component={BabyCareOnboarding} />
       <Route path="/babycare/home" component={BabyCareHome} />
       <Route path="/babycare/home/:babyId" component={BabyCareHome} />
-      <Route path="/babycare/dashboard/:babyId" component={BabyDashboard} />
-      <Route path="/babycare/mother-dashboard" component={MotherDashboard} />
       <Route path="/babycare/vaccines/:babyId" component={BabyCareVaccines} />
       <Route path="/babycare/growth/:babyId" component={BabyCareGrowth} />
       <Route path="/babycare/milestones/:babyId" component={BabyCareMilestones} />

@@ -1,5 +1,5 @@
 import { Link, useLocation, useSearch } from "wouter";
-import { Baby, Heart, Sparkles, ArrowRight, Star, Building2, QrCode, Keyboard, Scan, CheckCircle2, Loader2, Flower2, Moon, Stethoscope, User, Check, ArrowLeft, Users } from "lucide-react";
+import { Baby, Heart, Sparkles, ArrowRight, Star, Building2, QrCode, Keyboard, Scan, CheckCircle2, Loader2, Flower2, Moon, Sun, Stethoscope, User, Check, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -14,38 +14,30 @@ type OnboardingSelection = "baby" | "mother";
 type OnboardingStep = "welcome" | "selection";
 
 interface HospitalRegistration {
-  babyName: string;
+  name: string;
   dob: string;
   gender: "boy" | "girl";
   hospitalName: string;
-  caregiverName: string;
-  caregiverRole: "mother" | "father";
 }
 
 const MOCK_HOSPITAL_CODES: Record<string, HospitalRegistration> = {
   "APOLLO2024": {
-    babyName: "Aarav Sharma",
+    name: "Baby Sharma",
     dob: "2024-09-15",
     gender: "boy",
     hospitalName: "Apollo Cradle Hospital",
-    caregiverName: "Priya Sharma",
-    caregiverRole: "mother",
   },
   "FORTIS2024": {
-    babyName: "Ananya Gupta",
+    name: "Baby Gupta",
     dob: "2024-10-20",
     gender: "girl",
     hospitalName: "Fortis La Femme",
-    caregiverName: "Meera Gupta",
-    caregiverRole: "mother",
   },
   "MAX2024": {
-    babyName: "Vihaan Singh",
+    name: "Baby Singh",
     dob: "2024-11-05",
     gender: "boy",
     hospitalName: "Max Super Speciality",
-    caregiverName: "Rahul Singh",
-    caregiverRole: "father",
   },
 };
 
@@ -107,8 +99,8 @@ export default function BabyCareWelcome() {
     if (profiles.length > 0) {
       setLocation(`/babycare/home/${profiles[0].id}`);
     } else {
-      // Go directly to unified onboarding flow
-      setLocation("/babycare/onboarding");
+      // Show selection screen first
+      setOnboardingStep("selection");
     }
   };
 
@@ -123,8 +115,11 @@ export default function BabyCareWelcome() {
   };
 
   const handleSelectionContinue = () => {
-    // Route to unified onboarding flow
-    setLocation("/babycare/onboarding");
+    // Build query params based on selection
+    const params = new URLSearchParams();
+    if (selectedOptions.has("baby")) params.set("includeBaby", "true");
+    if (selectedOptions.has("mother")) params.set("includeMother", "true");
+    setLocation(`/babycare/setup?${params.toString()}`);
   };
 
   const handleSkip = () => {
@@ -167,15 +162,13 @@ export default function BabyCareWelcome() {
         setShowScanner(false);
         setScanStatus("idle");
         const params = new URLSearchParams({
-          babyName: registration.babyName,
+          name: registration.name,
           dob: registration.dob,
           gender: registration.gender,
           hospital: registration.hospitalName,
-          caregiverName: registration.caregiverName,
-          caregiverRole: registration.caregiverRole,
           onboardingType: "hospital",
         });
-        setLocation(`/babycare/onboarding?${params.toString()}`);
+        setLocation(`/babycare/setup?${params.toString()}`);
       }, 1000);
       return () => clearTimeout(timer);
     }
@@ -190,15 +183,13 @@ export default function BabyCareWelcome() {
       setShowCodeEntry(false);
       setRegistrationCode("");
       const params = new URLSearchParams({
-        babyName: registration.babyName,
+        name: registration.name,
         dob: registration.dob,
         gender: registration.gender,
         hospital: registration.hospitalName,
-        caregiverName: registration.caregiverName,
-        caregiverRole: registration.caregiverRole,
         onboardingType: "hospital",
       });
-      setLocation(`/babycare/onboarding?${params.toString()}`);
+      setLocation(`/babycare/setup?${params.toString()}`);
     } else {
       setCodeError("Invalid registration code. Please check and try again.");
     }
@@ -433,71 +424,83 @@ export default function BabyCareWelcome() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            {/* Symmetrical Icon Arrangement */}
-            <div className="relative flex items-center justify-center">
-              {/* Left decorative star */}
+            {/* Main Circle with Mother & Baby */}
+            <div className="flex items-center gap-3">
+              {/* Mother Icon */}
               <motion.div 
-                className="absolute -left-6 top-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md border border-amber-100/50"
-                animate={{ scale: [1, 1.1, 1], rotate: [0, 10, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
-              >
-                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-              </motion.div>
-
-              {/* Parent Icon */}
-              <motion.div 
-                className="relative z-10"
+                className="relative"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
               >
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl shadow-pink-100/50 border border-pink-100/50">
-                  <div className="w-[60px] h-[60px] bg-gradient-to-br from-pink-100 to-rose-100 rounded-full flex items-center justify-center">
-                    <User className="w-7 h-7 text-pink-500" />
+                <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-xl shadow-pink-100/50 border border-pink-100/50">
+                  <div className="w-18 h-18 bg-gradient-to-br from-pink-100 to-rose-100 rounded-full flex items-center justify-center w-[72px] h-[72px]">
+                    {/* Pregnant Woman Silhouette */}
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" className="text-pink-500">
+                      {/* Head */}
+                      <circle cx="12" cy="4" r="2.5" fill="currentColor" />
+                      {/* Hair bun */}
+                      <ellipse cx="12" cy="2.5" rx="1.8" ry="1" fill="currentColor" />
+                      {/* Pregnant body silhouette */}
+                      <path 
+                        d="M9 7.5c-1 0-2 0.5-2.5 1.5c-0.5 1-0.5 2-0.5 3v6c0 1.5 0.5 2.5 1.5 3h8c1 -0.5 1.5-1.5 1.5-3v-3c0-2-0.5-4-2-5.5c-0.5-0.5-1-1-2-1h-4z" 
+                        fill="currentColor"
+                      />
+                      {/* Baby bump curve */}
+                      <ellipse cx="13.5" cy="14" rx="3" ry="3.5" fill="currentColor" />
+                      {/* Legs */}
+                      <path d="M9.5 21v1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                      <path d="M14.5 21v1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
                   </div>
                 </div>
+                <motion.div 
+                  className="absolute -top-1 -right-1 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md border border-pink-100"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <Heart className="w-3.5 h-3.5 text-pink-400 fill-pink-400" />
+                </motion.div>
               </motion.div>
 
-              {/* Central Heart Connection */}
+              {/* Connection Heart */}
               <motion.div 
-                className="relative z-20 w-12 h-12 bg-gradient-to-br from-pink-400 to-violet-500 rounded-full flex items-center justify-center shadow-lg -mx-3"
-                animate={{ scale: [1, 1.1, 1] }}
+                className="w-10 h-10 bg-gradient-to-br from-pink-400 to-violet-500 rounded-full flex items-center justify-center shadow-lg z-10 -mx-4"
+                animate={{ scale: [1, 1.15, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
               >
-                <Heart className="w-6 h-6 text-white fill-white" />
+                <Heart className="w-5 h-5 text-white fill-white" />
               </motion.div>
 
               {/* Baby Icon */}
               <motion.div 
-                className="relative z-10"
+                className="relative"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl shadow-violet-100/50 border border-violet-100/50">
-                  <div className="w-[60px] h-[60px] bg-gradient-to-br from-violet-100 to-indigo-100 rounded-full flex items-center justify-center">
-                    <Baby className="w-7 h-7 text-violet-500" />
+                <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-xl shadow-violet-100/50 border border-violet-100/50">
+                  <div className="w-18 h-18 bg-gradient-to-br from-violet-100 to-indigo-100 rounded-full flex items-center justify-center w-[72px] h-[72px]">
+                    <Baby className="w-9 h-9 text-violet-500" />
                   </div>
                 </div>
-              </motion.div>
-
-              {/* Right decorative star */}
-              <motion.div 
-                className="absolute -right-6 top-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md border border-violet-100/50"
-                animate={{ scale: [1, 1.1, 1], rotate: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
-              >
-                <Star className="w-4 h-4 text-violet-400 fill-violet-400" />
+                <motion.div 
+                  className="absolute -top-1 -left-1 w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-md border border-violet-100"
+                  animate={{ rotate: [0, 15, -15, 0] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                >
+                  <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                </motion.div>
               </motion.div>
             </div>
 
-            {/* Bottom Sparkle */}
+            {/* Floating Sparkles */}
             <motion.div 
-              className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-md border border-amber-100/50"
-              animate={{ y: [0, -4, 0] }}
-              transition={{ duration: 2.5, repeat: Infinity }}
+              className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md border border-amber-100"
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
             >
-              <Sparkles className="w-4.5 h-4.5 text-amber-400" />
+              <Sparkles className="w-4 h-4 text-amber-400" />
             </motion.div>
           </motion.div>
 
@@ -514,47 +517,31 @@ export default function BabyCareWelcome() {
           
           {/* Subtitle */}
           <motion.p 
-            className="text-[15px] text-zinc-600 text-center max-w-[320px] leading-relaxed mb-3"
+            className="text-[15px] text-zinc-600 text-center max-w-[300px] leading-relaxed mb-6"
             data-testid="text-welcome-subtitle"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
-            Everything you need for the first 24 months — vaccines, growth, sleep, and real support for you.
-          </motion.p>
-
-          {/* Trust Line */}
-          <motion.p
-            className="text-[13px] text-zinc-400 text-center mb-6 flex items-center gap-1.5"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.55 }}
-            data-testid="text-trust-line"
-          >
-            <Users className="w-3.5 h-3.5" />
-            Designed with pediatricians and new mothers.
+            Complete care for you and your little one — from day one to first steps.
           </motion.p>
 
           {/* Feature Pills */}
           <motion.div 
-            className="flex flex-wrap justify-center gap-2 max-w-[340px]"
+            className="flex flex-wrap justify-center gap-2"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
           >
-            <div className="flex items-center gap-1.5 bg-pink-50 text-pink-700 px-3.5 py-2 rounded-full text-[12px] font-medium border border-pink-100/80 shadow-sm">
-              <Heart className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1.5 bg-pink-50 text-pink-700 px-3 py-1.5 rounded-full text-[12px] font-medium border border-pink-100">
+              <Flower2 className="w-3.5 h-3.5" />
               Caregiver wellness
             </div>
-            <div className="flex items-center gap-1.5 bg-violet-50 text-violet-700 px-3.5 py-2 rounded-full text-[12px] font-medium border border-violet-100/80 shadow-sm">
+            <div className="flex items-center gap-1.5 bg-violet-50 text-violet-700 px-3 py-1.5 rounded-full text-[12px] font-medium border border-violet-100">
               <Stethoscope className="w-3.5 h-3.5" />
               Vaccine tracking
             </div>
-            <div className="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 px-3.5 py-2 rounded-full text-[12px] font-medium border border-indigo-100/80 shadow-sm">
-              <Moon className="w-3.5 h-3.5" />
-              Sleep support
-            </div>
-            <div className="flex items-center gap-1.5 bg-amber-50 text-amber-700 px-3.5 py-2 rounded-full text-[12px] font-medium border border-amber-100/80 shadow-sm">
+            <div className="flex items-center gap-1.5 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full text-[12px] font-medium border border-amber-100">
               <Sparkles className="w-3.5 h-3.5" />
               AI Nanny
             </div>
@@ -581,20 +568,21 @@ export default function BabyCareWelcome() {
           <ArrowRight className="w-5 h-5" />
         </Button>
         
-        {/* Login Option */}
+        {/* Hospital Registration Option */}
         <button
           onClick={handleHospitalOption}
           className="w-full mt-4 flex items-center justify-center gap-2 text-[14px] text-violet-600 hover:text-violet-700 transition-colors py-2 font-medium"
           data-testid="button-hospital-registration"
         >
-          Already registered? Log in
+          <Building2 className="w-4 h-4" />
+          Already registered at hospital?
         </button>
         
-        {/* Explore first link */}
+        {/* Skip for now link */}
         <button
           onClick={handleSkip}
           disabled={createDemoProfile.isPending}
-          className="w-full mt-1 text-[13px] text-zinc-400 hover:text-zinc-500 transition-colors py-2"
+          className="w-full mt-2 text-[14px] text-zinc-400 hover:text-zinc-600 transition-colors py-2"
           data-testid="button-skip"
         >
           {createDemoProfile.isPending ? "Setting up..." : "Explore first"}

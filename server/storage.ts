@@ -3,10 +3,6 @@ import {
   type InsertUser,
   type BabyProfile,
   type InsertBabyProfile,
-  type MotherProfile,
-  type InsertMotherProfile,
-  type UserPreferences,
-  type InsertUserPreferences,
   type Vaccine,
   type InsertVaccine,
   type GrowthEntry,
@@ -37,16 +33,6 @@ export interface IStorage {
   getAllBabyProfiles(): Promise<BabyProfile[]>;
   createBabyProfile(profile: InsertBabyProfile): Promise<BabyProfile>;
   updateBabyProfile(id: string, profile: Partial<InsertBabyProfile>): Promise<BabyProfile | undefined>;
-  
-  // Mother Profile operations
-  getMotherProfileByBabyId(babyId: string): Promise<MotherProfile | undefined>;
-  createMotherProfile(profile: InsertMotherProfile): Promise<MotherProfile>;
-  updateMotherProfile(id: string, profile: Partial<InsertMotherProfile>): Promise<MotherProfile | undefined>;
-  
-  // User Preferences operations
-  getUserPreferencesByBabyId(babyId: string): Promise<UserPreferences | undefined>;
-  createUserPreferences(prefs: InsertUserPreferences): Promise<UserPreferences>;
-  updateUserPreferences(id: string, prefs: Partial<InsertUserPreferences>): Promise<UserPreferences | undefined>;
   
   // Vaccine operations
   getVaccinesByBabyId(babyId: string): Promise<Vaccine[]>;
@@ -86,8 +72,6 @@ export interface IStorage {
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private babyProfiles: Map<string, BabyProfile>;
-  private motherProfiles: Map<string, MotherProfile>;
-  private userPreferences: Map<string, UserPreferences>;
   private vaccines: Map<string, Vaccine>;
   private growthEntries: Map<string, GrowthEntry>;
   private milestones: Map<string, Milestone>;
@@ -99,8 +83,6 @@ export class MemStorage implements IStorage {
   constructor() {
     this.users = new Map();
     this.babyProfiles = new Map();
-    this.motherProfiles = new Map();
-    this.userPreferences = new Map();
     this.vaccines = new Map();
     this.growthEntries = new Map();
     this.milestones = new Map();
@@ -159,62 +141,6 @@ export class MemStorage implements IStorage {
     
     const updated: BabyProfile = { ...existing, ...updates };
     this.babyProfiles.set(id, updated);
-    return updated;
-  }
-
-  // Mother Profile operations
-  async getMotherProfileByBabyId(babyId: string): Promise<MotherProfile | undefined> {
-    return Array.from(this.motherProfiles.values()).find(m => m.babyId === babyId);
-  }
-
-  async createMotherProfile(insertProfile: InsertMotherProfile): Promise<MotherProfile> {
-    const id = randomUUID();
-    const profile: MotherProfile = {
-      id,
-      babyId: insertProfile.babyId,
-      deliveryType: insertProfile.deliveryType,
-      feedingType: insertProfile.feedingType,
-      currentMood: insertProfile.currentMood ?? null,
-      createdAt: new Date(),
-    };
-    this.motherProfiles.set(id, profile);
-    return profile;
-  }
-
-  async updateMotherProfile(id: string, updates: Partial<InsertMotherProfile>): Promise<MotherProfile | undefined> {
-    const existing = this.motherProfiles.get(id);
-    if (!existing) return undefined;
-    
-    const updated: MotherProfile = { ...existing, ...updates };
-    this.motherProfiles.set(id, updated);
-    return updated;
-  }
-
-  // User Preferences operations
-  async getUserPreferencesByBabyId(babyId: string): Promise<UserPreferences | undefined> {
-    return Array.from(this.userPreferences.values()).find(p => p.babyId === babyId);
-  }
-
-  async createUserPreferences(insertPrefs: InsertUserPreferences): Promise<UserPreferences> {
-    const id = randomUUID();
-    const prefs: UserPreferences = {
-      id,
-      babyId: insertPrefs.babyId,
-      helpPreferences: insertPrefs.helpPreferences ?? null,
-      city: insertPrefs.city ?? null,
-      areaPincode: insertPrefs.areaPincode ?? null,
-      createdAt: new Date(),
-    };
-    this.userPreferences.set(id, prefs);
-    return prefs;
-  }
-
-  async updateUserPreferences(id: string, updates: Partial<InsertUserPreferences>): Promise<UserPreferences | undefined> {
-    const existing = this.userPreferences.get(id);
-    if (!existing) return undefined;
-    
-    const updated: UserPreferences = { ...existing, ...updates };
-    this.userPreferences.set(id, updated);
     return updated;
   }
 

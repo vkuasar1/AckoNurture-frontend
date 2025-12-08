@@ -90,42 +90,6 @@ export const insertMilestoneSchema = createInsertSchema(milestones).omit({
 export type InsertMilestone = z.infer<typeof insertMilestoneSchema>;
 export type Milestone = typeof milestones.$inferSelect;
 
-// Mother Profile
-export const motherProfiles = pgTable("mother_profiles", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  babyId: varchar("baby_id").notNull(),
-  deliveryType: text("delivery_type").notNull(), // "normal" | "csection" | "planned"
-  feedingType: text("feeding_type").notNull(), // "breastfeeding" | "formula" | "combo"
-  currentMood: text("current_mood"), // "good" | "okay" | "not_good"
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-export const insertMotherProfileSchema = createInsertSchema(motherProfiles).omit({
-  id: true,
-  createdAt: true,
-});
-
-export type InsertMotherProfile = z.infer<typeof insertMotherProfileSchema>;
-export type MotherProfile = typeof motherProfiles.$inferSelect;
-
-// User Preferences (what they need help with + location)
-export const userPreferences = pgTable("user_preferences", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  babyId: varchar("baby_id").notNull(),
-  helpPreferences: text("help_preferences").array(), // ["vaccination", "growth", "milestones", "sleep", "feeding", "return_to_work", "nanny"]
-  city: text("city"),
-  areaPincode: text("area_pincode"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-export const insertUserPreferencesSchema = createInsertSchema(userPreferences).omit({
-  id: true,
-  createdAt: true,
-});
-
-export type InsertUserPreferences = z.infer<typeof insertUserPreferencesSchema>;
-export type UserPreferences = typeof userPreferences.$inferSelect;
-
 // Milestone Memories - Photos/memories attached to milestones
 export const milestoneMemories = pgTable("milestone_memories", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
