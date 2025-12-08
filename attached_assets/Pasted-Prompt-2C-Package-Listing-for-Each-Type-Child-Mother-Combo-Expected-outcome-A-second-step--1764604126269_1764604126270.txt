@@ -1,0 +1,144 @@
+Prompt 2C — Package Listing for Each Type (Child / Mother / Combo)
+
+Expected outcome:
+A second step under Plans & Pricing that shows the actual packages and their contents.
+
+PROMPT 2C — Show Packages per Type (Child / Mother / Combo)
+
+Extend the Plans flow:
+
+After user chooses a plan type (Child / Mother / Mother+Child), show a screen with 2–3 packages, each as a card with title, short description, and price.
+
+1️⃣ If user selected Child Wellness
+
+Show 3 vertically stacked cards:
+
+Package 1: Child Digital Wellness Pack
+
+Tag: “Digital only”
+
+Includes:
+
+Full access to BabyCare digital product
+
+AI Nanny for baby (unlimited)
+
+Vaccine tracking & logs
+
+Growth tracking & insights (no percentiles)
+
+Monthly wellness summary
+
+Price example: ₹999 / year
+
+Package 2: Vaccination & Checkup Pack
+
+Tag: “Most popular”
+
+Includes:
+
+Everything in Digital Pack
+
+Vaccines at partner hospital (defined set)
+
+2 pediatric visits
+
+Appointment support
+
+Price example: ₹5,999 / year
+
+Package 3: Premium Growth Care Pack
+
+Tag: “All-round support”
+
+Includes:
+
+Everything in Package 2
+
+Limited nanny support calls/video (e.g., 3/month)
+
+1 child nutrition consult
+
+1 sleep routine guidance call
+
+Price example: ₹11,999 / year
+
+2️⃣ If user selected Mother Wellness
+
+Show 2 packages:
+
+Package 1: Mother Recovery Pack
+
+Includes:
+
+Mother guidance content (recovery tips)
+
+1 lactation consult (video)
+
+1 physiotherapy consult (video)
+
+Price example: ₹1,999 (one-time, 3-month validity)
+
+Package 2: Mother Wellness Care Pack
+
+Includes:
+
+Everything in Mother Recovery Pack
+
+1 in-person physio session (or extra video session for prototype)
+
+1 mental wellness consultation
+
+Nutrition plan overview
+
+Price example: ₹4,999
+
+3️⃣ If user selected Mother + Child Combo
+
+Show 3 packages:
+
+Package 1: Digital Wellness Combo
+
+Includes:
+
+Child Digital Wellness Pack
+
+Mother Recovery Pack (digital)
+
+Price example: ₹2,499 / year
+
+Package 2: Essential Care Combo
+
+Includes:
+
+Child Vaccination & Checkup Pack
+
+Mother Recovery Pack
+
+Price example: ₹7,999 / year
+
+Package 3: Premium Care Combo
+
+Includes:
+
+Premium Growth Care Pack (child)
+
+Mother Wellness Care Pack
+
+Price example: ₹13,999 / year
+
+For this prompt:
+
+Display all packages as cards with:
+
+Package name
+
+Short bullet list of key benefits
+
+Approx price (non-final)
+
+“Select” button
+
+Highlight the selected package, show a “Continue to payment” CTA at bottom.
+
+We’re focusing on UI and UX here; actual payments can be mocked or left as a future step.
