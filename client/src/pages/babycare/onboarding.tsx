@@ -20,6 +20,8 @@ import {
   Building2,
   Calendar,
   Heart,
+  MessageCircle,
+  Shield,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -148,7 +150,7 @@ export default function BabyCareOnboarding() {
           babyGender: onboardingData.babyGender,
           hospitalName: onboardingData.hospitalName,
         },
-        onboardingData.babyImage,
+        onboardingData.babyImage
       );
     },
     onSuccess: () => {
@@ -539,12 +541,12 @@ export default function BabyCareOnboarding() {
                           formatted = digits;
                         } else if (digits.length <= 4) {
                           formatted = `${digits.slice(0, 2)}/${digits.slice(
-                            2,
+                            2
                           )}`;
                         } else {
                           formatted = `${digits.slice(0, 2)}/${digits.slice(
                             2,
-                            4,
+                            4
                           )}/${digits.slice(4, 8)}`;
                         }
                         setDobDisplay(formatted);
@@ -678,24 +680,56 @@ export default function BabyCareOnboarding() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex-1">
-                    <span className="text-[14px] font-medium text-zinc-800 block mb-1">
-                      Join the parent community
-                    </span>
-                    <p className="text-[12px] text-zinc-500 leading-relaxed">
-                      Share your journey to support parents facing similar
-                      challenges. Your privacy is protected.
-                    </p>
+                <div className="flex items-center gap-3 bg-white rounded-xl p-3 border border-zinc-100 shadow-sm">
+                  <div className="w-9 h-9 rounded-full bg-pink-100 flex items-center justify-center flex-shrink-0">
+                    <MessageCircle className="w-4 h-4 text-pink-500" />
                   </div>
-                  <Switch
-                    checked={data.communityOptIn}
-                    onCheckedChange={(checked) =>
-                      setData((prev) => ({ ...prev, communityOptIn: checked }))
-                    }
-                    data-testid="switch-community-optin"
-                  />
+                  <span className="text-[13px] text-zinc-700">
+                    Answer quick questions
+                  </span>
                 </div>
+
+                <div className="flex items-center gap-3 bg-white rounded-xl p-3 border border-zinc-100 shadow-sm">
+                  <div className="w-9 h-9 rounded-full bg-violet-100 flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-4 h-4 text-violet-500" />
+                  </div>
+                  <span className="text-[13px] text-zinc-700">
+                    Share what worked for you
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3 bg-white rounded-xl p-3 border border-zinc-100 shadow-sm">
+                  <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-4 h-4 text-amber-500" />
+                  </div>
+                  <span className="text-[13px] text-zinc-700">
+                    Stay anonymous if you prefer
+                  </span>
+                </div>
+              </motion.div>
+
+              <motion.div
+                className="flex items-center justify-between gap-4 p-4 bg-gradient-to-r from-pink-50 to-violet-50 rounded-xl border border-pink-100/50"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                <div className="flex-1">
+                  <span className="text-[14px] font-medium text-zinc-800 block mb-1">
+                    Join the parent community
+                  </span>
+                  <p className="text-[12px] text-zinc-500 leading-relaxed">
+                    Share your journey to support parents facing similar
+                    challenges. Your privacy is protected.
+                  </p>
+                </div>
+                <Switch
+                  checked={data.communityOptIn}
+                  onCheckedChange={(checked) =>
+                    setData((prev) => ({ ...prev, communityOptIn: checked }))
+                  }
+                  data-testid="switch-community-optin"
+                />
               </motion.div>
             </motion.div>
           )}

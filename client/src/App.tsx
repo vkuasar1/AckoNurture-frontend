@@ -16,6 +16,12 @@ import BabyCareMilestones from "@/pages/babycare/milestones";
 import MiraChat from "@/pages/babycare/mira";
 import BabyCareMedicalRecords from "@/pages/babycare/medical-records";
 import Appointments from "@/pages/babycare/appointments";
+import NannyRecommendation from "@/pages/babycare/nanny";
+import NannyNeedsPage from "@/pages/babycare/nanny-needs";
+import NannyMatchesPage from "@/pages/babycare/nanny-matches";
+import NannyProfilePage from "@/pages/babycare/nanny-profile";
+import NannyBookingPage from "@/pages/babycare/nanny-booking";
+import NannyDashboardPage from "@/pages/babycare/nanny-dashboard";
 import Resources from "@/pages/babycare/resources";
 import BabyCarePlans from "@/pages/babycare/plans";
 import ParentCommunity from "@/pages/babycare/parent-community";
@@ -45,6 +51,12 @@ function Router() {
         component={BabyCareMedicalRecords}
       />
       <Route path="/babycare/appointments/:babyId" component={Appointments} />
+      <Route path="/babycare/nanny/:babyId" component={NannyRecommendation} />
+      <Route path="/babycare/nanny-needs/:babyId" component={NannyNeedsPage} />
+      <Route path="/babycare/nanny-matches/:babyId" component={NannyMatchesPage} />
+      <Route path="/babycare/nanny-profile/:babyId/:nannyId" component={NannyProfilePage} />
+      <Route path="/babycare/nanny-booking/:babyId/:nannyId" component={NannyBookingPage} />
+      <Route path="/babycare/nanny-dashboard/:babyId" component={NannyDashboardPage} />
       <Route path="/babycare/resources" component={Resources} />
       <Route path="/babycare/plans" component={BabyCarePlans} />
       <Route path="/babycare/community/:babyId" component={ParentCommunity} />

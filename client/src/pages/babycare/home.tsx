@@ -612,16 +612,8 @@ export default function BabyCareHome() {
             )}
 
             {/* Nanny Card */}
-            {baby && (
-              <button
-                onClick={() => {
-                  toast({
-                    title: "Coming Soon",
-                    description: "Nanny services will be available shortly!",
-                  });
-                }}
-                className="text-left w-full"
-              >
+            {baby && babyProfileId && (
+              <Link href={`/babycare/nanny/${babyProfileId}`}>
                 <Card
                   className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate"
                   data-testid="card-nanny"
@@ -634,11 +626,11 @@ export default function BabyCareHome() {
                       Nanny
                     </h3>
                     <p className="text-[11px] text-zinc-500 mt-0.5">
-                      Coming soon
+                      Find trusted care
                     </p>
                   </CardContent>
                 </Card>
-              </button>
+              </Link>
             )}
           </div>
         </div>
