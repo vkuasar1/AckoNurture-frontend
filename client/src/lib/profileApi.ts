@@ -24,17 +24,24 @@ export interface Profile {
   milestoneCategoryRatios?: Record<string, number> | null;
   milestoneScoreUpdatedAt?: string | null;
   createdAt?: string;
+  // Baby details (when profile type is mother/father with baby)
+  babyName?: string | null;
+  babyDob?: string | null;
+  babyGender?: string | null;
+  babyImageUrl?: string | null;
+  consent?: boolean | null;
+  badgeIds?: string[] | null;
+  totalBadgesEarned?: number | null;
 }
 
 export interface OnboardingRequest {
-  parentName: string;
-  parentType: "mother" | "father" | "caregiver";
+  name: string; // Parent name
+  type: "mother" | "father"; // Parent type
   userId: string;
-  parentPincode?: string;
+  consent: boolean; // Community consent
   babyName: string;
   babyDob: string;
   babyGender: "M" | "F";
-  babyPincode?: string;
   hospitalName?: string;
 }
 
@@ -64,12 +71,12 @@ export async function getProfiles(): Promise<Profile[]> {
  * Get profiles by type for the current user
  */
 export async function getProfilesByType(
-  type: "mother" | "father" | "caregiver" | "baby",
+  type: "mother" | "father" | "caregiver" | "baby"
 ): Promise<Profile[]> {
   const userId = getUserId();
   const response = await apiRequest(
     "GET",
-    `/api/v1/profiles/user/${userId}/type/${type}`,
+    `/api/v1/profiles/user/${userId}/type/${type}`
   );
   return response.json();
 }
@@ -77,27 +84,45 @@ export async function getProfilesByType(
 /**
  * Create parent and baby profiles together (onboarding)
  */
+export interface OnboardingResponse {
+  profile: Profile;
+  message: string;
+  status: string;
+}
+
 export async function onboardParentAndBaby(
   data: Omit<OnboardingRequest, "userId">,
-): Promise<{ parent: Profile; baby: Profile }> {
+  babyImage?: File | null
+): Promise<OnboardingResponse> {
   const userId = getUserId();
-  // Explicitly construct requestData to ensure profileId is never included
+
+  // Construct request object matching API schema
   const requestData: OnboardingRequest = {
+    name: data.name,
+    type: data.type,
     userId,
-    parentName: data.parentName,
-    parentType: data.parentType,
-    parentPincode: data.parentPincode,
+    consent: data.consent,
     babyName: data.babyName,
     babyDob: data.babyDob,
     babyGender: data.babyGender,
-    babyPincode: data.babyPincode,
     hospitalName: data.hospitalName,
   };
-  const response = await apiRequest(
-    "POST",
-    "/api/v1/profiles/onboard",
-    requestData,
-  );
+
+  const url = `/api/v1/profiles/onboard`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(requestData),
+    headers: {
+      "Content-Type": "application/json",
+    }
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`${response.status}: ${text}`);
+  }
+
   const result = await response.json();
 
   // Invalidate profiles query
@@ -112,7 +137,7 @@ export async function onboardParentAndBaby(
  * Create a single profile
  */
 export async function createProfile(
-  data: Omit<CreateProfileRequest, "userId">,
+  data: Omit<CreateProfileRequest, "userId">
 ): Promise<Profile> {
   const userId = getUserId();
   // Explicitly construct requestData to ensure profileId is never included
@@ -143,11 +168,11 @@ export async function createProfile(
  * Get profile by profileId
  */
 export async function getProfileByProfileId(
-  profileId: string,
+  profileId: string
 ): Promise<Profile> {
   const response = await apiRequest(
     "GET",
-    `/api/v1/profiles/profile-id/${profileId}`,
+    `/api/v1/profiles/profile-id/${profileId}`
   );
   return response.json();
 }
@@ -156,11 +181,11 @@ export async function getProfileByProfileId(
  * Get all babies for a guardian
  */
 export async function getBabiesByGuardianProfileId(
-  guardianProfileId: string,
+  guardianProfileId: string
 ): Promise<Profile[]> {
   const response = await apiRequest(
     "GET",
-    `/api/v1/profiles/guardian/${guardianProfileId}/babies`,
+    `/api/v1/profiles/guardian/${guardianProfileId}/babies`
   );
   return response.json();
 }

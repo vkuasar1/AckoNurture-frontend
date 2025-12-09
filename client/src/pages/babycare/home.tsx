@@ -1,10 +1,8 @@
 import { Link, useParams, useLocation } from "wouter";
 import {
   ArrowLeft,
-  Syringe,
   ChevronRight,
   Plus,
-  Calendar,
   RotateCcw,
   Baby,
   Heart,
@@ -19,7 +17,6 @@ import {
   Shield,
   TrendingUp,
   FileText,
-  Building2,
   AlertCircle,
   Star,
   Users,
@@ -103,10 +100,10 @@ export default function BabyCareHome() {
   const [showResetConfirmDialog, setShowResetConfirmDialog] = useState(false);
   const [reminderVaccine, setReminderVaccine] = useState<Vaccine | null>(null);
   const [reminderType, setReminderType] = useState<"call" | "sms" | "push">(
-    "call",
+    "call"
   );
   const [reminderTime, setReminderTime] = useState<"1day" | "3days" | "1week">(
-    "1day",
+    "1day"
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const babyId = params.babyId;
@@ -181,10 +178,8 @@ export default function BabyCareHome() {
   });
 
   // Find baby profile - route param babyId is actually profileId
-  const baby = babyId
-    ? profiles.find((p) => p.type === "baby" && p.profileId === babyId)
-    : profiles.find((p) => p.type === "baby");
-  const babyProfileId = baby?.profileId || babyId; // Use profileId as babyId for API calls
+  const baby = profiles.find((p) => p.profileId === babyId);
+  const babyProfileId = baby?.profileId;
 
   // Fetch upcoming vaccines from API using profileId as babyId
   const { data: vaccines = [] } = useQuery<Vaccine[]>({
@@ -193,7 +188,7 @@ export default function BabyCareHome() {
     queryFn: async () => {
       const response = await apiRequest(
         "GET",
-        `/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming?limit=10`,
+        `/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming?limit=10`
       );
       return response.json();
     },
@@ -214,13 +209,13 @@ export default function BabyCareHome() {
     .filter((e) => e.type === "weight")
     .sort(
       (a, b) =>
-        new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime(),
+        new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime()
     )[0];
   const latestHeight = growthEntries
     .filter((e) => e.type === "height")
     .sort(
       (a, b) =>
-        new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime(),
+        new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime()
     )[0];
 
   const handleAddCaregiverProfile = () => {
@@ -479,7 +474,9 @@ export default function BabyCareHome() {
                     </h3>
                     <p className="text-[11px] text-zinc-500 mt-0.5">
                       {latestWeight || latestHeight
-                        ? `${latestWeight?.value || "-"}kg, ${latestHeight?.value || "-"}cm`
+                        ? `${latestWeight?.value || "-"}kg, ${
+                            latestHeight?.value || "-"
+                          }cm`
                         : "Track height & weight"}
                     </p>
                   </CardContent>
@@ -743,10 +740,18 @@ export default function BabyCareHome() {
                   data-testid="reminder-type-call"
                 >
                   <Phone
-                    className={`w-5 h-5 ${reminderType === "call" ? "text-blue-600" : "text-zinc-400"}`}
+                    className={`w-5 h-5 ${
+                      reminderType === "call"
+                        ? "text-blue-600"
+                        : "text-zinc-400"
+                    }`}
                   />
                   <span
-                    className={`text-[11px] font-medium ${reminderType === "call" ? "text-blue-700" : "text-zinc-600"}`}
+                    className={`text-[11px] font-medium ${
+                      reminderType === "call"
+                        ? "text-blue-700"
+                        : "text-zinc-600"
+                    }`}
                   >
                     Call
                   </span>
@@ -761,10 +766,14 @@ export default function BabyCareHome() {
                   data-testid="reminder-type-sms"
                 >
                   <MessageSquare
-                    className={`w-5 h-5 ${reminderType === "sms" ? "text-blue-600" : "text-zinc-400"}`}
+                    className={`w-5 h-5 ${
+                      reminderType === "sms" ? "text-blue-600" : "text-zinc-400"
+                    }`}
                   />
                   <span
-                    className={`text-[11px] font-medium ${reminderType === "sms" ? "text-blue-700" : "text-zinc-600"}`}
+                    className={`text-[11px] font-medium ${
+                      reminderType === "sms" ? "text-blue-700" : "text-zinc-600"
+                    }`}
                   >
                     SMS
                   </span>
@@ -779,10 +788,18 @@ export default function BabyCareHome() {
                   data-testid="reminder-type-push"
                 >
                   <Bell
-                    className={`w-5 h-5 ${reminderType === "push" ? "text-blue-600" : "text-zinc-400"}`}
+                    className={`w-5 h-5 ${
+                      reminderType === "push"
+                        ? "text-blue-600"
+                        : "text-zinc-400"
+                    }`}
                   />
                   <span
-                    className={`text-[11px] font-medium ${reminderType === "push" ? "text-blue-700" : "text-zinc-600"}`}
+                    className={`text-[11px] font-medium ${
+                      reminderType === "push"
+                        ? "text-blue-700"
+                        : "text-zinc-600"
+                    }`}
                   >
                     Push
                   </span>
@@ -805,7 +822,11 @@ export default function BabyCareHome() {
                   data-testid="reminder-time-1day"
                 >
                   <span
-                    className={`text-[13px] font-medium ${reminderTime === "1day" ? "text-blue-700" : "text-zinc-600"}`}
+                    className={`text-[13px] font-medium ${
+                      reminderTime === "1day"
+                        ? "text-blue-700"
+                        : "text-zinc-600"
+                    }`}
                   >
                     1 day before due date
                   </span>
@@ -823,7 +844,11 @@ export default function BabyCareHome() {
                   data-testid="reminder-time-3days"
                 >
                   <span
-                    className={`text-[13px] font-medium ${reminderTime === "3days" ? "text-blue-700" : "text-zinc-600"}`}
+                    className={`text-[13px] font-medium ${
+                      reminderTime === "3days"
+                        ? "text-blue-700"
+                        : "text-zinc-600"
+                    }`}
                   >
                     3 days before due date
                   </span>
@@ -841,7 +866,11 @@ export default function BabyCareHome() {
                   data-testid="reminder-time-1week"
                 >
                   <span
-                    className={`text-[13px] font-medium ${reminderTime === "1week" ? "text-blue-700" : "text-zinc-600"}`}
+                    className={`text-[13px] font-medium ${
+                      reminderTime === "1week"
+                        ? "text-blue-700"
+                        : "text-zinc-600"
+                    }`}
                   >
                     1 week before due date
                   </span>
@@ -858,8 +887,8 @@ export default function BabyCareHome() {
                 {reminderType === "call"
                   ? "You'll receive an automated call reminder at 10:00 AM on the scheduled day."
                   : reminderType === "sms"
-                    ? "You'll receive an SMS reminder with vaccine details and booking link."
-                    : "You'll receive a push notification on your device."}
+                  ? "You'll receive an SMS reminder with vaccine details and booking link."
+                  : "You'll receive a push notification on your device."}
               </p>
             </div>
           </div>
@@ -877,12 +906,18 @@ export default function BabyCareHome() {
               onClick={() => {
                 toast({
                   title: "Reminder set!",
-                  description: `You'll receive a ${reminderType === "call" ? "call" : reminderType === "sms" ? "SMS" : "notification"} ${
+                  description: `You'll receive a ${
+                    reminderType === "call"
+                      ? "call"
+                      : reminderType === "sms"
+                      ? "SMS"
+                      : "notification"
+                  } ${
                     reminderTime === "1day"
                       ? "1 day"
                       : reminderTime === "3days"
-                        ? "3 days"
-                        : "1 week"
+                      ? "3 days"
+                      : "1 week"
                   } before the vaccine is due.`,
                 });
                 setShowReminderDialog(false);
@@ -914,15 +949,15 @@ export default function BabyCareHome() {
               {showPlanDetailsModal === "child" && childPlanInfo
                 ? childPlanInfo.name
                 : showPlanDetailsModal === "mother" && motherPlanInfo
-                  ? motherPlanInfo.name
-                  : "Your Plan"}
+                ? motherPlanInfo.name
+                : "Your Plan"}
             </DialogTitle>
             <DialogDescription className="text-[13px] text-zinc-500 text-center">
               {showPlanDetailsModal === "child" && childPlanInfo
                 ? childPlanInfo.description
                 : showPlanDetailsModal === "mother" && motherPlanInfo
-                  ? motherPlanInfo.description
-                  : "Premium care benefits active"}
+                ? motherPlanInfo.description
+                : "Premium care benefits active"}
             </DialogDescription>
           </DialogHeader>
 

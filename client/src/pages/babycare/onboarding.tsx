@@ -128,22 +128,28 @@ export default function BabyCareOnboarding() {
 
   const onboardParentAndBabyMutation = useMutation({
     mutationFn: async (onboardingData: {
-      parentName: string;
-      parentType: "mother" | "father";
+      name: string; // Parent name
+      type: "mother" | "father";
+      consent: boolean; // Community consent
       babyName: string;
       babyDob: string;
       babyGender: "M" | "F";
       hospitalName?: string;
+      babyImage?: File | null;
     }) => {
       // Use onboardParentAndBaby to create both parent and baby profiles
-      return await onboardParentAndBaby({
-        parentName: onboardingData.parentName,
-        parentType: onboardingData.parentType,
-        babyName: onboardingData.babyName,
-        babyDob: onboardingData.babyDob,
-        babyGender: onboardingData.babyGender,
-        hospitalName: onboardingData.hospitalName,
-      });
+      return await onboardParentAndBaby(
+        {
+          name: onboardingData.name,
+          type: onboardingData.type,
+          consent: onboardingData.consent,
+          babyName: onboardingData.babyName,
+          babyDob: onboardingData.babyDob,
+          babyGender: onboardingData.babyGender,
+          hospitalName: onboardingData.hospitalName,
+        },
+        onboardingData.babyImage,
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -204,15 +210,30 @@ export default function BabyCareOnboarding() {
 
       // Use onboardParentAndBaby to create both parent and baby profiles
       const result = await onboardParentAndBabyMutation.mutateAsync({
-        parentName: data.caregiverName.trim(),
-        parentType: data.caregiverRole as "mother" | "father",
+        name: data.caregiverName.trim(), // Parent name
+        type: data.caregiverRole as "mother" | "father",
+        consent: data.communityOptIn, // Community consent from step 3
         babyName: data.babyName.trim(),
         babyDob: data.babyDob,
         babyGender: babyGender,
         hospitalName: data.hospitalName || undefined,
+        babyImage: null, // TODO: Add baby image upload if needed
       });
 
-      const babyId = result.baby.profileId || result.baby.id;
+      // The API returns a single guardian profile with both guardian and baby details
+      // The baby profile is created separately and linked to the guardian
+      // Fetch the baby profile using the guardian profileId
+      const guardianProfileId = result.profile.profileId || result.profile.id;
+      
+      // Get the baby profile that was created and linked to this guardian
+      // Add a small delay to ensure the baby profile is created and linked
+      await new Promise(resolve => setTimeout(resolve, 500));
+      const { getBabiesByGuardianProfileId } = await import("@/lib/profileApi");
+      const babies = await getBabiesByGuardianProfileId(guardianProfileId);
+      const babyProfile = babies[0]; // Should be the baby we just created
+      
+      // Use baby profileId for navigation, fallback to guardian profileId if baby not found
+      const babyId = babyProfile?.profileId || guardianProfileId;
 
       await createUserPreferences.mutateAsync({
         babyId: babyId,
