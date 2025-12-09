@@ -14,16 +14,29 @@ declare module "http" {
   }
 }
 
-app.use(
+// Only parse JSON for non-multipart requests
+app.use((req, res, next) => {
+  const contentType = req.headers["content-type"] || "";
+  if (contentType.includes("multipart/form-data")) {
+    // Skip body parsing for multipart requests - we'll stream the raw body in the proxy
+    return next();
+  }
   express.json({
     limit: "10mb",
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },
-  }),
-);
+  })(req, res, next);
+});
 
-app.use(express.urlencoded({ extended: false, limit: "10mb" }));
+// Only parse urlencoded for non-multipart requests
+app.use((req, res, next) => {
+  const contentType = req.headers["content-type"] || "";
+  if (contentType.includes("multipart/form-data")) {
+    return next();
+  }
+  express.urlencoded({ extended: false, limit: "10mb" })(req, res, next);
+});
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -68,19 +81,15 @@ const VITE_API_BASE_URL = process.env.VITE_API_BASE_URL;
 app.use("/api/v1", async (req, res, next) => {
   try {
     const targetUrl = `${VITE_API_BASE_URL}${req.originalUrl}`;
+    const isGetOrHead = req.method === "GET" || req.method === "HEAD";
 
     const fetchOptions: RequestInit = {
       method: req.method,
-      headers: {
-        "Content-Type": "application/json",
-        ...(req.headers.authorization && {
-          Authorization: req.headers.authorization,
-        }),
-      },
-      body:
-        req.method !== "GET" && req.method !== "HEAD"
-          ? JSON.stringify(req.body)
-          : undefined,
+      headers: Object.fromEntries(Object.entries(req.headers)) as Record<
+        string,
+        string
+      >,
+      body: isGetOrHead ? undefined : req.body,
     };
 
     const response = await fetch(targetUrl, fetchOptions);

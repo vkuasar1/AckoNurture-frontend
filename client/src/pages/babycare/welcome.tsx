@@ -110,7 +110,9 @@ export default function BabyCareWelcome() {
   });
 
   // Filter for baby profiles
-  const babyProfiles = profiles.filter((p) => p.type === "baby");
+  const babyProfiles = profiles.filter((p) =>
+    ["mother", "father"].includes(p.type),
+  );
 
   // Auto-redirect to home if user has already completed onboarding (has profiles)
   useEffect(() => {

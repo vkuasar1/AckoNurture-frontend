@@ -32,11 +32,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type {
-  BabyProfile,
-  MilestoneProgress,
-  MilestoneMemory,
-} from "@shared/schema";
+import type { BabyProfile, MilestoneMemory } from "@shared/schema";
 import { motion, AnimatePresence } from "framer-motion";
 import { getProfiles, type Profile } from "@/lib/profileApi";
 import { getUserId } from "@/lib/userId";
@@ -46,12 +42,22 @@ import { Label } from "@/components/ui/label";
 import { differenceInWeeks } from "date-fns";
 import { MiraFab } from "@/components/MiraFab";
 import {
-  MILESTONE_DEFINITIONS,
-  MilestoneDefinition,
-  getTimingStatus,
-} from "@/data/milestoneDefinitions";
+  getMilestoneProgress,
+  markMilestoneAsAchievedByBabyIdAndMilestoneItemId,
+  type MilestoneGroupedResponse,
+  type BabyMilestoneSchedule,
+} from "@/lib/milestoneApi";
 
 type TabType = "now" | "soon" | "done";
+
+// Helper to render icon from icon name string
+function renderIcon(
+  iconName: string | undefined,
+  className: string = "w-4 h-4",
+) {
+  if (!iconName) return null;
+  return <i className={`lucide lucide-${iconName} ${className}`} />;
+}
 type ModalStep =
   | "detail"
   | "noticed_date"
@@ -72,15 +78,16 @@ export default function BabyCareMilestones() {
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [modalStep, setModalStep] = useState<ModalStep>("detail");
   const [selectedMilestone, setSelectedMilestone] =
-    useState<MilestoneDefinition | null>(null);
+    useState<BabyMilestoneSchedule | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0],
   );
   const [photoUrl, setPhotoUrl] = useState("");
   const [celebrationData, setCelebrationData] = useState<{
     name: string;
-    badge?: string;
-    badgeCopy?: string;
+    badgeTitle?: string;
+    badgeText?: string;
+    badgeIcon?: string;
     isEarly?: boolean;
   } | null>(null);
 
@@ -95,9 +102,11 @@ export default function BabyCareMilestones() {
   const baby = profiles.find((p) => p.profileId === babyId);
   const babyProfileId = baby?.profileId || babyId; // Use profileId for navigation
 
-  const { data: progressData = [] } = useQuery<MilestoneProgress[]>({
-    queryKey: ["/api/baby-profiles", babyId, "milestone-progress"],
-    enabled: !!babyId,
+  // Fetch milestone progress from API (already grouped into now, soon, done)
+  const { data: milestoneProgress } = useQuery<MilestoneGroupedResponse>({
+    queryKey: [`/api/v1/baby-profiles/${babyProfileId}/milestone-progress`],
+    enabled: !!babyProfileId,
+    queryFn: () => getMilestoneProgress(babyProfileId!),
   });
 
   const { data: memories = [] } = useQuery<MilestoneMemory[]>({
@@ -106,38 +115,17 @@ export default function BabyCareMilestones() {
   });
 
   const babyAgeWeeks =
-    baby && baby.dob ? differenceInWeeks(new Date(), new Date(baby.dob)) : 0;
-  const progressMap = new Map(progressData.map((p) => [p.milestoneDefId, p]));
+    baby && baby.dob
+      ? differenceInWeeks(new Date(), new Date(baby.dob as string))
+      : 0;
 
-  const allMilestones = [...MILESTONE_DEFINITIONS].sort(
-    (a, b) => a.typicalWeek - b.typicalWeek,
-  );
+  // Use API response directly - no manual sorting needed
+  const nowMilestones = milestoneProgress?.now || [];
+  const soonMilestones = milestoneProgress?.soon || [];
+  const doneMilestones = milestoneProgress?.done || [];
 
-  const lateMilestones = allMilestones.filter((m) => {
-    const isCompleted = progressMap.get(m.id)?.completed;
-    if (isCompleted) return false;
-    return babyAgeWeeks >= m.lateStartWeek;
-  });
-
-  const nowMilestones = allMilestones.filter((m) => {
-    const isCompleted = progressMap.get(m.id)?.completed;
-    if (isCompleted) return false;
-    const isLate = babyAgeWeeks >= m.lateStartWeek;
-    if (isLate) return false;
-    return m.typicalWeek >= babyAgeWeeks && m.typicalWeek <= babyAgeWeeks + 2;
-  });
-
-  const soonMilestones = allMilestones.filter((m) => {
-    const isCompleted = progressMap.get(m.id)?.completed;
-    if (isCompleted) return false;
-    const isLate = babyAgeWeeks >= m.lateStartWeek;
-    if (isLate) return false;
-    return m.typicalWeek > babyAgeWeeks + 2;
-  });
-
-  const doneMilestones = allMilestones.filter(
-    (m) => progressMap.get(m.id)?.completed,
-  );
+  // Combine now and overdue milestones for "now" tab
+  const lateMilestones = nowMilestones.filter((m) => m.status === "overdue");
 
   const getTabMilestones = () => {
     switch (activeTab) {
@@ -163,24 +151,24 @@ export default function BabyCareMilestones() {
 
   const saveMilestoneProgress = useMutation({
     mutationFn: async (data: {
-      milestoneDefId: string;
-      completed: boolean;
-      completedWeek: number | null;
-      timingStatus: string | null;
-      badgeAwarded: boolean;
-      badgeName: string | null;
-      completedAt: string | null;
+      babyId: string;
+      milestoneItemId: string;
+      achievedDate?: string;
+      imageFile?: File;
     }) => {
-      const response = await apiRequest(
-        "POST",
-        `/api/baby-profiles/${babyId}/milestone-progress`,
-        data,
+      return await markMilestoneAsAchievedByBabyIdAndMilestoneItemId(
+        data.babyId,
+        data.milestoneItemId,
+        data.achievedDate,
+        data.imageFile,
       );
-      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["/api/baby-profiles", babyId, "milestone-progress"],
+        queryKey: [`/api/v1/baby-profiles/${babyProfileId}/milestone-progress`],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [`/api/v1/milestone-schedules/baby/${babyProfileId}`],
       });
     },
   });
@@ -207,26 +195,23 @@ export default function BabyCareMilestones() {
     },
   });
 
-  const handleChipTap = (milestone: MilestoneDefinition) => {
+  const handleChipTap = (milestone: BabyMilestoneSchedule) => {
     setSelectedMilestone(milestone);
     setSelectedDate(new Date().toISOString().split("T")[0]);
     setPhotoUrl("");
 
-    const progress = progressMap.get(milestone.id);
-    if (progress?.completed) {
+    if (milestone.status === "ACHIEVED" || milestone.achievedDate) {
       setModalStep("celebration");
-      const status = progress.timingStatus as string;
-      let badge = progress.badgeName || undefined;
-      let badgeCopy = "";
-      let isEarly = status === "early";
+      const isEarly = milestone.achievementType === "early";
+      const badge = milestone.badge;
 
-      if (isEarly && milestone.earlyBadgeCopy) {
-        badgeCopy = milestone.earlyBadgeCopy;
-      } else if (milestone.normalBadgeCopy) {
-        badgeCopy = milestone.normalBadgeCopy;
-      }
-
-      setCelebrationData({ name: milestone.name, badge, badgeCopy, isEarly });
+      setCelebrationData({
+        name: milestone.name,
+        badgeTitle: badge?.title,
+        badgeText: badge?.text,
+        badgeIcon: badge?.icon,
+        isEarly,
+      });
     } else {
       setModalStep("detail");
     }
@@ -246,48 +231,46 @@ export default function BabyCareMilestones() {
   };
 
   const handleSaveMilestone = async (skipPhoto: boolean = false) => {
-    if (!selectedMilestone) return;
+    if (!selectedMilestone || !babyProfileId) return;
 
-    const observedWeek = differenceInWeeks(new Date(), new Date(selectedDate));
-    const status = getTimingStatus(observedWeek, selectedMilestone, true);
-    let badgeName: string | null = null;
-    let badgeCopy = "";
-    let badgeAwarded = false;
-    let isEarly = status === "early";
-
-    if (status === "early" && selectedMilestone.earlyBadgeName) {
-      badgeName = selectedMilestone.earlyBadgeName;
-      badgeCopy = selectedMilestone.earlyBadgeCopy;
-      badgeAwarded = true;
-    } else if (status === "normal" && selectedMilestone.normalBadgeName) {
-      badgeName = selectedMilestone.normalBadgeName;
-      badgeCopy = selectedMilestone.normalBadgeCopy;
-      badgeAwarded = true;
+    // Convert data URL to File if photo exists
+    let imageFile: File | undefined;
+    if (!skipPhoto && photoUrl) {
+      try {
+        const response = await fetch(photoUrl);
+        const blob = await response.blob();
+        imageFile = new File([blob], "milestone-photo.jpg", {
+          type: "image/jpeg",
+        });
+      } catch (error) {
+        console.error("Failed to convert photo to file:", error);
+      }
     }
 
-    await saveMilestoneProgress.mutateAsync({
-      milestoneDefId: selectedMilestone.id,
-      completed: true,
-      completedWeek: observedWeek,
-      timingStatus: status,
-      badgeAwarded,
-      badgeName,
-      completedAt: new Date(selectedDate).toISOString(),
+    // Call API to mark milestone as achieved
+    // Ensure we use milestoneItemId, not milestoneId
+    const milestoneItemId = selectedMilestone.milestoneItemId;
+    if (!milestoneItemId) {
+      throw new Error("milestoneItemId is required");
+    }
+
+    const result = await saveMilestoneProgress.mutateAsync({
+      babyId: babyProfileId,
+      milestoneItemId: milestoneItemId,
+      achievedDate: selectedDate,
+      imageFile,
     });
 
-    if (!skipPhoto && photoUrl) {
-      await createMemory.mutateAsync({
-        milestoneId: selectedMilestone.id,
-        photoUrl,
-        caption: "",
-        takenAt: selectedDate,
-      });
-    }
+    // Extract badge info from API response
+    const badge = result?.badge;
+    const isEarly =
+      result?.achievementType === "early" || badge?.achievementType === "early";
 
     setCelebrationData({
       name: selectedMilestone.name,
-      badge: badgeName || undefined,
-      badgeCopy,
+      badgeTitle: badge?.title,
+      badgeText: badge?.text,
+      badgeIcon: badge?.icon,
       isEarly,
     });
     setModalStep("celebration");
@@ -345,19 +328,13 @@ export default function BabyCareMilestones() {
     if (!selectedMilestone)
       return { title: "", message: "", showDoctor: false };
 
-    const isLate = babyAgeWeeks >= selectedMilestone.lateStartWeek;
-    const isRedFlag = babyAgeWeeks >= selectedMilestone.redFlagWeek;
+    const isOverdue = selectedMilestone.status === "overdue";
 
-    if (isRedFlag) {
-      return {
-        title: "Let's check in with a doctor",
-        message: selectedMilestone.redFlagParentCopy,
-        showDoctor: true,
-      };
-    } else if (isLate) {
+    if (isOverdue) {
       return {
         title: "No worries, every baby is different",
-        message: selectedMilestone.lateParentCopy,
+        message:
+          "Every baby develops at their own pace. Keep observing and supporting your little one!",
         showDoctor: true,
       };
     } else {
@@ -392,11 +369,11 @@ export default function BabyCareMilestones() {
     milestone,
     isLate = false,
   }: {
-    milestone: MilestoneDefinition;
+    milestone: BabyMilestoneSchedule;
     isLate?: boolean;
   }) => {
-    const progress = progressMap.get(milestone.id);
-    const isCompleted = progress?.completed;
+    const isCompleted =
+      milestone.status === "ACHIEVED" || milestone.achievedDate !== null;
 
     return (
       <button
@@ -455,7 +432,7 @@ export default function BabyCareMilestones() {
               </div>
               <div className="inline-flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur text-white rounded-full text-[10px] font-medium">
                 <Award className="w-3 h-3" />
-                {progressData.filter((p) => p.badgeAwarded).length} Badges
+                {doneMilestones.filter((m) => m.badgeId).length} Badges
               </div>
               <div className="inline-flex items-center gap-1 px-2 py-1 bg-white/20 backdrop-blur text-white rounded-full text-[10px] font-medium">
                 <Camera className="w-3 h-3" />
@@ -742,11 +719,21 @@ export default function BabyCareMilestones() {
                     {selectedMilestone.name}
                   </h2>
                   <p className="text-[13px] text-zinc-500 leading-relaxed">
-                    {selectedMilestone.description}
+                    {selectedMilestone.category}
                   </p>
-                  <p className="text-[11px] text-zinc-400 mt-2">
-                    Typical: Week {selectedMilestone.typicalWeek}
-                  </p>
+                  {selectedMilestone.typicalWeek && (
+                    <p className="text-[11px] text-zinc-400 mt-2">
+                      Typical: Week {selectedMilestone.typicalWeek}
+                    </p>
+                  )}
+                  {selectedMilestone.expectedDate && (
+                    <p className="text-[11px] text-zinc-400 mt-1">
+                      Expected:{" "}
+                      {new Date(
+                        selectedMilestone.expectedDate,
+                      ).toLocaleDateString()}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-3">
@@ -890,20 +877,19 @@ export default function BabyCareMilestones() {
 
                 {(() => {
                   const { title, message, showDoctor } = getNotSeenMessage();
-                  const isRedFlag =
-                    babyAgeWeeks >= selectedMilestone.redFlagWeek;
+                  const isOverdue = selectedMilestone.status === "overdue";
 
                   return (
                     <div className="pt-4">
                       <div className="text-center mb-6">
                         <div
                           className={`w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                            isRedFlag
+                            isOverdue
                               ? "bg-gradient-to-br from-amber-100 to-orange-100"
                               : "bg-gradient-to-br from-emerald-100 to-teal-100"
                           }`}
                         >
-                          {isRedFlag ? (
+                          {isOverdue ? (
                             <AlertCircle className="w-7 h-7 text-amber-500" />
                           ) : (
                             <Heart className="w-7 h-7 text-emerald-500" />
@@ -977,7 +963,12 @@ export default function BabyCareMilestones() {
                           : "bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg shadow-purple-200"
                       }`}
                     >
-                      {celebrationData.isEarly ? (
+                      {celebrationData.badgeIcon ? (
+                        renderIcon(
+                          celebrationData.badgeIcon,
+                          "w-10 h-10 text-white",
+                        )
+                      ) : celebrationData.isEarly ? (
                         <Award className="w-10 h-10 text-white" />
                       ) : (
                         <Heart className="w-10 h-10 text-white" />
@@ -1033,7 +1024,7 @@ export default function BabyCareMilestones() {
                     {celebrationData.name}
                   </p>
 
-                  {celebrationData.badge && (
+                  {celebrationData.badgeTitle && (
                     <motion.div
                       className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full mt-3 mb-2 ${
                         celebrationData.isEarly
@@ -1044,20 +1035,22 @@ export default function BabyCareMilestones() {
                       animate={{ scale: 1 }}
                       transition={{ type: "spring", delay: 0.4 }}
                     >
-                      <Award
-                        className={`w-4 h-4 ${celebrationData.isEarly ? "text-amber-600" : "text-purple-600"}`}
-                      />
+                      {celebrationData.badgeIcon &&
+                        renderIcon(
+                          celebrationData.badgeIcon,
+                          `w-4 h-4 ${celebrationData.isEarly ? "text-amber-600" : "text-purple-600"}`,
+                        )}
                       <span
                         className={`text-[13px] font-semibold ${celebrationData.isEarly ? "text-amber-700" : "text-purple-700"}`}
                       >
-                        {celebrationData.badge}
+                        {celebrationData.badgeTitle}
                       </span>
                     </motion.div>
                   )}
 
-                  {celebrationData.badgeCopy && (
+                  {celebrationData.badgeText && (
                     <p className="text-[13px] text-zinc-500 mt-3 leading-relaxed max-w-[240px] mx-auto">
-                      {celebrationData.badgeCopy}
+                      {celebrationData.badgeText}
                     </p>
                   )}
                 </motion.div>

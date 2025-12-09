@@ -60,6 +60,10 @@
     },
     { "name": "Profile", "description": "Profile CRUD API endpoints" },
     {
+      "name": "Memories",
+      "description": "Memories management CRUD API endpoints"
+    },
+    {
       "name": "VaccineSet",
       "description": "Vaccine Set Template API endpoints"
     }
@@ -679,6 +683,144 @@
         }
       }
     },
+    "/api/v1/memories/{memoryId}": {
+      "get": {
+        "tags": ["Memories"],
+        "summary": "Get memory by memoryId",
+        "description": "Retrieves a memory by unique memoryId",
+        "operationId": "getMemoryByMemoryId",
+        "parameters": [
+          {
+            "name": "memoryId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Memory" } }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Memories"],
+        "summary": "Update memory",
+        "description": "Updates an existing memory by memoryId with optional file upload. Accepts a JSON 'request' field in form-data.\n\n**Sample request field:**\n```json\n{\n  \"profileId\": \"uuid-baby-1\",\n  \"userId\": \"user-123\",\n  \"memoryDate\": \"2024-01-15\",\n  \"title\": \"First smile\",\n  \"description\": \"Baby smiled for the first time!\",\n  \"tags\": [\"milestone\", \"smile\"],\n  \"metadata\": {\"location\": \"home\"}\n}\n```",
+        "operationId": "updateMemory",
+        "parameters": [
+          {
+            "name": "memoryId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Memories"],
+        "summary": "Delete memory",
+        "description": "Deletes a memory and all associated files from S3 by memoryId",
+        "operationId": "deleteMemory",
+        "parameters": [
+          {
+            "name": "memoryId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/memories/{memoryId}/file": {
+      "put": {
+        "tags": ["Memories"],
+        "summary": "Update file in existing memory",
+        "description": "Updates/replaces the file in an existing memory",
+        "operationId": "updateFileInMemory",
+        "parameters": [
+          {
+            "name": "memoryId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": ["file"],
+                "type": "object",
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/medical-records/{recordId}": {
       "get": {
         "tags": ["Medical Records"],
@@ -707,7 +849,7 @@
       "put": {
         "tags": ["Medical Records"],
         "summary": "Update medical record",
-        "description": "Updates an existing medical record by recordId with optional document uploads. Accepts either individual form fields or a JSON 'request' field.",
+        "description": "Updates an existing medical record by recordId with optional document uploads. Accepts either individual form fields or a JSON 'request' field.\n\n**Sample request field:**\n```json\n{\n  \"profileId\": \"uuid-baby-1\",\n  \"userId\": \"user-123\",\n  \"recordType\": \"vaccination\",\n  \"category\": \"photo\",\n  \"recordDate\": \"2024-01-15\",\n  \"title\": \"BCG Vaccination\",\n  \"description\": \"First vaccination given\",\n  \"doctorName\": \"Dr. Smith\",\n  \"hospitalName\": \"City Hospital\",\n  \"diagnosis\": \"Routine vaccination\",\n  \"tags\": [\"vaccination\", \"bcg\"]\n}\n```",
         "operationId": "updateMedicalRecord",
         "parameters": [
           {
@@ -897,7 +1039,7 @@
       "put": {
         "tags": ["Baby Growth"],
         "summary": "Update baby growth record",
-        "description": "Updates an existing baby growth record by growthId with optional document uploads. Accepts either individual form fields or a JSON 'request' field.",
+        "description": "Updates an existing baby growth record by growthId with optional document uploads. Accepts either individual form fields or a JSON 'request' field.\n\n**Sample request field:**\n```json\n{\n  \"profileId\": \"uuid-baby-1\",\n  \"userId\": \"user-123\",\n  \"measurementDate\": \"2024-01-15\",\n  \"height\": 50.5,\n  \"weight\": 3.2,\n  \"headCircumference\": 35.0,\n  \"notes\": \"Baby is growing well\"\n}\n```",
         "operationId": "updateBabyGrowth",
         "parameters": [
           {
@@ -1543,7 +1685,7 @@
       "post": {
         "tags": ["Profile"],
         "summary": "Onboard guardian with baby",
-        "description": "Creates a single profile for guardian (mother or father) with baby details. The profile type will be 'mother' or 'father' based on the guardian type. Baby details (name, DOB, gender, optional image) are stored in the profile along with guardian consent for communication. Milestone and vaccine schedules are automatically generated for the baby based on DOB. \n\n**Two ways to call this API:**\n1. **With image (multipart/form-data):** Send JSON in 'request' field and optional 'babyImage' file\n2. **Without image (application/json):** Send JSON body directly\n\n\n**Request fields:**\n- `name` (required): Guardian name\n- `type` (required): \"mother\" or \"father\"\n- `userId` (optional): Auto-generated if not provided\n- `consent` (required): true/false for communication\n- `babyName` (required): Baby name\n- `babyDob` (required): Baby date of birth (ISO format: YYYY-MM-DD)\n- `babyGender` (required): \"M\" or \"F\"",
+        "description": "Creates a single profile for guardian (mother or father) with baby details. The profile type will be 'mother' or 'father' based on the guardian type. Baby details (name, DOB, gender, optional image) are stored in the profile along with guardian consent for communication. Milestone and vaccine schedules are automatically generated for the baby based on DOB. \n\n**Two ways to call this API:**\n1. **With image (multipart/form-data):** Send JSON in 'request' field and optional 'babyImage' file\n2. **Without image (application/json):** Send JSON body directly\n\n\n**Request fields:**\n- `name` (required): Guardian name\n- `type` (required): \"mother\" or \"father\"\n- `userId` (optional): Auto-generated if not provided\n- `consent` (required): true/false for communication\n- `babyName` (required): Baby name\n- `babyDob` (required): Baby date of birth (ISO format: YYYY-MM-DD)\n- `babyGender` (required): \"M\" or \"F\"\n\n**Sample request field (for multipart/form-data):**\n```json\n{\n  \"name\": \"Priya Sharma\",\n  \"type\": \"mother\",\n  \"userId\": \"user-123\",\n  \"consent\": true,\n  \"babyName\": \"Aarav\",\n  \"babyDob\": \"2024-01-15\",\n  \"babyGender\": \"M\"\n}\n```",
         "operationId": "onboardParentAndBaby",
         "parameters": [
           {
@@ -2336,6 +2478,66 @@
         }
       }
     },
+    "/api/v1/memories": {
+      "get": {
+        "tags": ["Memories"],
+        "summary": "Get all memories",
+        "description": "Retrieves all memories, sorted by latest first",
+        "operationId": "getAllMemories",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Memory" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Memories"],
+        "summary": "Create a new memory",
+        "description": "Creates a new memory for a profile with optional file upload (photo, video, etc.). Accepts a JSON 'request' field in form-data.\n\n**Sample request field:**\n```json\n{\n  \"profileId\": \"uuid-baby-1\",\n  \"userId\": \"user-123\",\n  \"memoryDate\": \"2024-01-15\",\n  \"title\": \"First smile\",\n  \"description\": \"Baby smiled for the first time!\",\n  \"tags\": [\"milestone\", \"smile\"],\n  \"metadata\": {\"location\": \"home\"}\n}\n```",
+        "operationId": "createMemory",
+        "parameters": [
+          {
+            "name": "request",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/medical-records": {
       "get": {
         "tags": ["Medical Records"],
@@ -2359,7 +2561,7 @@
       "post": {
         "tags": ["Medical Records"],
         "summary": "Create a new medical record",
-        "description": "Creates a new medical record for a baby with optional file uploads (photos, PDFs, etc.). Accepts either individual form fields or a JSON 'request' field.",
+        "description": "Creates a new medical record for a baby with optional file uploads (photos, PDFs, etc.). Accepts either individual form fields or a JSON 'request' field.\n\n**Sample request field:**\n```json\n{\n  \"profileId\": \"uuid-baby-1\",\n  \"userId\": \"user-123\",\n  \"recordType\": \"vaccination\",\n  \"category\": \"photo\",\n  \"recordDate\": \"2024-01-15\",\n  \"title\": \"BCG Vaccination\",\n  \"description\": \"First vaccination given\",\n  \"doctorName\": \"Dr. Smith\",\n  \"hospitalName\": \"City Hospital\",\n  \"diagnosis\": \"Routine vaccination\",\n  \"tags\": [\"vaccination\", \"bcg\"]\n}\n```",
         "operationId": "createMedicalRecord",
         "parameters": [
           {
@@ -2675,7 +2877,7 @@
       "post": {
         "tags": ["Baby Growth"],
         "summary": "Create a new baby growth record",
-        "description": "Creates a new growth measurement record for a baby with optional document uploads (photos, PDFs, etc.). Accepts either individual form fields or a JSON 'request' field.",
+        "description": "Creates a new growth measurement record for a baby with optional document uploads (photos, PDFs, etc.). Accepts either individual form fields or a JSON 'request' field.\n\n**Sample request field:**\n```json\n{\n  \"profileId\": \"uuid-baby-1\",\n  \"userId\": \"user-123\",\n  \"measurementDate\": \"2024-01-15\",\n  \"height\": 50.5,\n  \"weight\": 3.2,\n  \"headCircumference\": 35.0,\n  \"notes\": \"Baby is growing well\"\n}\n```",
         "operationId": "createBabyGrowth",
         "parameters": [
           {
@@ -4525,6 +4727,105 @@
         }
       }
     },
+    "/api/v1/memories/profile/{profileId}": {
+      "get": {
+        "tags": ["Memories"],
+        "summary": "Get memories by profileId",
+        "description": "Retrieves all memories for a specific profile, sorted by latest first",
+        "operationId": "getMemoriesByProfileId",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Memory" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/memories/profile/{profileId}/date-range": {
+      "get": {
+        "tags": ["Memories"],
+        "summary": "Get memories by profileId with date range",
+        "description": "Retrieves memories for a profile within a date range, sorted by latest first",
+        "operationId": "getMemoriesByProfileIdAndDateRange",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "date" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Memory" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/memories/exists/{memoryId}": {
+      "get": {
+        "tags": ["Memories"],
+        "summary": "Check if memory exists by memoryId",
+        "description": "Checks if a memory exists with the given memoryId",
+        "operationId": "checkMemoryExists",
+        "parameters": [
+          {
+            "name": "memoryId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/medical-records/user/{userId}": {
       "get": {
         "tags": ["Medical Records"],
@@ -5224,13 +5525,7 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/MilestoneGroupedResponse"
-                }
-              }
-            }
+            "content": { "*/*": { "schema": { "type": "object" } } }
           }
         }
       }
@@ -5924,7 +6219,38 @@
           "weekAchieved": { "type": "integer", "format": "int32" },
           "imageUrl": { "type": "string" },
           "badgeId": { "type": "string" },
-          "achievementType": { "type": "string" }
+          "achievementType": { "type": "string" },
+          "badge": { "$ref": "#/components/schemas/Badge" }
+        }
+      },
+      "Badge": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "badgeId": { "type": "string" },
+          "babyId": { "type": "string" },
+          "userId": { "type": "string" },
+          "milestoneItemId": { "type": "string" },
+          "title": { "type": "string" },
+          "text": { "type": "string" },
+          "icon": { "type": "string" },
+          "achievementType": { "type": "string" },
+          "achievedDate": { "type": "string" },
+          "weekAchieved": { "type": "integer", "format": "int32" },
+          "services": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/BadgeService" }
+          },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "BadgeService": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "title": { "type": "string" },
+          "cta": { "type": "string" },
+          "description": { "type": "string" }
         }
       },
       "BabyMilestoneReport": {
@@ -5939,6 +6265,25 @@
           "notes": { "type": "string" },
           "imageUrl": { "type": "string" },
           "reportedAt": { "type": "string", "format": "date-time" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Memory": {
+        "type": "object",
+        "properties": {
+          "memoryId": { "type": "string" },
+          "profileId": { "type": "string" },
+          "userId": { "type": "string" },
+          "memoryDate": { "type": "string", "format": "date" },
+          "fileUrl": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" }
         }
@@ -6047,54 +6392,6 @@
           "completedAt": { "type": "string", "format": "date-time" },
           "createdAt": { "type": "string", "format": "date-time" },
           "updatedAt": { "type": "string", "format": "date-time" }
-        }
-      },
-      "Badge": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "string" },
-          "badgeId": { "type": "string" },
-          "babyId": { "type": "string" },
-          "userId": { "type": "string" },
-          "milestoneItemId": { "type": "string" },
-          "title": { "type": "string" },
-          "text": { "type": "string" },
-          "icon": { "type": "string" },
-          "achievementType": { "type": "string" },
-          "achievedDate": { "type": "string" },
-          "weekAchieved": { "type": "integer", "format": "int32" },
-          "services": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/BadgeService" }
-          },
-          "createdAt": { "type": "string", "format": "date-time" }
-        }
-      },
-      "BadgeService": {
-        "type": "object",
-        "properties": {
-          "type": { "type": "string" },
-          "title": { "type": "string" },
-          "cta": { "type": "string" },
-          "description": { "type": "string" }
-        }
-      },
-      "MilestoneGroupedResponse": {
-        "type": "object",
-        "properties": {
-          "now": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/BabyMilestoneSchedule" }
-          },
-          "soon": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/BabyMilestoneSchedule" }
-          },
-          "done": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/BabyMilestoneSchedule" }
-          },
-          "currentWeek": { "type": "integer", "format": "int32" }
         }
       },
       "BabyGrowth": {

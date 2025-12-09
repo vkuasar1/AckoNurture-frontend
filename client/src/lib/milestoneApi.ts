@@ -49,6 +49,7 @@ export interface BabyMilestoneSchedule {
   imageUrl?: string;
   badgeId?: string;
   achievementType?: string;
+  badge?: Badge | null;
 }
 
 export interface MilestoneGroupedResponse {
@@ -56,6 +57,38 @@ export interface MilestoneGroupedResponse {
   soon: BabyMilestoneSchedule[];
   done: BabyMilestoneSchedule[];
   currentWeek: number;
+}
+
+export interface BadgeService {
+  type: string;
+  title: string;
+  cta: string;
+  description: string;
+}
+
+export interface Badge {
+  id: string;
+  badgeId: string;
+  babyId: string;
+  userId: string;
+  milestoneItemId: string;
+  title: string;
+  text: string;
+  icon: string;
+  achievementType: string;
+  achievedDate: string;
+  weekAchieved: number;
+  services?: BadgeService[];
+  createdAt: string;
+}
+
+export interface MilestoneAchievementResponse {
+  achievementType: string;
+  schedule: BabyMilestoneSchedule;
+  badge?: Badge;
+  message: string;
+  scheduleId: string;
+  status: string;
 }
 
 export interface MilestoneReport {
@@ -352,22 +385,41 @@ export async function markMilestoneAsAchievedByBabyIdAndMilestoneItemId(
   milestoneItemId: string,
   achievedDate?: string,
   imageFile?: File,
-): Promise<BabyMilestoneSchedule> {
+): Promise<MilestoneAchievementResponse> {
   const formData = new FormData();
+
+  // Add achievedDate as form field (not query parameter)
+  if (achievedDate) {
+    formData.append("achievedDate", achievedDate);
+  }
+
+  // Add image file if provided
   if (imageFile) {
     formData.append("image", imageFile);
   }
 
-  const url = achievedDate
-    ? `/api/v1/milestone-schedules/baby/${babyId}/milestone/${milestoneItemId}/achieve?achievedDate=${encodeURIComponent(achievedDate)}`
-    : `/api/v1/milestone-schedules/baby/${babyId}/milestone/${milestoneItemId}/achieve`;
+  const url = `/api/v1/milestone-schedules/baby/${babyId}/milestone/${milestoneItemId}/achieve`;
 
-  const response = await apiRequest("POST", url, formData);
+  // Use fetch directly for multipart/form-data - proxy handles the path
+  const response = await fetch(url, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`${response.status}: ${text}`);
+  }
+
   const result = await response.json();
 
   // Invalidate schedules query
   queryClient.invalidateQueries({
     queryKey: [`/api/v1/milestone-schedules/baby/${babyId}`],
+  });
+  queryClient.invalidateQueries({
+    queryKey: [`/api/v1/baby-profiles/${babyId}/milestone-progress`],
   });
 
   return result;

@@ -31,7 +31,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
 import type { BabyProfile, Vaccine, GrowthEntry } from "@shared/schema";
 import { differenceInMonths, differenceInDays, format } from "date-fns";
@@ -54,6 +54,11 @@ import { MiraFab } from "@/components/MiraFab";
 import { getProfiles, type Profile } from "@/lib/profileApi";
 import { getUserId } from "@/lib/userId";
 import { apiRequest } from "@/lib/queryClient";
+import {
+  getMemoriesByProfileId,
+  createMemory,
+  type Memory,
+} from "@/lib/memoryApi";
 
 function calculateAge(dob: string): { display: string; months: number } {
   const birthDate = new Date(dob);
@@ -199,6 +204,13 @@ export default function BabyCareHome() {
     enabled: !!baby?.id,
   });
 
+  // Fetch memories by profileId
+  const { data: memories = [] } = useQuery<Memory[]>({
+    queryKey: [`/api/v1/memories/profile/${babyProfileId}`],
+    enabled: !!babyProfileId,
+    queryFn: () => getMemoriesByProfileId(babyProfileId!),
+  });
+
   // Vaccines are already sorted and limited by the API, just take first 2
   const upcomingVaccines = vaccines.slice(0, 2);
 
@@ -223,6 +235,34 @@ export default function BabyCareHome() {
     setLocation("/babycare/setup?includeMother=true&returnTo=home");
   };
 
+  const createMemoryMutation = useMutation({
+    mutationFn: async (data: { file: File; profileId: string }) => {
+      return await createMemory(
+        {
+          profileId: data.profileId,
+          memoryDate: new Date().toISOString().split("T")[0],
+        },
+        data.file,
+      );
+    },
+    onSuccess: () => {
+      toast({
+        title: "Photo uploaded!",
+        description: "Your memory has been saved.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Upload failed",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to upload memory. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handlePhotoUpload = () => {
     fileInputRef.current?.click();
   };
@@ -244,7 +284,8 @@ export default function BabyCareHome() {
     }, 1000);
   };
 
-  const mockPhotos = baby?.imageUrl ? [baby.imageUrl] : [];
+  // Filter memories that have fileUrl
+  const memoriesWithFiles = memories.filter((m) => m.fileUrl);
 
   return (
     <div className="app-container bg-zinc-50 min-h-screen flex flex-col relative">
@@ -336,16 +377,16 @@ export default function BabyCareHome() {
             </button>
           </div>
 
-          {mockPhotos.length > 0 ? (
-            <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4">
-              {mockPhotos.map((photo, idx) => (
+          {memoriesWithFiles.length > 0 ? (
+            <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+              {memoriesWithFiles.slice(0, 5).map((memory) => (
                 <div
-                  key={idx}
-                  className="w-24 h-24 rounded-xl bg-zinc-100 flex-shrink-0 overflow-hidden"
-                  data-testid={`photo-memory-${idx}`}
+                  key={memory.memoryId}
+                  className="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden shadow-sm border border-purple-100"
+                  data-testid={`photo-memory-${memory.memoryId}`}
                 >
                   <img
-                    src={photo}
+                    src={memory.fileUrl!}
                     alt="Memory"
                     className="w-full h-full object-cover"
                   />
@@ -353,11 +394,11 @@ export default function BabyCareHome() {
               ))}
               <button
                 onClick={handlePhotoUpload}
-                className="w-24 h-24 rounded-xl bg-zinc-100 border-2 border-dashed border-zinc-300 flex-shrink-0 flex flex-col items-center justify-center gap-1"
+                disabled={createMemoryMutation.isPending}
+                className="flex-shrink-0 w-20 h-20 rounded-xl border-2 border-dashed border-purple-200 flex items-center justify-center bg-purple-50/50 disabled:opacity-50"
                 data-testid="button-upload-more"
               >
-                <Camera className="w-5 h-5 text-zinc-400" />
-                <span className="text-[10px] text-zinc-400">Add more</span>
+                <Camera className="w-5 h-5 text-purple-400" />
               </button>
             </div>
           ) : (
@@ -609,12 +650,14 @@ export default function BabyCareHome() {
         className="hidden"
         onChange={(e) => {
           const file = e.target.files?.[0];
-          if (file) {
-            toast({
-              title: "Photo uploaded!",
-              description: "Your memory has been saved.",
+          if (file && babyProfileId) {
+            createMemoryMutation.mutate({
+              file,
+              profileId: babyProfileId,
             });
           }
+          // Reset input so same file can be selected again
+          e.target.value = "";
         }}
         data-testid="input-photo-upload"
       />
