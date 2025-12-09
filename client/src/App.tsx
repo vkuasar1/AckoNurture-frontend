@@ -33,10 +33,16 @@ function Router() {
       <Route path="/babycare/dashboard/:babyId" component={BabyDashboard} />
       <Route path="/babycare/vaccines/:babyId" component={BabyCareVaccines} />
       <Route path="/babycare/growth/:babyId" component={BabyCareGrowth} />
-      <Route path="/babycare/milestones/:babyId" component={BabyCareMilestones} />
+      <Route
+        path="/babycare/milestones/:babyId"
+        component={BabyCareMilestones}
+      />
       <Route path="/babycare/mira/:babyId" component={MiraChat} />
       <Route path="/babycare/mira" component={MiraChat} />
-      <Route path="/babycare/records/:babyId" component={BabyCareMedicalRecords} />
+      <Route
+        path="/babycare/records/:babyId"
+        component={BabyCareMedicalRecords}
+      />
       <Route path="/babycare/resources" component={Resources} />
       <Route path="/babycare/plans" component={BabyCarePlans} />
       <Route path="/babycare/community/:babyId" component={ParentCommunity} />

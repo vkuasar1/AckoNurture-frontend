@@ -6,13 +6,27 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  Baby, ArrowRight, ArrowLeft, Loader2, 
-  Sparkles, Star, Frown,
-  User, HandHeart, Leaf, Building2, Calendar, Heart
+import {
+  Baby,
+  ArrowRight,
+  ArrowLeft,
+  Loader2,
+  Sparkles,
+  Star,
+  Frown,
+  User,
+  HandHeart,
+  Leaf,
+  Building2,
+  Calendar,
+  Heart,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import { onboardParentAndBaby, createProfile, type Profile } from "@/lib/profileApi";
+import {
+  onboardParentAndBaby,
+  createProfile,
+  type Profile,
+} from "@/lib/profileApi";
 import { getUserId } from "@/lib/userId";
 
 const formatDateToDisplay = (isoDate: string): string => {
@@ -56,8 +70,6 @@ interface OnboardingData {
   communityOptIn: boolean;
 }
 
-
-
 export default function BabyCareOnboarding() {
   const [, setLocation] = useLocation();
   const searchString = useSearch();
@@ -93,7 +105,7 @@ export default function BabyCareOnboarding() {
     if (onboardingType === "hospital" && babyName && dob && gender) {
       setIsHospitalFlow(true);
       setDobDisplay(formatDateToDisplay(dob));
-      setData(prev => ({
+      setData((prev) => ({
         ...prev,
         babyName: babyName,
         babyDob: dob,
@@ -106,14 +118,14 @@ export default function BabyCareOnboarding() {
       // Prefill with date 3 months before today
       const threeMonthsAgo = new Date();
       threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-      const prefillIso = threeMonthsAgo.toISOString().split('T')[0];
+      const prefillIso = threeMonthsAgo.toISOString().split("T")[0];
       setDobDisplay(formatDateToDisplay(prefillIso));
-      setData(prev => ({ ...prev, babyDob: prefillIso }));
+      setData((prev) => ({ ...prev, babyDob: prefillIso }));
     }
   }, [searchString]);
 
   const userId = getUserId();
-  
+
   const onboardParentAndBabyMutation = useMutation({
     mutationFn: async (onboardingData: {
       parentName: string;
@@ -134,12 +146,19 @@ export default function BabyCareOnboarding() {
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/v1/profiles/user/${userId}`] });
+      queryClient.invalidateQueries({
+        queryKey: [`/api/v1/profiles/user/${userId}`],
+      });
     },
   });
 
   const createUserPreferences = useMutation({
-    mutationFn: async (prefsData: { babyId: string; helpPreferences: string[]; city?: string; areaPincode?: string }) => {
+    mutationFn: async (prefsData: {
+      babyId: string;
+      helpPreferences: string[];
+      city?: string;
+      areaPincode?: string;
+    }) => {
       const res = await apiRequest("POST", "/api/user-preferences", prefsData);
       return res.json();
     },
@@ -167,11 +186,11 @@ export default function BabyCareOnboarding() {
 
   const handleComplete = async () => {
     if (!canProceed()) return;
-    
+
     setError(null);
     setIsSubmitting(true);
     setCurrentStep(4);
-    
+
     try {
       if (!data.caregiverRole || !data.caregiverName.trim()) {
         throw new Error("Please complete your information");
@@ -182,7 +201,7 @@ export default function BabyCareOnboarding() {
 
       // Map gender from "boy"/"girl" to "M"/"F" for API
       const babyGender = data.babyGender === "boy" ? "M" : "F";
-      
+
       // Use onboardParentAndBaby to create both parent and baby profiles
       const result = await onboardParentAndBabyMutation.mutateAsync({
         parentName: data.caregiverName.trim(),
@@ -194,7 +213,7 @@ export default function BabyCareOnboarding() {
       });
 
       const babyId = result.baby.profileId || result.baby.id;
-      
+
       await createUserPreferences.mutateAsync({
         babyId: babyId,
         helpPreferences: [],
@@ -204,12 +223,14 @@ export default function BabyCareOnboarding() {
         setLocation(`/babycare/home/${babyId}`);
       }, 2000);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please try again.";
       setError(errorMessage);
       setIsSubmitting(false);
     }
   };
-
 
   const canProceed = () => {
     switch (currentStep) {
@@ -230,17 +251,21 @@ export default function BabyCareOnboarding() {
     exit: { opacity: 0, x: -50 },
   };
 
-  const caregiverGreeting = data.caregiverName ? `, ${data.caregiverName.split(' ')[0]}` : "";
+  const caregiverGreeting = data.caregiverName
+    ? `, ${data.caregiverName.split(" ")[0]}`
+    : "";
 
   return (
     <div className="app-container min-h-screen bg-gradient-to-b from-violet-50 via-pink-50/30 to-white flex flex-col">
       <div className="bg-[#1a1a1a] text-white px-4 py-4">
         <div className="flex items-center justify-between">
           {currentStep < 4 ? (
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
-              onClick={currentStep === 1 ? () => setLocation("/babycare") : handleBack}
+              onClick={
+                currentStep === 1 ? () => setLocation("/babycare") : handleBack
+              }
               className="text-white/70 hover:text-white hover:bg-white/10 rounded-full h-9 w-9"
               data-testid="button-back-step"
             >
@@ -260,11 +285,11 @@ export default function BabyCareOnboarding() {
         <div className="px-6 pt-4">
           <div className="flex gap-2">
             {[1, 2, 3].map((step) => (
-              <div 
+              <div
                 key={step}
                 className={`h-1.5 flex-1 rounded-full transition-all ${
-                  step <= currentStep 
-                    ? "bg-gradient-to-r from-pink-400 to-violet-500" 
+                  step <= currentStep
+                    ? "bg-gradient-to-r from-pink-400 to-violet-500"
                     : "bg-zinc-200"
                 }`}
               />
@@ -308,7 +333,12 @@ export default function BabyCareOnboarding() {
                   </Label>
                   <div className="flex gap-3">
                     <button
-                      onClick={() => setData(prev => ({ ...prev, caregiverRole: "mother" }))}
+                      onClick={() =>
+                        setData((prev) => ({
+                          ...prev,
+                          caregiverRole: "mother",
+                        }))
+                      }
                       className={`flex-1 py-4 rounded-xl border-2 transition-all ${
                         data.caregiverRole === "mother"
                           ? "border-pink-400 bg-pink-50 text-pink-700"
@@ -317,16 +347,27 @@ export default function BabyCareOnboarding() {
                       data-testid="button-role-mother"
                     >
                       <div className="flex flex-col items-center gap-2">
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                          data.caregiverRole === "mother" ? "bg-pink-100" : "bg-zinc-100"
-                        }`}>
-                          <User className={`w-6 h-6 ${data.caregiverRole === "mother" ? "text-pink-600" : "text-zinc-500"}`} />
+                        <div
+                          className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                            data.caregiverRole === "mother"
+                              ? "bg-pink-100"
+                              : "bg-zinc-100"
+                          }`}
+                        >
+                          <User
+                            className={`w-6 h-6 ${data.caregiverRole === "mother" ? "text-pink-600" : "text-zinc-500"}`}
+                          />
                         </div>
                         <span className="text-[14px] font-medium">Mother</span>
                       </div>
                     </button>
                     <button
-                      onClick={() => setData(prev => ({ ...prev, caregiverRole: "father" }))}
+                      onClick={() =>
+                        setData((prev) => ({
+                          ...prev,
+                          caregiverRole: "father",
+                        }))
+                      }
                       className={`flex-1 py-4 rounded-xl border-2 transition-all ${
                         data.caregiverRole === "father"
                           ? "border-violet-400 bg-violet-50 text-violet-700"
@@ -335,10 +376,16 @@ export default function BabyCareOnboarding() {
                       data-testid="button-role-father"
                     >
                       <div className="flex flex-col items-center gap-2">
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                          data.caregiverRole === "father" ? "bg-violet-100" : "bg-zinc-100"
-                        }`}>
-                          <User className={`w-6 h-6 ${data.caregiverRole === "father" ? "text-violet-600" : "text-zinc-500"}`} />
+                        <div
+                          className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                            data.caregiverRole === "father"
+                              ? "bg-violet-100"
+                              : "bg-zinc-100"
+                          }`}
+                        >
+                          <User
+                            className={`w-6 h-6 ${data.caregiverRole === "father" ? "text-violet-600" : "text-zinc-500"}`}
+                          />
                         </div>
                         <span className="text-[14px] font-medium">Father</span>
                       </div>
@@ -347,13 +394,21 @@ export default function BabyCareOnboarding() {
                 </div>
 
                 <div>
-                  <Label htmlFor="caregiverName" className="text-[13px] font-medium text-zinc-700 mb-2 block">
+                  <Label
+                    htmlFor="caregiverName"
+                    className="text-[13px] font-medium text-zinc-700 mb-2 block"
+                  >
                     Your name
                   </Label>
                   <Input
                     id="caregiverName"
                     value={data.caregiverName}
-                    onChange={(e) => setData(prev => ({ ...prev, caregiverName: e.target.value }))}
+                    onChange={(e) =>
+                      setData((prev) => ({
+                        ...prev,
+                        caregiverName: e.target.value,
+                      }))
+                    }
                     placeholder="Enter your name"
                     className="h-12 rounded-xl border-zinc-200 focus:border-violet-400 focus:ring-violet-400"
                     data-testid="input-caregiver-name"
@@ -361,7 +416,7 @@ export default function BabyCareOnboarding() {
                 </div>
 
                 {/* Visual cue - trust message */}
-                <motion.div 
+                <motion.div
                   className="flex items-center gap-3 p-4 bg-gradient-to-r from-violet-50 to-pink-50 rounded-xl border border-violet-100/50"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -371,7 +426,8 @@ export default function BabyCareOnboarding() {
                     <Leaf className="w-5 h-5 text-emerald-500" />
                   </div>
                   <p className="text-[13px] text-zinc-600 leading-snug flex-1">
-                    Everything you share helps us create a calmer, more supportive experience for you.
+                    Everything you share helps us create a calmer, more
+                    supportive experience for you.
                   </p>
                 </motion.div>
               </div>
@@ -394,10 +450,14 @@ export default function BabyCareOnboarding() {
                   <Baby className="w-8 h-8 text-violet-500" />
                 </div>
                 <h1 className="text-[24px] font-bold text-zinc-900 mb-2">
-                  {isHospitalFlow ? "Confirm baby's details" : `Tell us about your little one${caregiverGreeting}`}
+                  {isHospitalFlow
+                    ? "Confirm baby's details"
+                    : `Tell us about your little one${caregiverGreeting}`}
                 </h1>
                 <p className="text-[14px] text-zinc-500">
-                  {isHospitalFlow ? "We've prefilled the details from your hospital registration" : "We'll personalize everything just for you"}
+                  {isHospitalFlow
+                    ? "We've prefilled the details from your hospital registration"
+                    : "We'll personalize everything just for you"}
                 </p>
                 {isHospitalFlow && data.hospitalName && (
                   <div className="flex items-center justify-center gap-1.5 mt-3">
@@ -411,13 +471,18 @@ export default function BabyCareOnboarding() {
 
               <div className="space-y-5">
                 <div>
-                  <Label htmlFor="babyName" className="text-[13px] font-medium text-zinc-700 mb-2 block">
+                  <Label
+                    htmlFor="babyName"
+                    className="text-[13px] font-medium text-zinc-700 mb-2 block"
+                  >
                     Baby's name
                   </Label>
                   <Input
                     id="babyName"
                     value={data.babyName}
-                    onChange={(e) => setData(prev => ({ ...prev, babyName: e.target.value }))}
+                    onChange={(e) =>
+                      setData((prev) => ({ ...prev, babyName: e.target.value }))
+                    }
                     placeholder="Enter baby's name"
                     className="h-12 rounded-xl border-zinc-200 focus:border-violet-400 focus:ring-violet-400"
                     data-testid="input-baby-name"
@@ -425,7 +490,10 @@ export default function BabyCareOnboarding() {
                 </div>
 
                 <div>
-                  <Label htmlFor="babyDob" className="text-[13px] font-medium text-zinc-700 mb-2 block">
+                  <Label
+                    htmlFor="babyDob"
+                    className="text-[13px] font-medium text-zinc-700 mb-2 block"
+                  >
                     Date of birth
                   </Label>
                   <div className="relative">
@@ -448,9 +516,9 @@ export default function BabyCareOnboarding() {
                         setDobDisplay(formatted);
                         const isoDate = formatDisplayToIso(formatted);
                         if (isoDate && isValidDisplayDate(formatted)) {
-                          setData(prev => ({ ...prev, babyDob: isoDate }));
+                          setData((prev) => ({ ...prev, babyDob: isoDate }));
                         } else {
-                          setData(prev => ({ ...prev, babyDob: "" }));
+                          setData((prev) => ({ ...prev, babyDob: "" }));
                         }
                       }}
                       maxLength={10}
@@ -461,12 +529,12 @@ export default function BabyCareOnboarding() {
                       type="date"
                       id="babyDobPicker"
                       className="absolute inset-0 opacity-0 cursor-pointer"
-                      max={new Date().toISOString().split('T')[0]}
+                      max={new Date().toISOString().split("T")[0]}
                       value={data.babyDob}
                       onChange={(e) => {
                         const isoDate = e.target.value;
                         if (isoDate) {
-                          setData(prev => ({ ...prev, babyDob: isoDate }));
+                          setData((prev) => ({ ...prev, babyDob: isoDate }));
                           setDobDisplay(formatDateToDisplay(isoDate));
                         }
                       }}
@@ -482,7 +550,9 @@ export default function BabyCareOnboarding() {
                   </Label>
                   <div className="flex gap-3">
                     <button
-                      onClick={() => setData(prev => ({ ...prev, babyGender: "boy" }))}
+                      onClick={() =>
+                        setData((prev) => ({ ...prev, babyGender: "boy" }))
+                      }
                       className={`flex-1 py-4 rounded-xl border-2 transition-all ${
                         data.babyGender === "boy"
                           ? "border-violet-400 bg-violet-50 text-violet-700"
@@ -491,16 +561,24 @@ export default function BabyCareOnboarding() {
                       data-testid="button-gender-boy"
                     >
                       <div className="flex flex-col items-center gap-2">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          data.babyGender === "boy" ? "bg-violet-100" : "bg-zinc-100"
-                        }`}>
-                          <Baby className={`w-5 h-5 ${data.babyGender === "boy" ? "text-violet-600" : "text-zinc-500"}`} />
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            data.babyGender === "boy"
+                              ? "bg-violet-100"
+                              : "bg-zinc-100"
+                          }`}
+                        >
+                          <Baby
+                            className={`w-5 h-5 ${data.babyGender === "boy" ? "text-violet-600" : "text-zinc-500"}`}
+                          />
                         </div>
                         <span className="text-[13px] font-medium">Boy</span>
                       </div>
                     </button>
                     <button
-                      onClick={() => setData(prev => ({ ...prev, babyGender: "girl" }))}
+                      onClick={() =>
+                        setData((prev) => ({ ...prev, babyGender: "girl" }))
+                      }
                       className={`flex-1 py-4 rounded-xl border-2 transition-all ${
                         data.babyGender === "girl"
                           ? "border-pink-400 bg-pink-50 text-pink-700"
@@ -509,10 +587,16 @@ export default function BabyCareOnboarding() {
                       data-testid="button-gender-girl"
                     >
                       <div className="flex flex-col items-center gap-2">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          data.babyGender === "girl" ? "bg-pink-100" : "bg-zinc-100"
-                        }`}>
-                          <Baby className={`w-5 h-5 ${data.babyGender === "girl" ? "text-pink-600" : "text-zinc-500"}`} />
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            data.babyGender === "girl"
+                              ? "bg-pink-100"
+                              : "bg-zinc-100"
+                          }`}
+                        >
+                          <Baby
+                            className={`w-5 h-5 ${data.babyGender === "girl" ? "text-pink-600" : "text-zinc-500"}`}
+                          />
                         </div>
                         <span className="text-[13px] font-medium">Girl</span>
                       </div>
@@ -546,7 +630,7 @@ export default function BabyCareOnboarding() {
                 </p>
               </div>
 
-              <motion.div 
+              <motion.div
                 className="p-5 bg-gradient-to-r from-pink-50 to-violet-50 rounded-xl border border-pink-100/50"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -558,12 +642,15 @@ export default function BabyCareOnboarding() {
                       Join the parent community
                     </span>
                     <p className="text-[12px] text-zinc-500 leading-relaxed">
-                      Share your journey to support parents facing similar challenges. Your privacy is protected.
+                      Share your journey to support parents facing similar
+                      challenges. Your privacy is protected.
                     </p>
                   </div>
                   <Switch
                     checked={data.communityOptIn}
-                    onCheckedChange={(checked) => setData(prev => ({ ...prev, communityOptIn: checked }))}
+                    onCheckedChange={(checked) =>
+                      setData((prev) => ({ ...prev, communityOptIn: checked }))
+                    }
                     data-testid="switch-community-optin"
                   />
                 </div>
@@ -615,7 +702,7 @@ export default function BabyCareOnboarding() {
                   className="text-center"
                 >
                   <div className="relative mb-8">
-                    <motion.div 
+                    <motion.div
                       className="w-24 h-24 bg-gradient-to-br from-pink-400 to-violet-500 rounded-full flex items-center justify-center mx-auto shadow-xl"
                       animate={{ scale: [1, 1.05, 1] }}
                       transition={{ duration: 1.5, repeat: Infinity }}
@@ -625,7 +712,11 @@ export default function BabyCareOnboarding() {
                     <motion.div
                       className="absolute -top-2 -right-2 w-8 h-8 bg-amber-400 rounded-full flex items-center justify-center"
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                     >
                       <Star className="w-4 h-4 text-white fill-white" />
                     </motion.div>
@@ -635,12 +726,15 @@ export default function BabyCareOnboarding() {
                     Creating your safe space{caregiverGreeting}
                   </h1>
                   <p className="text-[14px] text-zinc-500 mb-8 max-w-[280px] mx-auto">
-                    Setting up personalized care for {data.babyName || "your little one"}...
+                    Setting up personalized care for{" "}
+                    {data.babyName || "your little one"}...
                   </p>
 
                   <div className="flex items-center justify-center gap-2 text-violet-600">
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span className="text-[13px] font-medium">Almost ready</span>
+                    <span className="text-[13px] font-medium">
+                      Almost ready
+                    </span>
                   </div>
                 </motion.div>
               )}
@@ -651,7 +745,7 @@ export default function BabyCareOnboarding() {
 
       {currentStep < 4 && (
         <div className="px-6 pb-8 pt-4 bg-gradient-to-t from-white to-transparent">
-          <Button 
+          <Button
             onClick={currentStep === 3 ? handleComplete : handleNext}
             disabled={!canProceed()}
             className={`w-full rounded-2xl h-14 text-[16px] font-semibold gap-2 transition-all ${

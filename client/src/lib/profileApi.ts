@@ -63,16 +63,23 @@ export async function getProfiles(): Promise<Profile[]> {
 /**
  * Get profiles by type for the current user
  */
-export async function getProfilesByType(type: "mother" | "father" | "caregiver" | "baby"): Promise<Profile[]> {
+export async function getProfilesByType(
+  type: "mother" | "father" | "caregiver" | "baby",
+): Promise<Profile[]> {
   const userId = getUserId();
-  const response = await apiRequest("GET", `/api/v1/profiles/user/${userId}/type/${type}`);
+  const response = await apiRequest(
+    "GET",
+    `/api/v1/profiles/user/${userId}/type/${type}`,
+  );
   return response.json();
 }
 
 /**
  * Create parent and baby profiles together (onboarding)
  */
-export async function onboardParentAndBaby(data: Omit<OnboardingRequest, "userId">): Promise<{ parent: Profile; baby: Profile }> {
+export async function onboardParentAndBaby(
+  data: Omit<OnboardingRequest, "userId">,
+): Promise<{ parent: Profile; baby: Profile }> {
   const userId = getUserId();
   // Explicitly construct requestData to ensure profileId is never included
   const requestData: OnboardingRequest = {
@@ -86,19 +93,27 @@ export async function onboardParentAndBaby(data: Omit<OnboardingRequest, "userId
     babyPincode: data.babyPincode,
     hospitalName: data.hospitalName,
   };
-  const response = await apiRequest("POST", "/api/v1/profiles/onboard", requestData);
+  const response = await apiRequest(
+    "POST",
+    "/api/v1/profiles/onboard",
+    requestData,
+  );
   const result = await response.json();
-  
+
   // Invalidate profiles query
-  queryClient.invalidateQueries({ queryKey: [`/api/v1/profiles/user/${userId}`] });
-  
+  queryClient.invalidateQueries({
+    queryKey: [`/api/v1/profiles/user/${userId}`],
+  });
+
   return result;
 }
 
 /**
  * Create a single profile
  */
-export async function createProfile(data: Omit<CreateProfileRequest, "userId">): Promise<Profile> {
+export async function createProfile(
+  data: Omit<CreateProfileRequest, "userId">,
+): Promise<Profile> {
   const userId = getUserId();
   // Explicitly construct requestData to ensure profileId is never included
   const requestData: CreateProfileRequest = {
@@ -115,26 +130,37 @@ export async function createProfile(data: Omit<CreateProfileRequest, "userId">):
   };
   const response = await apiRequest("POST", "/api/v1/profiles", requestData);
   const profile = await response.json();
-  
+
   // Invalidate profiles query
-  queryClient.invalidateQueries({ queryKey: [`/api/v1/profiles/user/${userId}`] });
-  
+  queryClient.invalidateQueries({
+    queryKey: [`/api/v1/profiles/user/${userId}`],
+  });
+
   return profile;
 }
 
 /**
  * Get profile by profileId
  */
-export async function getProfileByProfileId(profileId: string): Promise<Profile> {
-  const response = await apiRequest("GET", `/api/v1/profiles/profile-id/${profileId}`);
+export async function getProfileByProfileId(
+  profileId: string,
+): Promise<Profile> {
+  const response = await apiRequest(
+    "GET",
+    `/api/v1/profiles/profile-id/${profileId}`,
+  );
   return response.json();
 }
 
 /**
  * Get all babies for a guardian
  */
-export async function getBabiesByGuardianProfileId(guardianProfileId: string): Promise<Profile[]> {
-  const response = await apiRequest("GET", `/api/v1/profiles/guardian/${guardianProfileId}/babies`);
+export async function getBabiesByGuardianProfileId(
+  guardianProfileId: string,
+): Promise<Profile[]> {
+  const response = await apiRequest(
+    "GET",
+    `/api/v1/profiles/guardian/${guardianProfileId}/babies`,
+  );
   return response.json();
 }
-

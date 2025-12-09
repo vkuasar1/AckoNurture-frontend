@@ -1,11 +1,29 @@
 import { Link, useLocation } from "wouter";
-import { ArrowLeft, Baby, Heart, Sparkles, Check, Smartphone, Syringe, Star, Video, Stethoscope, Users, Package } from "lucide-react";
+import {
+  ArrowLeft,
+  Baby,
+  Heart,
+  Sparkles,
+  Check,
+  Smartphone,
+  Syringe,
+  Star,
+  Video,
+  Stethoscope,
+  Users,
+  Package,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { setActivePlans, childPlanDetails, motherPlanDetails, comboPlanDetails } from "@/lib/planStore";
+import {
+  setActivePlans,
+  childPlanDetails,
+  motherPlanDetails,
+  comboPlanDetails,
+} from "@/lib/planStore";
 
 type PlanCategory = "child" | "mother" | "combo" | null;
 type ChildPackage = "digital" | "vaccination" | "premium" | null;
@@ -16,9 +34,12 @@ export default function BabyCarePlans() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [selectedCategory, setSelectedCategory] = useState<PlanCategory>(null);
-  const [selectedChildPackage, setSelectedChildPackage] = useState<ChildPackage>(null);
-  const [selectedMotherPackage, setSelectedMotherPackage] = useState<MotherPackage>(null);
-  const [selectedComboPackage, setSelectedComboPackage] = useState<ComboPackage>(null);
+  const [selectedChildPackage, setSelectedChildPackage] =
+    useState<ChildPackage>(null);
+  const [selectedMotherPackage, setSelectedMotherPackage] =
+    useState<MotherPackage>(null);
+  const [selectedComboPackage, setSelectedComboPackage] =
+    useState<ComboPackage>(null);
   const [step, setStep] = useState<1 | 2>(1);
 
   const handleContinue = () => {
@@ -39,28 +60,40 @@ export default function BabyCarePlans() {
   const handleContinueToPayment = () => {
     // Save the selected plan based on category
     if (selectedCategory === "child" && selectedChildPackage) {
-      setActivePlans({ childPlan: selectedChildPackage, motherPlan: null, comboPlan: null });
+      setActivePlans({
+        childPlan: selectedChildPackage,
+        motherPlan: null,
+        comboPlan: null,
+      });
       const planName = childPlanDetails[selectedChildPackage].name;
       toast({
         title: "Plan activated!",
         description: `You now have the ${planName}.`,
       });
     } else if (selectedCategory === "mother" && selectedMotherPackage) {
-      setActivePlans({ childPlan: null, motherPlan: selectedMotherPackage, comboPlan: null });
+      setActivePlans({
+        childPlan: null,
+        motherPlan: selectedMotherPackage,
+        comboPlan: null,
+      });
       const planName = motherPlanDetails[selectedMotherPackage].name;
       toast({
         title: "Plan activated!",
         description: `You now have the ${planName}.`,
       });
     } else if (selectedCategory === "combo" && selectedComboPackage) {
-      setActivePlans({ childPlan: null, motherPlan: null, comboPlan: selectedComboPackage });
+      setActivePlans({
+        childPlan: null,
+        motherPlan: null,
+        comboPlan: selectedComboPackage,
+      });
       const planName = comboPlanDetails[selectedComboPackage].name;
       toast({
         title: "Plan activated!",
         description: `You now have the ${planName}.`,
       });
     }
-    
+
     // Navigate back to the home page to show the active plan
     setTimeout(() => {
       setLocation("/babycare/home");
@@ -69,27 +102,38 @@ export default function BabyCarePlans() {
 
   const getChildPackagePrice = (pkg: ChildPackage): string => {
     switch (pkg) {
-      case "digital": return "₹999";
-      case "vaccination": return "₹5,999";
-      case "premium": return "₹11,999";
-      default: return "";
+      case "digital":
+        return "₹999";
+      case "vaccination":
+        return "₹5,999";
+      case "premium":
+        return "₹11,999";
+      default:
+        return "";
     }
   };
 
   const getMotherPackagePrice = (pkg: MotherPackage): string => {
     switch (pkg) {
-      case "recovery": return "₹1,999";
-      case "wellness": return "₹4,999";
-      default: return "";
+      case "recovery":
+        return "₹1,999";
+      case "wellness":
+        return "₹4,999";
+      default:
+        return "";
     }
   };
 
   const getComboPackagePrice = (pkg: ComboPackage): string => {
     switch (pkg) {
-      case "digital": return "₹2,499";
-      case "essential": return "₹7,999";
-      case "premium": return "₹13,999";
-      default: return "";
+      case "digital":
+        return "₹2,499";
+      case "essential":
+        return "₹7,999";
+      case "premium":
+        return "₹13,999";
+      default:
+        return "";
     }
   };
 
@@ -97,15 +141,18 @@ export default function BabyCarePlans() {
     <div className="app-container bg-zinc-50 min-h-screen flex flex-col">
       {/* Header */}
       <div className="bg-[#1a1a1a] text-white px-4 py-4 flex items-center gap-3 sticky top-0 z-10">
-        <Link href={step === 1 ? "/babycare/home" : "#"} data-testid="link-back">
-          <button 
+        <Link
+          href={step === 1 ? "/babycare/home" : "#"}
+          data-testid="link-back"
+        >
+          <button
             onClick={(e) => {
               if (step === 2) {
                 e.preventDefault();
                 handleBack();
               }
             }}
-            className="p-1.5 -ml-1.5 hover:bg-white/10 rounded-lg transition-colors" 
+            className="p-1.5 -ml-1.5 hover:bg-white/10 rounded-lg transition-colors"
             data-testid="button-back"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -119,9 +166,7 @@ export default function BabyCarePlans() {
             <h1 className="text-[17px] font-bold" data-testid="text-page-title">
               {step === 1 ? "Choose a plan" : "Select your package"}
             </h1>
-            <p className="text-[12px] text-zinc-400">
-              Step {step} of 2
-            </p>
+            <p className="text-[12px] text-zinc-400">Step {step} of 2</p>
           </div>
         </div>
       </div>
@@ -132,7 +177,10 @@ export default function BabyCarePlans() {
           <>
             {/* Step 1: Category Selection */}
             <div className="text-center mb-6 pt-2">
-              <h2 className="text-[20px] font-bold text-zinc-900 mb-2" data-testid="text-plans-heading">
+              <h2
+                className="text-[20px] font-bold text-zinc-900 mb-2"
+                data-testid="text-plans-heading"
+              >
                 What would you like to cover?
               </h2>
               <p className="text-[14px] text-zinc-500 leading-relaxed max-w-[300px] mx-auto">
@@ -143,7 +191,7 @@ export default function BabyCarePlans() {
             {/* Category Selection Cards */}
             <div className="space-y-4">
               {/* Child Wellness */}
-              <Card 
+              <Card
                 onClick={() => setSelectedCategory("child")}
                 className={`bg-white rounded-2xl cursor-pointer transition-all overflow-hidden ${
                   selectedCategory === "child"
@@ -155,30 +203,39 @@ export default function BabyCarePlans() {
                 <CardContent className="p-0">
                   <div className="flex items-center gap-4 p-4">
                     {/* Radio indicator */}
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                      selectedCategory === "child"
-                        ? "border-violet-500 bg-violet-500"
-                        : "border-zinc-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                        selectedCategory === "child"
+                          ? "border-violet-500 bg-violet-500"
+                          : "border-zinc-300"
+                      }`}
+                    >
                       {selectedCategory === "child" && (
                         <Check className="w-4 h-4 text-white" />
                       )}
                     </div>
-                    
+
                     {/* Icon */}
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-colors ${
-                      selectedCategory === "child"
-                        ? "bg-gradient-to-br from-violet-500 to-violet-600"
-                        : "bg-gradient-to-br from-violet-100 to-violet-50"
-                    }`}>
-                      <Baby className={`w-7 h-7 ${selectedCategory === "child" ? "text-white" : "text-violet-600"}`} />
+                    <div
+                      className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-colors ${
+                        selectedCategory === "child"
+                          ? "bg-gradient-to-br from-violet-500 to-violet-600"
+                          : "bg-gradient-to-br from-violet-100 to-violet-50"
+                      }`}
+                    >
+                      <Baby
+                        className={`w-7 h-7 ${selectedCategory === "child" ? "text-white" : "text-violet-600"}`}
+                      />
                     </div>
-                    
+
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-[16px] font-bold text-zinc-900 mb-1">Child Wellness</h3>
+                      <h3 className="text-[16px] font-bold text-zinc-900 mb-1">
+                        Child Wellness
+                      </h3>
                       <p className="text-[13px] text-zinc-500 leading-snug">
-                        Digital baby care tools, vaccines & growth support options.
+                        Digital baby care tools, vaccines & growth support
+                        options.
                       </p>
                     </div>
                   </div>
@@ -186,7 +243,7 @@ export default function BabyCarePlans() {
               </Card>
 
               {/* Mother Wellness */}
-              <Card 
+              <Card
                 onClick={() => setSelectedCategory("mother")}
                 className={`bg-white rounded-2xl cursor-pointer transition-all overflow-hidden ${
                   selectedCategory === "mother"
@@ -198,28 +255,36 @@ export default function BabyCarePlans() {
                 <CardContent className="p-0">
                   <div className="flex items-center gap-4 p-4">
                     {/* Radio indicator */}
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                      selectedCategory === "mother"
-                        ? "border-pink-500 bg-pink-500"
-                        : "border-zinc-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                        selectedCategory === "mother"
+                          ? "border-pink-500 bg-pink-500"
+                          : "border-zinc-300"
+                      }`}
+                    >
                       {selectedCategory === "mother" && (
                         <Check className="w-4 h-4 text-white" />
                       )}
                     </div>
-                    
+
                     {/* Icon */}
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-colors ${
-                      selectedCategory === "mother"
-                        ? "bg-gradient-to-br from-pink-500 to-pink-600"
-                        : "bg-gradient-to-br from-pink-100 to-pink-50"
-                    }`}>
-                      <Heart className={`w-7 h-7 ${selectedCategory === "mother" ? "text-white" : "text-pink-600"}`} />
+                    <div
+                      className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-colors ${
+                        selectedCategory === "mother"
+                          ? "bg-gradient-to-br from-pink-500 to-pink-600"
+                          : "bg-gradient-to-br from-pink-100 to-pink-50"
+                      }`}
+                    >
+                      <Heart
+                        className={`w-7 h-7 ${selectedCategory === "mother" ? "text-white" : "text-pink-600"}`}
+                      />
                     </div>
-                    
+
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-[16px] font-bold text-zinc-900 mb-1">Mother Wellness</h3>
+                      <h3 className="text-[16px] font-bold text-zinc-900 mb-1">
+                        Mother Wellness
+                      </h3>
                       <p className="text-[13px] text-zinc-500 leading-snug">
                         Support for your recovery, breastfeeding, mood and more.
                       </p>
@@ -229,7 +294,7 @@ export default function BabyCarePlans() {
               </Card>
 
               {/* Mother + Child Combo */}
-              <Card 
+              <Card
                 onClick={() => setSelectedCategory("combo")}
                 className={`bg-white rounded-2xl cursor-pointer transition-all overflow-hidden relative ${
                   selectedCategory === "combo"
@@ -245,31 +310,37 @@ export default function BabyCarePlans() {
                 <CardContent className="p-0">
                   <div className="flex items-center gap-4 p-4 pt-5">
                     {/* Radio indicator */}
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                      selectedCategory === "combo"
-                        ? "border-violet-500 bg-gradient-to-r from-violet-500 to-pink-500"
-                        : "border-zinc-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                        selectedCategory === "combo"
+                          ? "border-violet-500 bg-gradient-to-r from-violet-500 to-pink-500"
+                          : "border-zinc-300"
+                      }`}
+                    >
                       {selectedCategory === "combo" && (
                         <Check className="w-4 h-4 text-white" />
                       )}
                     </div>
-                    
+
                     {/* Icon */}
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm ${
-                      selectedCategory === "combo"
-                        ? "bg-gradient-to-br from-violet-500 to-pink-500"
-                        : "bg-gradient-to-br from-violet-400 to-pink-400"
-                    }`}>
+                    <div
+                      className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm ${
+                        selectedCategory === "combo"
+                          ? "bg-gradient-to-br from-violet-500 to-pink-500"
+                          : "bg-gradient-to-br from-violet-400 to-pink-400"
+                      }`}
+                    >
                       <div className="flex items-center -space-x-1">
                         <Baby className="w-5 h-5 text-white" />
                         <Heart className="w-5 h-5 text-white" />
                       </div>
                     </div>
-                    
+
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-[16px] font-bold text-zinc-900 mb-1">Mother + Child Combo</h3>
+                      <h3 className="text-[16px] font-bold text-zinc-900 mb-1">
+                        Mother + Child Combo
+                      </h3>
                       <p className="text-[13px] text-zinc-500 leading-snug">
                         A complete family care bundle for both of you.
                       </p>
@@ -286,7 +357,10 @@ export default function BabyCarePlans() {
               <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-violet-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
                 <Baby className="w-7 h-7 text-white" />
               </div>
-              <h2 className="text-[20px] font-bold text-zinc-900 mb-2" data-testid="text-packages-heading">
+              <h2
+                className="text-[20px] font-bold text-zinc-900 mb-2"
+                data-testid="text-packages-heading"
+              >
                 Child Wellness Packages
               </h2>
               <p className="text-[14px] text-zinc-500 leading-relaxed max-w-[300px] mx-auto">
@@ -297,7 +371,7 @@ export default function BabyCarePlans() {
             {/* Package Cards */}
             <div className="space-y-4">
               {/* Package 1: Digital Wellness Pack */}
-              <Card 
+              <Card
                 onClick={() => setSelectedChildPackage("digital")}
                 className={`bg-white rounded-2xl cursor-pointer transition-all overflow-hidden ${
                   selectedChildPackage === "digital"
@@ -310,27 +384,37 @@ export default function BabyCarePlans() {
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        selectedChildPackage === "digital" 
-                          ? "bg-violet-500" 
-                          : "bg-violet-100"
-                      }`}>
-                        <Smartphone className={`w-5 h-5 ${
-                          selectedChildPackage === "digital" ? "text-white" : "text-violet-600"
-                        }`} />
+                      <div
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          selectedChildPackage === "digital"
+                            ? "bg-violet-500"
+                            : "bg-violet-100"
+                        }`}
+                      >
+                        <Smartphone
+                          className={`w-5 h-5 ${
+                            selectedChildPackage === "digital"
+                              ? "text-white"
+                              : "text-violet-600"
+                          }`}
+                        />
                       </div>
                       <div>
-                        <h3 className="text-[15px] font-bold text-zinc-900">Child Digital Wellness Pack</h3>
+                        <h3 className="text-[15px] font-bold text-zinc-900">
+                          Child Digital Wellness Pack
+                        </h3>
                         <Badge className="bg-zinc-100 text-zinc-600 hover:bg-zinc-100 text-[10px] mt-1">
                           Digital only
                         </Badge>
                       </div>
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                      selectedChildPackage === "digital"
-                        ? "border-violet-500 bg-violet-500"
-                        : "border-zinc-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        selectedChildPackage === "digital"
+                          ? "border-violet-500 bg-violet-500"
+                          : "border-zinc-300"
+                      }`}
+                    >
                       {selectedChildPackage === "digital" && (
                         <Check className="w-4 h-4 text-white" />
                       )}
@@ -341,34 +425,52 @@ export default function BabyCarePlans() {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Full BabyCare digital product</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Full BabyCare digital product
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Unlimited AaI</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Unlimited AaI
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Vaccine tracking + logs</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Vaccine tracking + logs
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Growth tracking (no percentiles)</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Growth tracking (no percentiles)
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Monthly wellness summary</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Monthly wellness summary
+                      </span>
                     </div>
                   </div>
 
                   {/* Price */}
                   <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
                     <div>
-                      <span className="text-[22px] font-bold text-zinc-900">₹999</span>
-                      <span className="text-[13px] text-zinc-500 ml-1">/ year</span>
+                      <span className="text-[22px] font-bold text-zinc-900">
+                        ₹999
+                      </span>
+                      <span className="text-[13px] text-zinc-500 ml-1">
+                        / year
+                      </span>
                     </div>
-                    <Button 
-                      variant={selectedChildPackage === "digital" ? "default" : "outline"}
+                    <Button
+                      variant={
+                        selectedChildPackage === "digital"
+                          ? "default"
+                          : "outline"
+                      }
                       size="sm"
                       className={`rounded-lg ${
                         selectedChildPackage === "digital"
@@ -377,14 +479,16 @@ export default function BabyCarePlans() {
                       }`}
                       data-testid="button-select-digital"
                     >
-                      {selectedChildPackage === "digital" ? "Selected" : "Select"}
+                      {selectedChildPackage === "digital"
+                        ? "Selected"
+                        : "Select"}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Package 2: Vaccination & Checkup Pack */}
-              <Card 
+              <Card
                 onClick={() => setSelectedChildPackage("vaccination")}
                 className={`bg-white rounded-2xl cursor-pointer transition-all overflow-hidden relative ${
                   selectedChildPackage === "vaccination"
@@ -401,27 +505,37 @@ export default function BabyCarePlans() {
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        selectedChildPackage === "vaccination" 
-                          ? "bg-violet-500" 
-                          : "bg-blue-100"
-                      }`}>
-                        <Syringe className={`w-5 h-5 ${
-                          selectedChildPackage === "vaccination" ? "text-white" : "text-blue-600"
-                        }`} />
+                      <div
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          selectedChildPackage === "vaccination"
+                            ? "bg-violet-500"
+                            : "bg-blue-100"
+                        }`}
+                      >
+                        <Syringe
+                          className={`w-5 h-5 ${
+                            selectedChildPackage === "vaccination"
+                              ? "text-white"
+                              : "text-blue-600"
+                          }`}
+                        />
                       </div>
                       <div>
-                        <h3 className="text-[15px] font-bold text-zinc-900">Vaccination & Checkup Pack</h3>
+                        <h3 className="text-[15px] font-bold text-zinc-900">
+                          Vaccination & Checkup Pack
+                        </h3>
                         <Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100 text-[10px] mt-1">
                           Most popular
                         </Badge>
                       </div>
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                      selectedChildPackage === "vaccination"
-                        ? "border-violet-500 bg-violet-500"
-                        : "border-zinc-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        selectedChildPackage === "vaccination"
+                          ? "border-violet-500 bg-violet-500"
+                          : "border-zinc-300"
+                      }`}
+                    >
                       {selectedChildPackage === "vaccination" && (
                         <Check className="w-4 h-4 text-white" />
                       )}
@@ -432,30 +546,46 @@ export default function BabyCarePlans() {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Everything in Digital Pack</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Everything in Digital Pack
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Vaccines at partner hospital</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Vaccines at partner hospital
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">2 pediatric checkups</span>
+                      <span className="text-[13px] text-zinc-600">
+                        2 pediatric checkups
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Appointment assistance</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Appointment assistance
+                      </span>
                     </div>
                   </div>
 
                   {/* Price */}
                   <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
                     <div>
-                      <span className="text-[22px] font-bold text-zinc-900">₹5,999</span>
-                      <span className="text-[13px] text-zinc-500 ml-1">/ year</span>
+                      <span className="text-[22px] font-bold text-zinc-900">
+                        ₹5,999
+                      </span>
+                      <span className="text-[13px] text-zinc-500 ml-1">
+                        / year
+                      </span>
                     </div>
-                    <Button 
-                      variant={selectedChildPackage === "vaccination" ? "default" : "outline"}
+                    <Button
+                      variant={
+                        selectedChildPackage === "vaccination"
+                          ? "default"
+                          : "outline"
+                      }
                       size="sm"
                       className={`rounded-lg ${
                         selectedChildPackage === "vaccination"
@@ -464,14 +594,16 @@ export default function BabyCarePlans() {
                       }`}
                       data-testid="button-select-vaccination"
                     >
-                      {selectedChildPackage === "vaccination" ? "Selected" : "Select"}
+                      {selectedChildPackage === "vaccination"
+                        ? "Selected"
+                        : "Select"}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Package 3: Premium Growth Care Pack */}
-              <Card 
+              <Card
                 onClick={() => setSelectedChildPackage("premium")}
                 className={`bg-white rounded-2xl cursor-pointer transition-all overflow-hidden ${
                   selectedChildPackage === "premium"
@@ -484,27 +616,37 @@ export default function BabyCarePlans() {
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        selectedChildPackage === "premium" 
-                          ? "bg-violet-500" 
-                          : "bg-amber-100"
-                      }`}>
-                        <Star className={`w-5 h-5 ${
-                          selectedChildPackage === "premium" ? "text-white" : "text-amber-600"
-                        }`} />
+                      <div
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          selectedChildPackage === "premium"
+                            ? "bg-violet-500"
+                            : "bg-amber-100"
+                        }`}
+                      >
+                        <Star
+                          className={`w-5 h-5 ${
+                            selectedChildPackage === "premium"
+                              ? "text-white"
+                              : "text-amber-600"
+                          }`}
+                        />
                       </div>
                       <div>
-                        <h3 className="text-[15px] font-bold text-zinc-900">Premium Growth Care Pack</h3>
+                        <h3 className="text-[15px] font-bold text-zinc-900">
+                          Premium Growth Care Pack
+                        </h3>
                         <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 text-[10px] mt-1">
                           All-round support
                         </Badge>
                       </div>
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                      selectedChildPackage === "premium"
-                        ? "border-violet-500 bg-violet-500"
-                        : "border-zinc-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        selectedChildPackage === "premium"
+                          ? "border-violet-500 bg-violet-500"
+                          : "border-zinc-300"
+                      }`}
+                    >
                       {selectedChildPackage === "premium" && (
                         <Check className="w-4 h-4 text-white" />
                       )}
@@ -515,30 +657,46 @@ export default function BabyCarePlans() {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Everything in Vaccination Pack</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Everything in Vaccination Pack
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Limited nanny support (3 calls/month)</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Limited nanny support (3 calls/month)
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">1 child nutrition consult</span>
+                      <span className="text-[13px] text-zinc-600">
+                        1 child nutrition consult
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">1 sleep guidance session</span>
+                      <span className="text-[13px] text-zinc-600">
+                        1 sleep guidance session
+                      </span>
                     </div>
                   </div>
 
                   {/* Price */}
                   <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
                     <div>
-                      <span className="text-[22px] font-bold text-zinc-900">₹11,999</span>
-                      <span className="text-[13px] text-zinc-500 ml-1">/ year</span>
+                      <span className="text-[22px] font-bold text-zinc-900">
+                        ₹11,999
+                      </span>
+                      <span className="text-[13px] text-zinc-500 ml-1">
+                        / year
+                      </span>
                     </div>
-                    <Button 
-                      variant={selectedChildPackage === "premium" ? "default" : "outline"}
+                    <Button
+                      variant={
+                        selectedChildPackage === "premium"
+                          ? "default"
+                          : "outline"
+                      }
                       size="sm"
                       className={`rounded-lg ${
                         selectedChildPackage === "premium"
@@ -547,7 +705,9 @@ export default function BabyCarePlans() {
                       }`}
                       data-testid="button-select-premium"
                     >
-                      {selectedChildPackage === "premium" ? "Selected" : "Select"}
+                      {selectedChildPackage === "premium"
+                        ? "Selected"
+                        : "Select"}
                     </Button>
                   </div>
                 </CardContent>
@@ -561,7 +721,10 @@ export default function BabyCarePlans() {
               <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
                 <Heart className="w-7 h-7 text-white" />
               </div>
-              <h2 className="text-[20px] font-bold text-zinc-900 mb-2" data-testid="text-packages-heading">
+              <h2
+                className="text-[20px] font-bold text-zinc-900 mb-2"
+                data-testid="text-packages-heading"
+              >
                 Mother Wellness Packages
               </h2>
               <p className="text-[14px] text-zinc-500 leading-relaxed max-w-[300px] mx-auto">
@@ -572,7 +735,7 @@ export default function BabyCarePlans() {
             {/* Package Cards */}
             <div className="space-y-4">
               {/* Package 1: Mother Recovery Pack */}
-              <Card 
+              <Card
                 onClick={() => setSelectedMotherPackage("recovery")}
                 className={`bg-white rounded-2xl cursor-pointer transition-all overflow-hidden ${
                   selectedMotherPackage === "recovery"
@@ -585,27 +748,37 @@ export default function BabyCarePlans() {
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        selectedMotherPackage === "recovery" 
-                          ? "bg-pink-500" 
-                          : "bg-pink-100"
-                      }`}>
-                        <Video className={`w-5 h-5 ${
-                          selectedMotherPackage === "recovery" ? "text-white" : "text-pink-600"
-                        }`} />
+                      <div
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          selectedMotherPackage === "recovery"
+                            ? "bg-pink-500"
+                            : "bg-pink-100"
+                        }`}
+                      >
+                        <Video
+                          className={`w-5 h-5 ${
+                            selectedMotherPackage === "recovery"
+                              ? "text-white"
+                              : "text-pink-600"
+                          }`}
+                        />
                       </div>
                       <div>
-                        <h3 className="text-[15px] font-bold text-zinc-900">Mother Recovery Pack</h3>
+                        <h3 className="text-[15px] font-bold text-zinc-900">
+                          Mother Recovery Pack
+                        </h3>
                         <Badge className="bg-pink-100 text-pink-700 hover:bg-pink-100 text-[10px] mt-1">
                           Video consults
                         </Badge>
                       </div>
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                      selectedMotherPackage === "recovery"
-                        ? "border-pink-500 bg-pink-500"
-                        : "border-zinc-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        selectedMotherPackage === "recovery"
+                          ? "border-pink-500 bg-pink-500"
+                          : "border-zinc-300"
+                      }`}
+                    >
                       {selectedMotherPackage === "recovery" && (
                         <Check className="w-4 h-4 text-white" />
                       )}
@@ -616,26 +789,40 @@ export default function BabyCarePlans() {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Postpartum recovery tips</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Postpartum recovery tips
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">1 lactation consult (video)</span>
+                      <span className="text-[13px] text-zinc-600">
+                        1 lactation consult (video)
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">1 physiotherapy consult (video)</span>
+                      <span className="text-[13px] text-zinc-600">
+                        1 physiotherapy consult (video)
+                      </span>
                     </div>
                   </div>
 
                   {/* Price */}
                   <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
                     <div>
-                      <span className="text-[22px] font-bold text-zinc-900">₹1,999</span>
-                      <span className="text-[12px] text-zinc-400 ml-1 block">one-time (~3-month validity)</span>
+                      <span className="text-[22px] font-bold text-zinc-900">
+                        ₹1,999
+                      </span>
+                      <span className="text-[12px] text-zinc-400 ml-1 block">
+                        one-time (~3-month validity)
+                      </span>
                     </div>
-                    <Button 
-                      variant={selectedMotherPackage === "recovery" ? "default" : "outline"}
+                    <Button
+                      variant={
+                        selectedMotherPackage === "recovery"
+                          ? "default"
+                          : "outline"
+                      }
                       size="sm"
                       className={`rounded-lg ${
                         selectedMotherPackage === "recovery"
@@ -644,14 +831,16 @@ export default function BabyCarePlans() {
                       }`}
                       data-testid="button-select-recovery"
                     >
-                      {selectedMotherPackage === "recovery" ? "Selected" : "Select"}
+                      {selectedMotherPackage === "recovery"
+                        ? "Selected"
+                        : "Select"}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Package 2: Mother Wellness Care Pack */}
-              <Card 
+              <Card
                 onClick={() => setSelectedMotherPackage("wellness")}
                 className={`bg-white rounded-2xl cursor-pointer transition-all overflow-hidden relative ${
                   selectedMotherPackage === "wellness"
@@ -668,27 +857,37 @@ export default function BabyCarePlans() {
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        selectedMotherPackage === "wellness" 
-                          ? "bg-pink-500" 
-                          : "bg-rose-100"
-                      }`}>
-                        <Stethoscope className={`w-5 h-5 ${
-                          selectedMotherPackage === "wellness" ? "text-white" : "text-rose-600"
-                        }`} />
+                      <div
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          selectedMotherPackage === "wellness"
+                            ? "bg-pink-500"
+                            : "bg-rose-100"
+                        }`}
+                      >
+                        <Stethoscope
+                          className={`w-5 h-5 ${
+                            selectedMotherPackage === "wellness"
+                              ? "text-white"
+                              : "text-rose-600"
+                          }`}
+                        />
                       </div>
                       <div>
-                        <h3 className="text-[15px] font-bold text-zinc-900">Mother Wellness Care Pack</h3>
+                        <h3 className="text-[15px] font-bold text-zinc-900">
+                          Mother Wellness Care Pack
+                        </h3>
                         <Badge className="bg-rose-100 text-rose-700 hover:bg-rose-100 text-[10px] mt-1">
                           Full support
                         </Badge>
                       </div>
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                      selectedMotherPackage === "wellness"
-                        ? "border-pink-500 bg-pink-500"
-                        : "border-zinc-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        selectedMotherPackage === "wellness"
+                          ? "border-pink-500 bg-pink-500"
+                          : "border-zinc-300"
+                      }`}
+                    >
                       {selectedMotherPackage === "wellness" && (
                         <Check className="w-4 h-4 text-white" />
                       )}
@@ -699,30 +898,46 @@ export default function BabyCarePlans() {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Everything in Recovery Pack</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Everything in Recovery Pack
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">1 in-person physio session (or extra video)</span>
+                      <span className="text-[13px] text-zinc-600">
+                        1 in-person physio session (or extra video)
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">1 mental wellness consultation</span>
+                      <span className="text-[13px] text-zinc-600">
+                        1 mental wellness consultation
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
-                      <span className="text-[13px] text-zinc-600">Basic nutrition guidance</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Basic nutrition guidance
+                      </span>
                     </div>
                   </div>
 
                   {/* Price */}
                   <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
                     <div>
-                      <span className="text-[22px] font-bold text-zinc-900">₹4,999</span>
-                      <span className="text-[12px] text-zinc-400 ml-1 block">one-time</span>
+                      <span className="text-[22px] font-bold text-zinc-900">
+                        ₹4,999
+                      </span>
+                      <span className="text-[12px] text-zinc-400 ml-1 block">
+                        one-time
+                      </span>
                     </div>
-                    <Button 
-                      variant={selectedMotherPackage === "wellness" ? "default" : "outline"}
+                    <Button
+                      variant={
+                        selectedMotherPackage === "wellness"
+                          ? "default"
+                          : "outline"
+                      }
                       size="sm"
                       className={`rounded-lg ${
                         selectedMotherPackage === "wellness"
@@ -731,7 +946,9 @@ export default function BabyCarePlans() {
                       }`}
                       data-testid="button-select-wellness"
                     >
-                      {selectedMotherPackage === "wellness" ? "Selected" : "Select"}
+                      {selectedMotherPackage === "wellness"
+                        ? "Selected"
+                        : "Select"}
                     </Button>
                   </div>
                 </CardContent>
@@ -748,7 +965,10 @@ export default function BabyCarePlans() {
                   <Heart className="w-5 h-5 text-white" />
                 </div>
               </div>
-              <h2 className="text-[20px] font-bold text-zinc-900 mb-2" data-testid="text-packages-heading">
+              <h2
+                className="text-[20px] font-bold text-zinc-900 mb-2"
+                data-testid="text-packages-heading"
+              >
                 Mother + Child Combo Packages
               </h2>
               <p className="text-[14px] text-zinc-500 leading-relaxed max-w-[300px] mx-auto">
@@ -759,7 +979,7 @@ export default function BabyCarePlans() {
             {/* Package Cards */}
             <div className="space-y-4">
               {/* Package 1: Digital Wellness Combo */}
-              <Card 
+              <Card
                 onClick={() => setSelectedComboPackage("digital")}
                 className={`bg-white rounded-2xl cursor-pointer transition-all overflow-hidden ${
                   selectedComboPackage === "digital"
@@ -772,27 +992,37 @@ export default function BabyCarePlans() {
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        selectedComboPackage === "digital" 
-                          ? "bg-gradient-to-br from-violet-500 to-pink-500" 
-                          : "bg-gradient-to-br from-violet-100 to-pink-100"
-                      }`}>
-                        <Smartphone className={`w-5 h-5 ${
-                          selectedComboPackage === "digital" ? "text-white" : "text-violet-600"
-                        }`} />
+                      <div
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          selectedComboPackage === "digital"
+                            ? "bg-gradient-to-br from-violet-500 to-pink-500"
+                            : "bg-gradient-to-br from-violet-100 to-pink-100"
+                        }`}
+                      >
+                        <Smartphone
+                          className={`w-5 h-5 ${
+                            selectedComboPackage === "digital"
+                              ? "text-white"
+                              : "text-violet-600"
+                          }`}
+                        />
                       </div>
                       <div>
-                        <h3 className="text-[15px] font-bold text-zinc-900">Digital Wellness Combo</h3>
+                        <h3 className="text-[15px] font-bold text-zinc-900">
+                          Digital Wellness Combo
+                        </h3>
                         <Badge className="bg-zinc-100 text-zinc-600 hover:bg-zinc-100 text-[10px] mt-1">
                           Digital only
                         </Badge>
                       </div>
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                      selectedComboPackage === "digital"
-                        ? "border-violet-500 bg-gradient-to-r from-violet-500 to-pink-500"
-                        : "border-zinc-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        selectedComboPackage === "digital"
+                          ? "border-violet-500 bg-gradient-to-r from-violet-500 to-pink-500"
+                          : "border-zinc-300"
+                      }`}
+                    >
                       {selectedComboPackage === "digital" && (
                         <Check className="w-4 h-4 text-white" />
                       )}
@@ -803,22 +1033,34 @@ export default function BabyCarePlans() {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-start gap-2">
                       <Baby className="w-4 h-4 text-violet-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-[13px] text-zinc-600">Child Digital Wellness Pack</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Child Digital Wellness Pack
+                      </span>
                     </div>
                     <div className="flex items-start gap-2">
                       <Heart className="w-4 h-4 text-pink-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-[13px] text-zinc-600">Mother Recovery Pack (digital)</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Mother Recovery Pack (digital)
+                      </span>
                     </div>
                   </div>
 
                   {/* Price */}
                   <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
                     <div>
-                      <span className="text-[22px] font-bold bg-gradient-to-r from-violet-700 to-pink-700 bg-clip-text text-transparent">₹2,499</span>
-                      <span className="text-[13px] text-zinc-500 ml-1">/ year</span>
+                      <span className="text-[22px] font-bold bg-gradient-to-r from-violet-700 to-pink-700 bg-clip-text text-transparent">
+                        ₹2,499
+                      </span>
+                      <span className="text-[13px] text-zinc-500 ml-1">
+                        / year
+                      </span>
                     </div>
-                    <Button 
-                      variant={selectedComboPackage === "digital" ? "default" : "outline"}
+                    <Button
+                      variant={
+                        selectedComboPackage === "digital"
+                          ? "default"
+                          : "outline"
+                      }
                       size="sm"
                       className={`rounded-lg ${
                         selectedComboPackage === "digital"
@@ -827,14 +1069,16 @@ export default function BabyCarePlans() {
                       }`}
                       data-testid="button-select-combo-digital"
                     >
-                      {selectedComboPackage === "digital" ? "Selected" : "Select"}
+                      {selectedComboPackage === "digital"
+                        ? "Selected"
+                        : "Select"}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Package 2: Essential Care Combo */}
-              <Card 
+              <Card
                 onClick={() => setSelectedComboPackage("essential")}
                 className={`bg-white rounded-2xl cursor-pointer transition-all overflow-hidden relative ${
                   selectedComboPackage === "essential"
@@ -851,27 +1095,37 @@ export default function BabyCarePlans() {
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        selectedComboPackage === "essential" 
-                          ? "bg-gradient-to-br from-violet-500 to-pink-500" 
-                          : "bg-gradient-to-br from-blue-100 to-pink-100"
-                      }`}>
-                        <Package className={`w-5 h-5 ${
-                          selectedComboPackage === "essential" ? "text-white" : "text-blue-600"
-                        }`} />
+                      <div
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          selectedComboPackage === "essential"
+                            ? "bg-gradient-to-br from-violet-500 to-pink-500"
+                            : "bg-gradient-to-br from-blue-100 to-pink-100"
+                        }`}
+                      >
+                        <Package
+                          className={`w-5 h-5 ${
+                            selectedComboPackage === "essential"
+                              ? "text-white"
+                              : "text-blue-600"
+                          }`}
+                        />
                       </div>
                       <div>
-                        <h3 className="text-[15px] font-bold text-zinc-900">Essential Care Combo</h3>
+                        <h3 className="text-[15px] font-bold text-zinc-900">
+                          Essential Care Combo
+                        </h3>
                         <Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100 text-[10px] mt-1">
                           Most popular
                         </Badge>
                       </div>
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                      selectedComboPackage === "essential"
-                        ? "border-violet-500 bg-gradient-to-r from-violet-500 to-pink-500"
-                        : "border-zinc-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        selectedComboPackage === "essential"
+                          ? "border-violet-500 bg-gradient-to-r from-violet-500 to-pink-500"
+                          : "border-zinc-300"
+                      }`}
+                    >
                       {selectedComboPackage === "essential" && (
                         <Check className="w-4 h-4 text-white" />
                       )}
@@ -882,22 +1136,34 @@ export default function BabyCarePlans() {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-start gap-2">
                       <Baby className="w-4 h-4 text-violet-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-[13px] text-zinc-600">Vaccination & Checkup Pack (child)</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Vaccination & Checkup Pack (child)
+                      </span>
                     </div>
                     <div className="flex items-start gap-2">
                       <Heart className="w-4 h-4 text-pink-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-[13px] text-zinc-600">Mother Recovery Pack</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Mother Recovery Pack
+                      </span>
                     </div>
                   </div>
 
                   {/* Price */}
                   <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
                     <div>
-                      <span className="text-[22px] font-bold bg-gradient-to-r from-violet-700 to-pink-700 bg-clip-text text-transparent">₹7,999</span>
-                      <span className="text-[13px] text-zinc-500 ml-1">/ year</span>
+                      <span className="text-[22px] font-bold bg-gradient-to-r from-violet-700 to-pink-700 bg-clip-text text-transparent">
+                        ₹7,999
+                      </span>
+                      <span className="text-[13px] text-zinc-500 ml-1">
+                        / year
+                      </span>
                     </div>
-                    <Button 
-                      variant={selectedComboPackage === "essential" ? "default" : "outline"}
+                    <Button
+                      variant={
+                        selectedComboPackage === "essential"
+                          ? "default"
+                          : "outline"
+                      }
                       size="sm"
                       className={`rounded-lg ${
                         selectedComboPackage === "essential"
@@ -906,14 +1172,16 @@ export default function BabyCarePlans() {
                       }`}
                       data-testid="button-select-combo-essential"
                     >
-                      {selectedComboPackage === "essential" ? "Selected" : "Select"}
+                      {selectedComboPackage === "essential"
+                        ? "Selected"
+                        : "Select"}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Package 3: Premium Care Combo */}
-              <Card 
+              <Card
                 onClick={() => setSelectedComboPackage("premium")}
                 className={`bg-white rounded-2xl cursor-pointer transition-all overflow-hidden ${
                   selectedComboPackage === "premium"
@@ -926,27 +1194,37 @@ export default function BabyCarePlans() {
                   {/* Header */}
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        selectedComboPackage === "premium" 
-                          ? "bg-gradient-to-br from-violet-500 to-pink-500" 
-                          : "bg-gradient-to-br from-amber-100 to-rose-100"
-                      }`}>
-                        <Star className={`w-5 h-5 ${
-                          selectedComboPackage === "premium" ? "text-white" : "text-amber-600"
-                        }`} />
+                      <div
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          selectedComboPackage === "premium"
+                            ? "bg-gradient-to-br from-violet-500 to-pink-500"
+                            : "bg-gradient-to-br from-amber-100 to-rose-100"
+                        }`}
+                      >
+                        <Star
+                          className={`w-5 h-5 ${
+                            selectedComboPackage === "premium"
+                              ? "text-white"
+                              : "text-amber-600"
+                          }`}
+                        />
                       </div>
                       <div>
-                        <h3 className="text-[15px] font-bold text-zinc-900">Premium Care Combo</h3>
+                        <h3 className="text-[15px] font-bold text-zinc-900">
+                          Premium Care Combo
+                        </h3>
                         <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 text-[10px] mt-1">
                           All-round support
                         </Badge>
                       </div>
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                      selectedComboPackage === "premium"
-                        ? "border-violet-500 bg-gradient-to-r from-violet-500 to-pink-500"
-                        : "border-zinc-300"
-                    }`}>
+                    <div
+                      className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                        selectedComboPackage === "premium"
+                          ? "border-violet-500 bg-gradient-to-r from-violet-500 to-pink-500"
+                          : "border-zinc-300"
+                      }`}
+                    >
                       {selectedComboPackage === "premium" && (
                         <Check className="w-4 h-4 text-white" />
                       )}
@@ -957,22 +1235,34 @@ export default function BabyCarePlans() {
                   <div className="space-y-2 mb-4">
                     <div className="flex items-start gap-2">
                       <Baby className="w-4 h-4 text-violet-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-[13px] text-zinc-600">Premium Growth Care Pack (child)</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Premium Growth Care Pack (child)
+                      </span>
                     </div>
                     <div className="flex items-start gap-2">
                       <Heart className="w-4 h-4 text-pink-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-[13px] text-zinc-600">Mother Wellness Care Pack</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Mother Wellness Care Pack
+                      </span>
                     </div>
                   </div>
 
                   {/* Price */}
                   <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
                     <div>
-                      <span className="text-[22px] font-bold bg-gradient-to-r from-violet-700 to-pink-700 bg-clip-text text-transparent">₹13,999</span>
-                      <span className="text-[13px] text-zinc-500 ml-1">/ year</span>
+                      <span className="text-[22px] font-bold bg-gradient-to-r from-violet-700 to-pink-700 bg-clip-text text-transparent">
+                        ₹13,999
+                      </span>
+                      <span className="text-[13px] text-zinc-500 ml-1">
+                        / year
+                      </span>
                     </div>
-                    <Button 
-                      variant={selectedComboPackage === "premium" ? "default" : "outline"}
+                    <Button
+                      variant={
+                        selectedComboPackage === "premium"
+                          ? "default"
+                          : "outline"
+                      }
                       size="sm"
                       className={`rounded-lg ${
                         selectedComboPackage === "premium"
@@ -981,7 +1271,9 @@ export default function BabyCarePlans() {
                       }`}
                       data-testid="button-select-combo-premium"
                     >
-                      {selectedComboPackage === "premium" ? "Selected" : "Select"}
+                      {selectedComboPackage === "premium"
+                        ? "Selected"
+                        : "Select"}
                     </Button>
                   </div>
                 </CardContent>
@@ -1014,7 +1306,9 @@ export default function BabyCarePlans() {
           <div className="max-w-md mx-auto">
             {selectedChildPackage && (
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[13px] text-zinc-500">Selected package:</span>
+                <span className="text-[13px] text-zinc-500">
+                  Selected package:
+                </span>
                 <span className="text-[15px] font-bold text-zinc-900">
                   {getChildPackagePrice(selectedChildPackage)}/year
                 </span>
@@ -1039,7 +1333,9 @@ export default function BabyCarePlans() {
           <div className="max-w-md mx-auto">
             {selectedMotherPackage && (
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[13px] text-zinc-500">Selected package:</span>
+                <span className="text-[13px] text-zinc-500">
+                  Selected package:
+                </span>
                 <span className="text-[15px] font-bold text-zinc-900">
                   {getMotherPackagePrice(selectedMotherPackage)}
                 </span>
@@ -1064,7 +1360,9 @@ export default function BabyCarePlans() {
           <div className="max-w-md mx-auto">
             {selectedComboPackage && (
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[13px] text-zinc-500">Selected package:</span>
+                <span className="text-[13px] text-zinc-500">
+                  Selected package:
+                </span>
                 <span className="text-[15px] font-bold bg-gradient-to-r from-violet-700 to-pink-700 bg-clip-text text-transparent">
                   {getComboPackagePrice(selectedComboPackage)}/year
                 </span>

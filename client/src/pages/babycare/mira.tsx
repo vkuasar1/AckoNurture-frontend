@@ -1,12 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useParams } from "wouter";
-import { 
-  ArrowLeft, 
-  Send,
-  User,
-  Heart,
-  Sparkles
-} from "lucide-react";
+import { ArrowLeft, Send, User, Heart, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
@@ -22,29 +16,51 @@ const STARTER_PROMPTS = [
 ];
 
 const AI_RESPONSES: Record<string, string> = {
-  "solid foods": "Most babies are ready to start solid foods around 6 months of age. Look for signs like sitting up with support, showing interest in food, and losing the tongue-thrust reflex. Start with single-ingredient purees like rice cereal, mashed banana, or sweet potato. I'm here if you need more guidance along the way.",
-  "sleep": "Sleep needs vary by age: Newborns (0-3 months) need 14-17 hours, infants (4-11 months) need 12-15 hours, and toddlers (1-2 years) need 11-14 hours. Establishing a bedtime routine can help your baby sleep better. You're doing great - rest is important for both of you.",
-  "growth": "Every baby grows at their own pace, and that's perfectly okay! Regular check-ups with your pediatrician are the best way to track growth. Generally, babies double their birth weight by 5 months and triple it by 1 year. If you're ever concerned, I'm here to help you find the right support.",
-  "teething": "Teething can be tough for both baby and parents! Try these tips: Cold teething rings, gentle gum massage with a clean finger, teething toys, and if approved by your doctor, infant pain relievers. Drooling and fussiness are normal during teething. You're not alone in this.",
-  "default": "That's a great question! While I can provide general guidance, every baby is unique and wonderful in their own way. For specific medical concerns, please consult with your pediatrician. Is there anything else you'd like to know? I'm here for you.",
+  "solid foods":
+    "Most babies are ready to start solid foods around 6 months of age. Look for signs like sitting up with support, showing interest in food, and losing the tongue-thrust reflex. Start with single-ingredient purees like rice cereal, mashed banana, or sweet potato. I'm here if you need more guidance along the way.",
+  sleep:
+    "Sleep needs vary by age: Newborns (0-3 months) need 14-17 hours, infants (4-11 months) need 12-15 hours, and toddlers (1-2 years) need 11-14 hours. Establishing a bedtime routine can help your baby sleep better. You're doing great - rest is important for both of you.",
+  growth:
+    "Every baby grows at their own pace, and that's perfectly okay! Regular check-ups with your pediatrician are the best way to track growth. Generally, babies double their birth weight by 5 months and triple it by 1 year. If you're ever concerned, I'm here to help you find the right support.",
+  teething:
+    "Teething can be tough for both baby and parents! Try these tips: Cold teething rings, gentle gum massage with a clean finger, teething toys, and if approved by your doctor, infant pain relievers. Drooling and fussiness are normal during teething. You're not alone in this.",
+  default:
+    "That's a great question! While I can provide general guidance, every baby is unique and wonderful in their own way. For specific medical concerns, please consult with your pediatrician. Is there anything else you'd like to know? I'm here for you.",
 };
 
 function getAIResponse(message: string): string {
   const lowerMessage = message.toLowerCase();
-  
-  if (lowerMessage.includes("solid") || lowerMessage.includes("food") || lowerMessage.includes("eat")) {
+
+  if (
+    lowerMessage.includes("solid") ||
+    lowerMessage.includes("food") ||
+    lowerMessage.includes("eat")
+  ) {
     return AI_RESPONSES["solid foods"];
   }
-  if (lowerMessage.includes("sleep") || lowerMessage.includes("nap") || lowerMessage.includes("bedtime")) {
+  if (
+    lowerMessage.includes("sleep") ||
+    lowerMessage.includes("nap") ||
+    lowerMessage.includes("bedtime")
+  ) {
     return AI_RESPONSES["sleep"];
   }
-  if (lowerMessage.includes("growth") || lowerMessage.includes("weight") || lowerMessage.includes("height") || lowerMessage.includes("track")) {
+  if (
+    lowerMessage.includes("growth") ||
+    lowerMessage.includes("weight") ||
+    lowerMessage.includes("height") ||
+    lowerMessage.includes("track")
+  ) {
     return AI_RESPONSES["growth"];
   }
-  if (lowerMessage.includes("teeth") || lowerMessage.includes("teething") || lowerMessage.includes("gum")) {
+  if (
+    lowerMessage.includes("teeth") ||
+    lowerMessage.includes("teething") ||
+    lowerMessage.includes("gum")
+  ) {
     return AI_RESPONSES["teething"];
   }
-  
+
   return AI_RESPONSES["default"];
 }
 
@@ -71,7 +87,9 @@ export default function MiraChat() {
   });
 
   // Find baby profile - route param babyId is actually profileId
-  const baby = profiles.find(p => p.type === "baby" && p.profileId === babyId);
+  const baby = profiles.find(
+    (p) => p.type === "baby" && p.profileId === babyId,
+  );
   const babyProfileId = baby?.profileId || babyId; // Use profileId for navigation
 
   const scrollToBottom = () => {
@@ -92,11 +110,13 @@ export default function MiraChat() {
       timestamp: new Date().toISOString(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsTyping(true);
 
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+    await new Promise((resolve) =>
+      setTimeout(resolve, 1000 + Math.random() * 1000),
+    );
 
     const aiResponse: Message = {
       id: (Date.now() + 1).toString(),
@@ -105,7 +125,7 @@ export default function MiraChat() {
       timestamp: new Date().toISOString(),
     };
 
-    setMessages(prev => [...prev, aiResponse]);
+    setMessages((prev) => [...prev, aiResponse]);
     setIsTyping(false);
   };
 
@@ -117,7 +137,9 @@ export default function MiraChat() {
   if (!baby) {
     return (
       <div className="app-container min-h-screen bg-zinc-50 flex items-center justify-center">
-        <p className="text-zinc-500" data-testid="text-baby-not-found">Baby not found</p>
+        <p className="text-zinc-500" data-testid="text-baby-not-found">
+          Baby not found
+        </p>
       </div>
     );
   }
@@ -127,9 +149,12 @@ export default function MiraChat() {
       {/* Warm Gradient Header */}
       <div className="bg-gradient-to-br from-rose-500 via-pink-500 to-violet-500 text-white px-4 pt-4 pb-5">
         <div className="flex items-center gap-3">
-          <Link href={`/babycare/home/${babyProfileId}`} data-testid="link-back">
-            <Button 
-              variant="ghost" 
+          <Link
+            href={`/babycare/home/${babyProfileId}`}
+            data-testid="link-back"
+          >
+            <Button
+              variant="ghost"
               size="icon"
               className="text-white hover:bg-white/10 rounded-full h-10 w-10"
               data-testid="button-back"
@@ -138,10 +163,17 @@ export default function MiraChat() {
             </Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-[18px] font-bold" data-testid="text-title">AaI</h1>
-            <p className="text-[12px] text-white/80">Here for you, like family</p>
+            <h1 className="text-[18px] font-bold" data-testid="text-title">
+              AaI
+            </h1>
+            <p className="text-[12px] text-white/80">
+              Here for you, like family
+            </p>
           </div>
-          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center" data-testid="icon-mira">
+          <div
+            className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
+            data-testid="icon-mira"
+          >
             <Heart className="w-5 h-5 text-white" />
           </div>
         </div>
@@ -156,19 +188,32 @@ export default function MiraChat() {
               <div className="w-20 h-20 bg-gradient-to-br from-rose-100 to-pink-100 rounded-full flex items-center justify-center mb-4 shadow-sm">
                 <Heart className="w-10 h-10 text-rose-500" />
               </div>
-              <h2 className="text-[20px] font-bold text-zinc-900 mb-2" data-testid="text-welcome-heading">
+              <h2
+                className="text-[20px] font-bold text-zinc-900 mb-2"
+                data-testid="text-welcome-heading"
+              >
                 Hi, I'm AaI
               </h2>
-              <p className="text-[14px] text-zinc-600 text-center max-w-[280px] mb-2" data-testid="text-welcome-tagline">
+              <p
+                className="text-[14px] text-zinc-600 text-center max-w-[280px] mb-2"
+                data-testid="text-welcome-tagline"
+              >
                 You're not alone. I'm here for you.
               </p>
-              <p className="text-[13px] text-zinc-500 text-center max-w-[280px] mb-6" data-testid="text-welcome-description">
-                Motherly comfort with pediatrician-level clarity. Ask me anything about {baby.name}'s health, feeding, sleep, or development.
+              <p
+                className="text-[13px] text-zinc-500 text-center max-w-[280px] mb-6"
+                data-testid="text-welcome-description"
+              >
+                Motherly comfort with pediatrician-level clarity. Ask me
+                anything about {baby.name}'s health, feeding, sleep, or
+                development.
               </p>
-              
+
               {/* Starter Prompts */}
               <div className="w-full space-y-2">
-                <p className="text-[12px] text-zinc-400 text-center mb-2">Try asking:</p>
+                <p className="text-[12px] text-zinc-400 text-center mb-2">
+                  Try asking:
+                </p>
                 {STARTER_PROMPTS.map((prompt, idx) => (
                   <button
                     key={idx}
@@ -201,7 +246,9 @@ export default function MiraChat() {
                         : "bg-zinc-100 text-zinc-800 rounded-bl-md"
                     }`}
                   >
-                    <p className="text-[14px] leading-relaxed">{message.content}</p>
+                    <p className="text-[14px] leading-relaxed">
+                      {message.content}
+                    </p>
                   </div>
                   {message.role === "user" && (
                     <div className="w-8 h-8 bg-zinc-200 rounded-full flex items-center justify-center flex-shrink-0">
@@ -213,15 +260,27 @@ export default function MiraChat() {
 
               {/* Typing Indicator */}
               {isTyping && (
-                <div className="flex gap-3 justify-start" data-testid="typing-indicator">
+                <div
+                  className="flex gap-3 justify-start"
+                  data-testid="typing-indicator"
+                >
                   <div className="w-8 h-8 bg-gradient-to-br from-rose-100 to-pink-100 rounded-full flex items-center justify-center flex-shrink-0">
                     <Heart className="w-4 h-4 text-rose-500" />
                   </div>
                   <div className="bg-zinc-100 px-4 py-3 rounded-2xl rounded-bl-md">
                     <div className="flex gap-1">
-                      <span className="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="w-2 h-2 bg-rose-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      <span
+                        className="w-2 h-2 bg-rose-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "0ms" }}
+                      />
+                      <span
+                        className="w-2 h-2 bg-rose-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "150ms" }}
+                      />
+                      <span
+                        className="w-2 h-2 bg-rose-400 rounded-full animate-bounce"
+                        style={{ animationDelay: "300ms" }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -234,7 +293,11 @@ export default function MiraChat() {
 
         {/* Input Area */}
         <div className="px-4 py-4 border-t border-zinc-100 bg-white">
-          <form onSubmit={handleSubmit} className="flex gap-2" data-testid="form-message">
+          <form
+            onSubmit={handleSubmit}
+            className="flex gap-2"
+            data-testid="form-message"
+          >
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -251,8 +314,12 @@ export default function MiraChat() {
               <Send className="w-5 h-5" />
             </Button>
           </form>
-          <p className="text-[10px] text-zinc-400 text-center mt-2" data-testid="text-disclaimer">
-            AaI provides guidance with care. For medical advice, consult your healthcare provider.
+          <p
+            className="text-[10px] text-zinc-400 text-center mt-2"
+            data-testid="text-disclaimer"
+          >
+            AaI provides guidance with care. For medical advice, consult your
+            healthcare provider.
           </p>
         </div>
       </div>

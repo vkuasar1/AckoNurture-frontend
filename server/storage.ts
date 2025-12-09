@@ -1,5 +1,5 @@
-import { 
-  type User, 
+import {
+  type User,
   type InsertUser,
   type BabyProfile,
   type InsertBabyProfile,
@@ -24,7 +24,7 @@ import {
   type MedicalReport,
   type InsertMedicalReport,
   VACCINE_SCHEDULE,
-  MILESTONE_DATA
+  MILESTONE_DATA,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -33,60 +33,93 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  
+
   // Baby Profile operations
   getBabyProfile(id: string): Promise<BabyProfile | undefined>;
   getAllBabyProfiles(): Promise<BabyProfile[]>;
   createBabyProfile(profile: InsertBabyProfile): Promise<BabyProfile>;
-  updateBabyProfile(id: string, profile: Partial<InsertBabyProfile>): Promise<BabyProfile | undefined>;
-  
+  updateBabyProfile(
+    id: string,
+    profile: Partial<InsertBabyProfile>,
+  ): Promise<BabyProfile | undefined>;
+
   // Mother Profile operations
   getMotherProfileByBabyId(babyId: string): Promise<MotherProfile | undefined>;
   createMotherProfile(profile: InsertMotherProfile): Promise<MotherProfile>;
-  updateMotherProfile(id: string, profile: Partial<InsertMotherProfile>): Promise<MotherProfile | undefined>;
-  
+  updateMotherProfile(
+    id: string,
+    profile: Partial<InsertMotherProfile>,
+  ): Promise<MotherProfile | undefined>;
+
   // User Preferences operations
-  getUserPreferencesByBabyId(babyId: string): Promise<UserPreferences | undefined>;
+  getUserPreferencesByBabyId(
+    babyId: string,
+  ): Promise<UserPreferences | undefined>;
   createUserPreferences(prefs: InsertUserPreferences): Promise<UserPreferences>;
-  updateUserPreferences(id: string, prefs: Partial<InsertUserPreferences>): Promise<UserPreferences | undefined>;
-  
+  updateUserPreferences(
+    id: string,
+    prefs: Partial<InsertUserPreferences>,
+  ): Promise<UserPreferences | undefined>;
+
   // Vaccine operations
   getVaccinesByBabyId(babyId: string): Promise<Vaccine[]>;
   createVaccine(vaccine: InsertVaccine): Promise<Vaccine>;
-  updateVaccine(id: string, vaccine: Partial<InsertVaccine>): Promise<Vaccine | undefined>;
+  updateVaccine(
+    id: string,
+    vaccine: Partial<InsertVaccine>,
+  ): Promise<Vaccine | undefined>;
   initializeVaccinesForBaby(babyId: string, dob: string): Promise<void>;
-  
+
   // Growth Entry operations
   getGrowthEntriesByBabyId(babyId: string): Promise<GrowthEntry[]>;
   createGrowthEntry(entry: InsertGrowthEntry): Promise<GrowthEntry>;
-  
+
   // Milestone operations
   getMilestonesByBabyId(babyId: string): Promise<Milestone[]>;
   createMilestone(milestone: InsertMilestone): Promise<Milestone>;
-  updateMilestone(id: string, milestone: Partial<InsertMilestone>): Promise<Milestone | undefined>;
+  updateMilestone(
+    id: string,
+    milestone: Partial<InsertMilestone>,
+  ): Promise<Milestone | undefined>;
   initializeMilestonesForBaby(babyId: string): Promise<void>;
-  
+
   // Milestone Progress operations (for new definition-based tracking)
   getMilestoneProgressByBabyId(babyId: string): Promise<MilestoneProgress[]>;
-  getMilestoneProgress(babyId: string, milestoneDefId: string): Promise<MilestoneProgress | undefined>;
-  createMilestoneProgress(progress: InsertMilestoneProgress): Promise<MilestoneProgress>;
-  updateMilestoneProgress(id: string, progress: Partial<InsertMilestoneProgress>): Promise<MilestoneProgress | undefined>;
-  upsertMilestoneProgress(babyId: string, milestoneDefId: string, progress: Partial<InsertMilestoneProgress>): Promise<MilestoneProgress>;
-  
+  getMilestoneProgress(
+    babyId: string,
+    milestoneDefId: string,
+  ): Promise<MilestoneProgress | undefined>;
+  createMilestoneProgress(
+    progress: InsertMilestoneProgress,
+  ): Promise<MilestoneProgress>;
+  updateMilestoneProgress(
+    id: string,
+    progress: Partial<InsertMilestoneProgress>,
+  ): Promise<MilestoneProgress | undefined>;
+  upsertMilestoneProgress(
+    babyId: string,
+    milestoneDefId: string,
+    progress: Partial<InsertMilestoneProgress>,
+  ): Promise<MilestoneProgress>;
+
   // Milestone Memory operations
   getMilestoneMemoriesByBabyId(babyId: string): Promise<MilestoneMemory[]>;
-  getMilestoneMemoriesByMilestoneId(milestoneId: string): Promise<MilestoneMemory[]>;
-  createMilestoneMemory(memory: InsertMilestoneMemory): Promise<MilestoneMemory>;
+  getMilestoneMemoriesByMilestoneId(
+    milestoneId: string,
+  ): Promise<MilestoneMemory[]>;
+  createMilestoneMemory(
+    memory: InsertMilestoneMemory,
+  ): Promise<MilestoneMemory>;
   deleteMilestoneMemory(id: string): Promise<boolean>;
-  
+
   // Chat operations
   getChatMessagesByBabyId(babyId: string): Promise<ChatMessage[]>;
   createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
-  
+
   // Doctor Visit operations
   getDoctorVisitsByBabyId(babyId: string): Promise<DoctorVisit[]>;
   createDoctorVisit(visit: InsertDoctorVisit): Promise<DoctorVisit>;
-  
+
   // Medical Report operations
   getMedicalReportsByBabyId(babyId: string): Promise<MedicalReport[]>;
   createMedicalReport(report: InsertMedicalReport): Promise<MedicalReport>;
@@ -148,7 +181,9 @@ export class MemStorage implements IStorage {
     return Array.from(this.babyProfiles.values());
   }
 
-  async createBabyProfile(insertProfile: InsertBabyProfile): Promise<BabyProfile> {
+  async createBabyProfile(
+    insertProfile: InsertBabyProfile,
+  ): Promise<BabyProfile> {
     const id = randomUUID();
     const profile: BabyProfile = {
       id,
@@ -164,21 +199,30 @@ export class MemStorage implements IStorage {
     return profile;
   }
 
-  async updateBabyProfile(id: string, updates: Partial<InsertBabyProfile>): Promise<BabyProfile | undefined> {
+  async updateBabyProfile(
+    id: string,
+    updates: Partial<InsertBabyProfile>,
+  ): Promise<BabyProfile | undefined> {
     const existing = this.babyProfiles.get(id);
     if (!existing) return undefined;
-    
+
     const updated: BabyProfile = { ...existing, ...updates };
     this.babyProfiles.set(id, updated);
     return updated;
   }
 
   // Mother Profile operations
-  async getMotherProfileByBabyId(babyId: string): Promise<MotherProfile | undefined> {
-    return Array.from(this.motherProfiles.values()).find(m => m.babyId === babyId);
+  async getMotherProfileByBabyId(
+    babyId: string,
+  ): Promise<MotherProfile | undefined> {
+    return Array.from(this.motherProfiles.values()).find(
+      (m) => m.babyId === babyId,
+    );
   }
 
-  async createMotherProfile(insertProfile: InsertMotherProfile): Promise<MotherProfile> {
+  async createMotherProfile(
+    insertProfile: InsertMotherProfile,
+  ): Promise<MotherProfile> {
     const id = randomUUID();
     const profile: MotherProfile = {
       id,
@@ -192,21 +236,30 @@ export class MemStorage implements IStorage {
     return profile;
   }
 
-  async updateMotherProfile(id: string, updates: Partial<InsertMotherProfile>): Promise<MotherProfile | undefined> {
+  async updateMotherProfile(
+    id: string,
+    updates: Partial<InsertMotherProfile>,
+  ): Promise<MotherProfile | undefined> {
     const existing = this.motherProfiles.get(id);
     if (!existing) return undefined;
-    
+
     const updated: MotherProfile = { ...existing, ...updates };
     this.motherProfiles.set(id, updated);
     return updated;
   }
 
   // User Preferences operations
-  async getUserPreferencesByBabyId(babyId: string): Promise<UserPreferences | undefined> {
-    return Array.from(this.userPreferences.values()).find(p => p.babyId === babyId);
+  async getUserPreferencesByBabyId(
+    babyId: string,
+  ): Promise<UserPreferences | undefined> {
+    return Array.from(this.userPreferences.values()).find(
+      (p) => p.babyId === babyId,
+    );
   }
 
-  async createUserPreferences(insertPrefs: InsertUserPreferences): Promise<UserPreferences> {
+  async createUserPreferences(
+    insertPrefs: InsertUserPreferences,
+  ): Promise<UserPreferences> {
     const id = randomUUID();
     const prefs: UserPreferences = {
       id,
@@ -220,10 +273,13 @@ export class MemStorage implements IStorage {
     return prefs;
   }
 
-  async updateUserPreferences(id: string, updates: Partial<InsertUserPreferences>): Promise<UserPreferences | undefined> {
+  async updateUserPreferences(
+    id: string,
+    updates: Partial<InsertUserPreferences>,
+  ): Promise<UserPreferences | undefined> {
     const existing = this.userPreferences.get(id);
     if (!existing) return undefined;
-    
+
     const updated: UserPreferences = { ...existing, ...updates };
     this.userPreferences.set(id, updated);
     return updated;
@@ -231,7 +287,9 @@ export class MemStorage implements IStorage {
 
   // Vaccine operations
   async getVaccinesByBabyId(babyId: string): Promise<Vaccine[]> {
-    return Array.from(this.vaccines.values()).filter(v => v.babyId === babyId);
+    return Array.from(this.vaccines.values()).filter(
+      (v) => v.babyId === babyId,
+    );
   }
 
   async createVaccine(insertVaccine: InsertVaccine): Promise<Vaccine> {
@@ -250,10 +308,13 @@ export class MemStorage implements IStorage {
     return vaccine;
   }
 
-  async updateVaccine(id: string, updates: Partial<InsertVaccine>): Promise<Vaccine | undefined> {
+  async updateVaccine(
+    id: string,
+    updates: Partial<InsertVaccine>,
+  ): Promise<Vaccine | undefined> {
     const existing = this.vaccines.get(id);
     if (!existing) return undefined;
-    
+
     const updated: Vaccine = { ...existing, ...updates };
     this.vaccines.set(id, updated);
     return updated;
@@ -261,7 +322,7 @@ export class MemStorage implements IStorage {
 
   async initializeVaccinesForBaby(babyId: string, dob: string): Promise<void> {
     const birthDate = new Date(dob);
-    
+
     for (const group of VACCINE_SCHEDULE) {
       for (const vaccineName of group.vaccines) {
         const dueDate = this.calculateDueDate(birthDate, group.ageGroup);
@@ -269,7 +330,7 @@ export class MemStorage implements IStorage {
           babyId,
           name: vaccineName,
           ageGroup: group.ageGroup,
-          dueDate: dueDate.toISOString().split('T')[0],
+          dueDate: dueDate.toISOString().split("T")[0],
           status: "pending",
           completedDate: null,
           proofUrl: null,
@@ -280,30 +341,65 @@ export class MemStorage implements IStorage {
 
   private calculateDueDate(birthDate: Date, ageGroup: string): Date {
     const date = new Date(birthDate);
-    
+
     if (ageGroup === "Birth") return date;
-    if (ageGroup === "6 Weeks") { date.setDate(date.getDate() + 42); return date; }
-    if (ageGroup === "10 Weeks") { date.setDate(date.getDate() + 70); return date; }
-    if (ageGroup === "14 Weeks") { date.setDate(date.getDate() + 98); return date; }
-    if (ageGroup === "6 Months") { date.setMonth(date.getMonth() + 6); return date; }
-    if (ageGroup === "9 Months") { date.setMonth(date.getMonth() + 9); return date; }
-    if (ageGroup === "12 Months") { date.setFullYear(date.getFullYear() + 1); return date; }
-    if (ageGroup === "15 Months") { date.setMonth(date.getMonth() + 15); return date; }
-    if (ageGroup === "16-18 Months") { date.setMonth(date.getMonth() + 17); return date; }
-    if (ageGroup === "18 Months") { date.setMonth(date.getMonth() + 18); return date; }
-    if (ageGroup === "4-6 Years") { date.setFullYear(date.getFullYear() + 5); return date; }
-    
+    if (ageGroup === "6 Weeks") {
+      date.setDate(date.getDate() + 42);
+      return date;
+    }
+    if (ageGroup === "10 Weeks") {
+      date.setDate(date.getDate() + 70);
+      return date;
+    }
+    if (ageGroup === "14 Weeks") {
+      date.setDate(date.getDate() + 98);
+      return date;
+    }
+    if (ageGroup === "6 Months") {
+      date.setMonth(date.getMonth() + 6);
+      return date;
+    }
+    if (ageGroup === "9 Months") {
+      date.setMonth(date.getMonth() + 9);
+      return date;
+    }
+    if (ageGroup === "12 Months") {
+      date.setFullYear(date.getFullYear() + 1);
+      return date;
+    }
+    if (ageGroup === "15 Months") {
+      date.setMonth(date.getMonth() + 15);
+      return date;
+    }
+    if (ageGroup === "16-18 Months") {
+      date.setMonth(date.getMonth() + 17);
+      return date;
+    }
+    if (ageGroup === "18 Months") {
+      date.setMonth(date.getMonth() + 18);
+      return date;
+    }
+    if (ageGroup === "4-6 Years") {
+      date.setFullYear(date.getFullYear() + 5);
+      return date;
+    }
+
     return date;
   }
 
   // Growth Entry operations
   async getGrowthEntriesByBabyId(babyId: string): Promise<GrowthEntry[]> {
     return Array.from(this.growthEntries.values())
-      .filter(e => e.babyId === babyId)
-      .sort((a, b) => new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime());
+      .filter((e) => e.babyId === babyId)
+      .sort(
+        (a, b) =>
+          new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime(),
+      );
   }
 
-  async createGrowthEntry(insertEntry: InsertGrowthEntry): Promise<GrowthEntry> {
+  async createGrowthEntry(
+    insertEntry: InsertGrowthEntry,
+  ): Promise<GrowthEntry> {
     const id = randomUUID();
     const entry: GrowthEntry = {
       id,
@@ -319,7 +415,9 @@ export class MemStorage implements IStorage {
 
   // Milestone operations
   async getMilestonesByBabyId(babyId: string): Promise<Milestone[]> {
-    return Array.from(this.milestones.values()).filter(m => m.babyId === babyId);
+    return Array.from(this.milestones.values()).filter(
+      (m) => m.babyId === babyId,
+    );
   }
 
   async createMilestone(insertMilestone: InsertMilestone): Promise<Milestone> {
@@ -338,10 +436,13 @@ export class MemStorage implements IStorage {
     return milestone;
   }
 
-  async updateMilestone(id: string, updates: Partial<InsertMilestone>): Promise<Milestone | undefined> {
+  async updateMilestone(
+    id: string,
+    updates: Partial<InsertMilestone>,
+  ): Promise<Milestone | undefined> {
     const existing = this.milestones.get(id);
     if (!existing) return undefined;
-    
+
     const updated: Milestone = { ...existing, ...updates };
     this.milestones.set(id, updated);
     return updated;
@@ -364,17 +465,26 @@ export class MemStorage implements IStorage {
   }
 
   // Milestone Progress operations (for new definition-based tracking)
-  async getMilestoneProgressByBabyId(babyId: string): Promise<MilestoneProgress[]> {
-    return Array.from(this.milestoneProgress.values()).filter(p => p.babyId === babyId);
-  }
-
-  async getMilestoneProgress(babyId: string, milestoneDefId: string): Promise<MilestoneProgress | undefined> {
-    return Array.from(this.milestoneProgress.values()).find(
-      p => p.babyId === babyId && p.milestoneDefId === milestoneDefId
+  async getMilestoneProgressByBabyId(
+    babyId: string,
+  ): Promise<MilestoneProgress[]> {
+    return Array.from(this.milestoneProgress.values()).filter(
+      (p) => p.babyId === babyId,
     );
   }
 
-  async createMilestoneProgress(insertProgress: InsertMilestoneProgress): Promise<MilestoneProgress> {
+  async getMilestoneProgress(
+    babyId: string,
+    milestoneDefId: string,
+  ): Promise<MilestoneProgress | undefined> {
+    return Array.from(this.milestoneProgress.values()).find(
+      (p) => p.babyId === babyId && p.milestoneDefId === milestoneDefId,
+    );
+  }
+
+  async createMilestoneProgress(
+    insertProgress: InsertMilestoneProgress,
+  ): Promise<MilestoneProgress> {
     const id = randomUUID();
     const progress: MilestoneProgress = {
       id,
@@ -391,16 +501,23 @@ export class MemStorage implements IStorage {
     return progress;
   }
 
-  async updateMilestoneProgress(id: string, updates: Partial<InsertMilestoneProgress>): Promise<MilestoneProgress | undefined> {
+  async updateMilestoneProgress(
+    id: string,
+    updates: Partial<InsertMilestoneProgress>,
+  ): Promise<MilestoneProgress | undefined> {
     const existing = this.milestoneProgress.get(id);
     if (!existing) return undefined;
-    
+
     const updated: MilestoneProgress = { ...existing, ...updates };
     this.milestoneProgress.set(id, updated);
     return updated;
   }
 
-  async upsertMilestoneProgress(babyId: string, milestoneDefId: string, updates: Partial<InsertMilestoneProgress>): Promise<MilestoneProgress> {
+  async upsertMilestoneProgress(
+    babyId: string,
+    milestoneDefId: string,
+    updates: Partial<InsertMilestoneProgress>,
+  ): Promise<MilestoneProgress> {
     const existing = await this.getMilestoneProgress(babyId, milestoneDefId);
     if (existing) {
       const updated = await this.updateMilestoneProgress(existing.id, updates);
@@ -414,19 +531,29 @@ export class MemStorage implements IStorage {
   }
 
   // Milestone Memory operations
-  async getMilestoneMemoriesByBabyId(babyId: string): Promise<MilestoneMemory[]> {
+  async getMilestoneMemoriesByBabyId(
+    babyId: string,
+  ): Promise<MilestoneMemory[]> {
     return Array.from(this.milestoneMemories.values())
-      .filter(m => m.babyId === babyId)
-      .sort((a, b) => new Date(b.takenAt).getTime() - new Date(a.takenAt).getTime());
+      .filter((m) => m.babyId === babyId)
+      .sort(
+        (a, b) => new Date(b.takenAt).getTime() - new Date(a.takenAt).getTime(),
+      );
   }
 
-  async getMilestoneMemoriesByMilestoneId(milestoneId: string): Promise<MilestoneMemory[]> {
+  async getMilestoneMemoriesByMilestoneId(
+    milestoneId: string,
+  ): Promise<MilestoneMemory[]> {
     return Array.from(this.milestoneMemories.values())
-      .filter(m => m.milestoneId === milestoneId)
-      .sort((a, b) => new Date(b.takenAt).getTime() - new Date(a.takenAt).getTime());
+      .filter((m) => m.milestoneId === milestoneId)
+      .sort(
+        (a, b) => new Date(b.takenAt).getTime() - new Date(a.takenAt).getTime(),
+      );
   }
 
-  async createMilestoneMemory(insertMemory: InsertMilestoneMemory): Promise<MilestoneMemory> {
+  async createMilestoneMemory(
+    insertMemory: InsertMilestoneMemory,
+  ): Promise<MilestoneMemory> {
     const id = randomUUID();
     const memory: MilestoneMemory = {
       id,
@@ -448,11 +575,16 @@ export class MemStorage implements IStorage {
   // Chat operations
   async getChatMessagesByBabyId(babyId: string): Promise<ChatMessage[]> {
     return Array.from(this.chatMessages.values())
-      .filter(m => m.babyId === babyId)
-      .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+      .filter((m) => m.babyId === babyId)
+      .sort(
+        (a, b) =>
+          new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+      );
   }
 
-  async createChatMessage(insertMessage: InsertChatMessage): Promise<ChatMessage> {
+  async createChatMessage(
+    insertMessage: InsertChatMessage,
+  ): Promise<ChatMessage> {
     const id = randomUUID();
     const message: ChatMessage = { ...insertMessage, id };
     this.chatMessages.set(id, message);
@@ -462,11 +594,16 @@ export class MemStorage implements IStorage {
   // Doctor Visit operations
   async getDoctorVisitsByBabyId(babyId: string): Promise<DoctorVisit[]> {
     return Array.from(this.doctorVisits.values())
-      .filter(v => v.babyId === babyId)
-      .sort((a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime());
+      .filter((v) => v.babyId === babyId)
+      .sort(
+        (a, b) =>
+          new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime(),
+      );
   }
 
-  async createDoctorVisit(insertVisit: InsertDoctorVisit): Promise<DoctorVisit> {
+  async createDoctorVisit(
+    insertVisit: InsertDoctorVisit,
+  ): Promise<DoctorVisit> {
     const id = randomUUID();
     const visit: DoctorVisit = {
       id,
@@ -485,11 +622,16 @@ export class MemStorage implements IStorage {
   // Medical Report operations
   async getMedicalReportsByBabyId(babyId: string): Promise<MedicalReport[]> {
     return Array.from(this.medicalReports.values())
-      .filter(r => r.babyId === babyId)
-      .sort((a, b) => new Date(b.reportDate).getTime() - new Date(a.reportDate).getTime());
+      .filter((r) => r.babyId === babyId)
+      .sort(
+        (a, b) =>
+          new Date(b.reportDate).getTime() - new Date(a.reportDate).getTime(),
+      );
   }
 
-  async createMedicalReport(insertReport: InsertMedicalReport): Promise<MedicalReport> {
+  async createMedicalReport(
+    insertReport: InsertMedicalReport,
+  ): Promise<MedicalReport> {
     const id = randomUUID();
     const report: MedicalReport = {
       id,

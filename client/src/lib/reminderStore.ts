@@ -16,14 +16,14 @@ const DEFAULT_SETTINGS: ReminderSettings = {
   callRemindersEnabled: true,
   notificationRemindersEnabled: true,
   reminderDaysBefore: 2,
-  disabledVaccineIds: []
+  disabledVaccineIds: [],
 };
 
 export function getReminderSettings(): ReminderSettings {
   if (typeof window === "undefined") {
     return DEFAULT_SETTINGS;
   }
-  
+
   try {
     const stored = localStorage.getItem(REMINDER_STORAGE_KEY);
     if (stored) {
@@ -32,16 +32,16 @@ export function getReminderSettings(): ReminderSettings {
   } catch (e) {
     console.error("Failed to parse reminder settings:", e);
   }
-  
+
   return DEFAULT_SETTINGS;
 }
 
 export function setReminderSettings(settings: Partial<ReminderSettings>): void {
   if (typeof window === "undefined") return;
-  
+
   const current = getReminderSettings();
   const updated = { ...current, ...settings };
-  
+
   try {
     localStorage.setItem(REMINDER_STORAGE_KEY, JSON.stringify(updated));
   } catch (e) {
@@ -49,30 +49,39 @@ export function setReminderSettings(settings: Partial<ReminderSettings>): void {
   }
 }
 
-export function toggleVaccineReminder(vaccineId: string, enabled: boolean): void {
+export function toggleVaccineReminder(
+  vaccineId: string,
+  enabled: boolean,
+): void {
   const settings = getReminderSettings();
   let disabledIds = [...settings.disabledVaccineIds];
-  
+
   if (enabled) {
     // Remove from disabled list
-    disabledIds = disabledIds.filter(id => id !== vaccineId);
+    disabledIds = disabledIds.filter((id) => id !== vaccineId);
   } else {
     // Add to disabled list
     if (!disabledIds.includes(vaccineId)) {
       disabledIds.push(vaccineId);
     }
   }
-  
+
   setReminderSettings({ disabledVaccineIds: disabledIds });
 }
 
 export function isVaccineReminderEnabled(vaccineId: string): boolean {
   const settings = getReminderSettings();
-  return settings.globalRemindersEnabled && !settings.disabledVaccineIds.includes(vaccineId);
+  return (
+    settings.globalRemindersEnabled &&
+    !settings.disabledVaccineIds.includes(vaccineId)
+  );
 }
 
 // Helper to format reminder message
-export function getReminderMessage(vaccineName: string, daysUntilDue: number): string {
+export function getReminderMessage(
+  vaccineName: string,
+  daysUntilDue: number,
+): string {
   if (daysUntilDue === 0) {
     return `${vaccineName} is due today!`;
   } else if (daysUntilDue === 1) {

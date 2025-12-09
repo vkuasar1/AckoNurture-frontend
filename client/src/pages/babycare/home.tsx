@@ -1,7 +1,7 @@
 import { Link, useParams, useLocation } from "wouter";
-import { 
-  ArrowLeft, 
-  Syringe, 
+import {
+  ArrowLeft,
+  Syringe,
   ChevronRight,
   Plus,
   Calendar,
@@ -22,27 +22,37 @@ import {
   Building2,
   AlertCircle,
   Star,
-  Users
+  Users,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useRef, useEffect } from "react";
 import type { BabyProfile, Vaccine, GrowthEntry } from "@shared/schema";
 import { differenceInMonths, differenceInDays, format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
-import { 
-  getActivePlans, 
-  hasChildPlan as checkChildPlan, 
+import {
+  getActivePlans,
+  hasChildPlan as checkChildPlan,
   hasMotherPlan as checkMotherPlan,
   childPlanDetails,
   motherPlanDetails,
   comboPlanDetails,
-  type ActivePlans
+  type ActivePlans,
 } from "@/lib/planStore";
 import { Crown } from "lucide-react";
-import { getCaregiverProfile, type CaregiverProfile } from "@/lib/caregiverStore";
+import {
+  getCaregiverProfile,
+  type CaregiverProfile,
+} from "@/lib/caregiverStore";
 import { MiraFab } from "@/components/MiraFab";
 import { getProfiles, type Profile } from "@/lib/profileApi";
 import { getUserId } from "@/lib/userId";
@@ -53,7 +63,7 @@ function calculateAge(dob: string): { display: string; months: number } {
   const today = new Date();
   const totalMonths = differenceInMonths(today, birthDate);
   const totalDays = differenceInDays(today, birthDate);
-  
+
   if (totalMonths < 1) {
     return { display: `${totalDays} days`, months: 0 };
   } else if (totalMonths < 12) {
@@ -69,7 +79,10 @@ function getDaysUntilDue(dueDate: string): number {
   return differenceInDays(new Date(dueDate), new Date());
 }
 
-function getDueStatus(dueDate: string): { label: string; variant: "default" | "destructive" | "secondary" } {
+function getDueStatus(dueDate: string): {
+  label: string;
+  variant: "default" | "destructive" | "secondary";
+} {
   const days = getDaysUntilDue(dueDate);
   if (days < 0) return { label: "Overdue", variant: "destructive" };
   if (days === 0) return { label: "Due today", variant: "destructive" };
@@ -84,50 +97,79 @@ export default function BabyCareHome() {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [showCaregiverPitchModal, setShowCaregiverPitchModal] = useState(false);
   const [showReminderDialog, setShowReminderDialog] = useState(false);
-  const [showPlanDetailsModal, setShowPlanDetailsModal] = useState<"child" | "mother" | null>(null);
+  const [showPlanDetailsModal, setShowPlanDetailsModal] = useState<
+    "child" | "mother" | null
+  >(null);
   const [showResetConfirmDialog, setShowResetConfirmDialog] = useState(false);
   const [reminderVaccine, setReminderVaccine] = useState<Vaccine | null>(null);
-  const [reminderType, setReminderType] = useState<"call" | "sms" | "push">("call");
-  const [reminderTime, setReminderTime] = useState<"1day" | "3days" | "1week">("1day");
+  const [reminderType, setReminderType] = useState<"call" | "sms" | "push">(
+    "call",
+  );
+  const [reminderTime, setReminderTime] = useState<"1day" | "3days" | "1week">(
+    "1day",
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const babyId = params.babyId;
-  
-  const [caregiverProfile, setCaregiverProfileState] = useState<CaregiverProfile | null>(null);
+
+  const [caregiverProfile, setCaregiverProfileState] =
+    useState<CaregiverProfile | null>(null);
   const isCaregiverComplete = caregiverProfile?.setupCompleted === true;
-  const [activePlans, setActivePlansState] = useState<ActivePlans>({ childPlan: null, motherPlan: null, comboPlan: null });
-  
+  const [activePlans, setActivePlansState] = useState<ActivePlans>({
+    childPlan: null,
+    motherPlan: null,
+    comboPlan: null,
+  });
+
   useEffect(() => {
     setActivePlansState(getActivePlans());
     setCaregiverProfileState(getCaregiverProfile());
   }, []);
-  
+
   const userHasChildPlan = checkChildPlan(activePlans);
   const userHasMotherPlan = checkMotherPlan(activePlans);
 
   const getCurrentChildPlanInfo = () => {
     if (activePlans.comboPlan) {
       const combo = comboPlanDetails[activePlans.comboPlan];
-      return { name: combo.name, description: combo.shortDescription, isCombo: true };
+      return {
+        name: combo.name,
+        description: combo.shortDescription,
+        isCombo: true,
+      };
     }
     if (activePlans.childPlan) {
       const plan = childPlanDetails[activePlans.childPlan];
-      return { name: plan.name, description: plan.shortDescription, benefits: plan.benefits, isCombo: false };
+      return {
+        name: plan.name,
+        description: plan.shortDescription,
+        benefits: plan.benefits,
+        isCombo: false,
+      };
     }
     return null;
   };
-  
+
   const getCurrentMotherPlanInfo = () => {
     if (activePlans.comboPlan) {
       const combo = comboPlanDetails[activePlans.comboPlan];
-      return { name: combo.name, description: combo.shortDescription, isCombo: true };
+      return {
+        name: combo.name,
+        description: combo.shortDescription,
+        isCombo: true,
+      };
     }
     if (activePlans.motherPlan) {
       const plan = motherPlanDetails[activePlans.motherPlan];
-      return { name: plan.name, description: plan.shortDescription, benefits: plan.benefits, isCombo: false };
+      return {
+        name: plan.name,
+        description: plan.shortDescription,
+        benefits: plan.benefits,
+        isCombo: false,
+      };
     }
     return null;
   };
-  
+
   const childPlanInfo = getCurrentChildPlanInfo();
   const motherPlanInfo = getCurrentMotherPlanInfo();
 
@@ -139,9 +181,9 @@ export default function BabyCareHome() {
   });
 
   // Find baby profile - route param babyId is actually profileId
-  const baby = babyId 
-    ? profiles.find(p => p.type === "baby" && p.profileId === babyId)
-    : profiles.find(p => p.type === "baby");
+  const baby = babyId
+    ? profiles.find((p) => p.type === "baby" && p.profileId === babyId)
+    : profiles.find((p) => p.type === "baby");
   const babyProfileId = baby?.profileId || babyId; // Use profileId as babyId for API calls
 
   // Fetch upcoming vaccines from API using profileId as babyId
@@ -149,7 +191,10 @@ export default function BabyCareHome() {
     queryKey: [`/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming`],
     enabled: !!babyProfileId,
     queryFn: async () => {
-      const response = await apiRequest("GET", `/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming?limit=10`);
+      const response = await apiRequest(
+        "GET",
+        `/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming?limit=10`,
+      );
       return response.json();
     },
   });
@@ -162,14 +207,21 @@ export default function BabyCareHome() {
   // Vaccines are already sorted and limited by the API, just take first 2
   const upcomingVaccines = vaccines.slice(0, 2);
 
-  const babyAge = baby && baby.dob ? calculateAge(baby.dob) : { display: "", months: 0 };
-  
+  const babyAge =
+    baby && baby.dob ? calculateAge(baby.dob) : { display: "", months: 0 };
+
   const latestWeight = growthEntries
-    .filter(e => e.type === "weight")
-    .sort((a, b) => new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime())[0];
+    .filter((e) => e.type === "weight")
+    .sort(
+      (a, b) =>
+        new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime(),
+    )[0];
   const latestHeight = growthEntries
-    .filter(e => e.type === "height")
-    .sort((a, b) => new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime())[0];
+    .filter((e) => e.type === "height")
+    .sort(
+      (a, b) =>
+        new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime(),
+    )[0];
 
   const handleAddCaregiverProfile = () => {
     setShowCaregiverPitchModal(false);
@@ -185,12 +237,12 @@ export default function BabyCareHome() {
     localStorage.removeItem("nurture_active_plans");
     localStorage.removeItem("nurture_caregiver_profile");
     localStorage.removeItem("nurture_reminders");
-    
+
     toast({
       title: "App Reset Complete",
       description: "All data has been cleared. Redirecting to start fresh...",
     });
-    
+
     // Redirect to home after a brief delay
     setTimeout(() => {
       window.location.href = "/";
@@ -205,7 +257,12 @@ export default function BabyCareHome() {
       <div className="bg-zinc-900 px-4 py-3">
         <div className="flex items-center justify-between">
           <Link href="/">
-            <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10" data-testid="button-back">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 text-white hover:bg-white/10"
+              data-testid="button-back"
+            >
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
@@ -214,20 +271,28 @@ export default function BabyCareHome() {
               <Baby className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h1 className="text-[15px] font-bold text-white" data-testid="text-header-title">
+              <h1
+                className="text-[15px] font-bold text-white"
+                data-testid="text-header-title"
+              >
                 {baby ? baby.name : "Nurture"}
               </h1>
               {baby && baby.dob && (
-                <p className="text-[11px] text-zinc-400" data-testid="text-baby-age">
+                <p
+                  className="text-[11px] text-zinc-400"
+                  data-testid="text-baby-age"
+                >
                   {babyAge.display} old
                 </p>
               )}
             </div>
           </div>
           <div className="flex items-center gap-1">
-            {(userHasChildPlan || userHasMotherPlan) ? (
+            {userHasChildPlan || userHasMotherPlan ? (
               <button
-                onClick={() => setShowPlanDetailsModal(userHasChildPlan ? "child" : "mother")}
+                onClick={() =>
+                  setShowPlanDetailsModal(userHasChildPlan ? "child" : "mother")
+                }
                 className="relative h-9 w-9 flex items-center justify-center rounded-md bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg"
                 data-testid="button-view-plan"
               >
@@ -245,10 +310,10 @@ export default function BabyCareHome() {
                 </button>
               </Link>
             )}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-9 w-9 text-white hover:bg-white/10" 
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9 text-white hover:bg-white/10"
               data-testid="button-reset"
               onClick={() => setShowResetConfirmDialog(true)}
             >
@@ -263,8 +328,10 @@ export default function BabyCareHome() {
         {/* Memories Section */}
         <div className="px-4 pt-4 pb-3">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-[14px] font-semibold text-zinc-800">Memories</h2>
-            <button 
+            <h2 className="text-[14px] font-semibold text-zinc-800">
+              Memories
+            </h2>
+            <button
               onClick={handlePhotoUpload}
               className="flex items-center gap-1 text-[12px] text-violet-600 font-medium"
               data-testid="button-add-photo"
@@ -273,19 +340,23 @@ export default function BabyCareHome() {
               Add Photo
             </button>
           </div>
-          
+
           {mockPhotos.length > 0 ? (
             <div className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4">
               {mockPhotos.map((photo, idx) => (
-                <div 
+                <div
                   key={idx}
                   className="w-24 h-24 rounded-xl bg-zinc-100 flex-shrink-0 overflow-hidden"
                   data-testid={`photo-memory-${idx}`}
                 >
-                  <img src={photo} alt="Memory" className="w-full h-full object-cover" />
+                  <img
+                    src={photo}
+                    alt="Memory"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               ))}
-              <button 
+              <button
                 onClick={handlePhotoUpload}
                 className="w-24 h-24 rounded-xl bg-zinc-100 border-2 border-dashed border-zinc-300 flex-shrink-0 flex flex-col items-center justify-center gap-1"
                 data-testid="button-upload-more"
@@ -295,7 +366,7 @@ export default function BabyCareHome() {
               </button>
             </div>
           ) : (
-            <button 
+            <button
               onClick={handlePhotoUpload}
               className="w-full h-28 rounded-xl bg-gradient-to-br from-violet-50 to-pink-50 border border-dashed border-violet-200 flex flex-col items-center justify-center gap-2"
               data-testid="button-upload-first-photo"
@@ -303,21 +374,28 @@ export default function BabyCareHome() {
               <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center">
                 <Camera className="w-5 h-5 text-violet-500" />
               </div>
-              <span className="text-[12px] text-zinc-600">Capture precious moments</span>
+              <span className="text-[12px] text-zinc-600">
+                Capture precious moments
+              </span>
             </button>
           )}
         </div>
 
         {/* Celebrate Growth Section */}
         <div className="px-4 pb-3">
-          <h2 className="text-[14px] font-semibold text-zinc-800 mb-3">Celebrate Every Step</h2>
+          <h2 className="text-[14px] font-semibold text-zinc-800 mb-3">
+            Celebrate Every Step
+          </h2>
         </div>
 
         {/* Milestones Hero Card */}
         {baby && (
           <div className="px-4 pb-3 -mt-1">
             <Link href={`/babycare/milestones/${babyProfileId}`}>
-              <Card className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border border-amber-200/50 shadow-md rounded-2xl overflow-hidden hover-elevate" data-testid="card-milestones-hero">
+              <Card
+                className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border border-amber-200/50 shadow-md rounded-2xl overflow-hidden hover-elevate"
+                data-testid="card-milestones-hero"
+              >
                 <CardContent className="p-5">
                   <div className="flex items-start gap-4">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-400 to-yellow-400 flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-200/50">
@@ -325,20 +403,27 @@ export default function BabyCareHome() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="text-[17px] font-bold text-zinc-800">Milestones</h3>
+                        <h3 className="text-[17px] font-bold text-zinc-800">
+                          Milestones
+                        </h3>
                         <ChevronRight className="w-4 h-4 text-amber-500" />
                       </div>
                       <p className="text-[13px] text-zinc-600 leading-relaxed">
-                        Share and rejoice your child's growth, every week, every day
+                        Share and rejoice your child's growth, every week, every
+                        day
                       </p>
                       <div className="flex items-center gap-3 mt-3">
                         <div className="flex items-center gap-1.5 bg-white/80 px-2.5 py-1 rounded-full border border-amber-200/50">
                           <Camera className="w-3.5 h-3.5 text-amber-500" />
-                          <span className="text-[11px] font-medium text-amber-700">Capture firsts</span>
+                          <span className="text-[11px] font-medium text-amber-700">
+                            Capture firsts
+                          </span>
                         </div>
                         <div className="flex items-center gap-1.5 bg-white/80 px-2.5 py-1 rounded-full border border-amber-200/50">
                           <Heart className="w-3.5 h-3.5 text-amber-500" />
-                          <span className="text-[11px] font-medium text-amber-700">Track progress</span>
+                          <span className="text-[11px] font-medium text-amber-700">
+                            Track progress
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -351,19 +436,27 @@ export default function BabyCareHome() {
 
         {/* Care Essentials Grid */}
         <div className="px-4 pb-3">
-          <h2 className="text-[14px] font-semibold text-zinc-800 mb-3">Care Essentials</h2>
+          <h2 className="text-[14px] font-semibold text-zinc-800 mb-3">
+            Care Essentials
+          </h2>
           <div className="grid grid-cols-2 gap-3">
             {/* Vaccines Card */}
             {baby && babyProfileId && (
               <Link href={`/babycare/vaccines/${babyProfileId}`}>
-                <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-vaccines">
+                <Card
+                  className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate"
+                  data-testid="card-vaccines"
+                >
                   <CardContent className="p-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-3">
                       <Shield className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-[14px] font-bold text-zinc-800">Vaccines</h3>
+                    <h3 className="text-[14px] font-bold text-zinc-800">
+                      Vaccines
+                    </h3>
                     <p className="text-[11px] text-zinc-500 mt-0.5">
-                      {vaccines.filter(v => v.status === 'completed').length}/{vaccines.length} completed
+                      {vaccines.filter((v) => v.status === "completed").length}/
+                      {vaccines.length} completed
                     </p>
                   </CardContent>
                 </Card>
@@ -373,17 +466,21 @@ export default function BabyCareHome() {
             {/* Growth Card */}
             {baby && babyProfileId && (
               <Link href={`/babycare/growth/${babyProfileId}`}>
-                <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-growth">
+                <Card
+                  className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate"
+                  data-testid="card-growth"
+                >
                   <CardContent className="p-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mb-3">
                       <TrendingUp className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-[14px] font-bold text-zinc-800">Growth</h3>
+                    <h3 className="text-[14px] font-bold text-zinc-800">
+                      Growth
+                    </h3>
                     <p className="text-[11px] text-zinc-500 mt-0.5">
                       {latestWeight || latestHeight
-                        ? `${latestWeight?.value || '-'}kg, ${latestHeight?.value || '-'}cm`
-                        : "Track height & weight"
-                      }
+                        ? `${latestWeight?.value || "-"}kg, ${latestHeight?.value || "-"}cm`
+                        : "Track height & weight"}
                     </p>
                   </CardContent>
                 </Card>
@@ -393,13 +490,20 @@ export default function BabyCareHome() {
             {/* Records Card */}
             {baby && babyProfileId && (
               <Link href={`/babycare/records/${babyProfileId}`}>
-                <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-records">
+                <Card
+                  className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate"
+                  data-testid="card-records"
+                >
                   <CardContent className="p-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-400 to-zinc-500 flex items-center justify-center mb-3">
                       <FileText className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-[14px] font-bold text-zinc-800">Records</h3>
-                    <p className="text-[11px] text-zinc-500 mt-0.5">Prescriptions & reports</p>
+                    <h3 className="text-[14px] font-bold text-zinc-800">
+                      Records
+                    </h3>
+                    <p className="text-[11px] text-zinc-500 mt-0.5">
+                      Prescriptions & reports
+                    </p>
                   </CardContent>
                 </Card>
               </Link>
@@ -408,13 +512,20 @@ export default function BabyCareHome() {
             {/* Talk to Parents Card */}
             {baby && babyProfileId && (
               <Link href={`/babycare/community/${babyProfileId}`}>
-                <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-talk-to-parents">
+                <Card
+                  className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate"
+                  data-testid="card-talk-to-parents"
+                >
                   <CardContent className="p-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mb-3">
                       <Users className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-[14px] font-bold text-zinc-800">Talk to Parents</h3>
-                    <p className="text-[11px] text-zinc-500 mt-0.5">Connect with other parents</p>
+                    <h3 className="text-[14px] font-bold text-zinc-800">
+                      Talk to Parents
+                    </h3>
+                    <p className="text-[11px] text-zinc-500 mt-0.5">
+                      Connect with other parents
+                    </p>
                   </CardContent>
                 </Card>
               </Link>
@@ -431,13 +542,20 @@ export default function BabyCareHome() {
                 }}
                 className="text-left w-full"
               >
-                <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-nanny">
+                <Card
+                  className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate"
+                  data-testid="card-nanny"
+                >
                   <CardContent className="p-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center mb-3">
                       <Baby className="w-6 h-6 text-white" />
                     </div>
-                    <h3 className="text-[14px] font-bold text-zinc-800">Nanny</h3>
-                    <p className="text-[11px] text-zinc-500 mt-0.5">Coming soon</p>
+                    <h3 className="text-[14px] font-bold text-zinc-800">
+                      Nanny
+                    </h3>
+                    <p className="text-[11px] text-zinc-500 mt-0.5">
+                      Coming soon
+                    </p>
                   </CardContent>
                 </Card>
               </button>
@@ -453,19 +571,34 @@ export default function BabyCareHome() {
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-zinc-100 px-6 py-2 z-50">
         <div className="flex items-center justify-around max-w-md mx-auto">
           <Link href="/">
-            <button className="flex flex-col items-center gap-1 py-2 px-4" data-testid="nav-home">
+            <button
+              className="flex flex-col items-center gap-1 py-2 px-4"
+              data-testid="nav-home"
+            >
               <Home className="w-5 h-5 text-zinc-400" />
-              <span className="text-[10px] font-medium text-zinc-400">Home</span>
+              <span className="text-[10px] font-medium text-zinc-400">
+                Home
+              </span>
             </button>
           </Link>
-          <button className="flex flex-col items-center gap-1 py-2 px-4" data-testid="nav-nurture">
+          <button
+            className="flex flex-col items-center gap-1 py-2 px-4"
+            data-testid="nav-nurture"
+          >
             <Baby className="w-5 h-5 text-violet-600" />
-            <span className="text-[10px] font-semibold text-violet-600">Nurture</span>
+            <span className="text-[10px] font-semibold text-violet-600">
+              Nurture
+            </span>
           </button>
           <Link href="/babycare/resources">
-            <button className="flex flex-col items-center gap-1 py-2 px-4" data-testid="nav-support">
+            <button
+              className="flex flex-col items-center gap-1 py-2 px-4"
+              data-testid="nav-support"
+            >
               <HelpCircle className="w-5 h-5 text-zinc-400" />
-              <span className="text-[10px] font-medium text-zinc-400">Support</span>
+              <span className="text-[10px] font-medium text-zinc-400">
+                Support
+              </span>
             </button>
           </Link>
         </div>
@@ -490,8 +623,14 @@ export default function BabyCareHome() {
       />
 
       {/* Caregiver Pitch Modal */}
-      <Dialog open={showCaregiverPitchModal} onOpenChange={setShowCaregiverPitchModal}>
-        <DialogContent className="max-w-[340px] rounded-2xl" data-testid="dialog-caregiver-pitch">
+      <Dialog
+        open={showCaregiverPitchModal}
+        onOpenChange={setShowCaregiverPitchModal}
+      >
+        <DialogContent
+          className="max-w-[340px] rounded-2xl"
+          data-testid="dialog-caregiver-pitch"
+        >
           <DialogHeader>
             <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center shadow-lg">
               <Heart className="w-8 h-8 text-white" />
@@ -500,34 +639,47 @@ export default function BabyCareHome() {
               Your Wellness Matters
             </DialogTitle>
             <DialogDescription className="text-[13px] text-zinc-500 text-center">
-              Add your profile to access postpartum recovery, mental health support, and expert consultations
+              Add your profile to access postpartum recovery, mental health
+              support, and expert consultations
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="py-4 space-y-3">
             <div className="flex items-center gap-3 bg-pink-50 rounded-xl p-3">
               <Heart className="w-5 h-5 text-pink-600 flex-shrink-0" />
               <div>
-                <p className="text-[13px] font-semibold text-zinc-800">Postpartum Recovery</p>
-                <p className="text-[12px] text-zinc-500">Personalized recovery tracking</p>
+                <p className="text-[13px] font-semibold text-zinc-800">
+                  Postpartum Recovery
+                </p>
+                <p className="text-[12px] text-zinc-500">
+                  Personalized recovery tracking
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3 bg-purple-50 rounded-xl p-3">
               <Sparkles className="w-5 h-5 text-purple-600 flex-shrink-0" />
               <div>
-                <p className="text-[13px] font-semibold text-zinc-800">Mental Wellness</p>
-                <p className="text-[12px] text-zinc-500">Support for new mothers</p>
+                <p className="text-[13px] font-semibold text-zinc-800">
+                  Mental Wellness
+                </p>
+                <p className="text-[12px] text-zinc-500">
+                  Support for new mothers
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3 bg-blue-50 rounded-xl p-3">
               <Phone className="w-5 h-5 text-blue-600 flex-shrink-0" />
               <div>
-                <p className="text-[13px] font-semibold text-zinc-800">Expert Consultations</p>
-                <p className="text-[12px] text-zinc-500">Connect with specialists</p>
+                <p className="text-[13px] font-semibold text-zinc-800">
+                  Expert Consultations
+                </p>
+                <p className="text-[12px] text-zinc-500">
+                  Connect with specialists
+                </p>
               </div>
             </div>
           </div>
-          
+
           <DialogFooter className="flex flex-col gap-2">
             <Button
               onClick={handleAddCaregiverProfile}
@@ -550,7 +702,10 @@ export default function BabyCareHome() {
 
       {/* Vaccine Reminder Dialog */}
       <Dialog open={showReminderDialog} onOpenChange={setShowReminderDialog}>
-        <DialogContent className="max-w-[340px] rounded-2xl" data-testid="dialog-vaccine-reminder">
+        <DialogContent
+          className="max-w-[340px] rounded-2xl"
+          data-testid="dialog-vaccine-reminder"
+        >
           <DialogHeader>
             <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg">
               <Bell className="w-7 h-7 text-white" />
@@ -560,13 +715,18 @@ export default function BabyCareHome() {
             </DialogTitle>
             <DialogDescription className="text-[13px] text-zinc-500 text-center">
               {reminderVaccine ? (
-                <>Get reminded about <span className="font-semibold text-zinc-700">{reminderVaccine.name}</span></>
+                <>
+                  Get reminded about{" "}
+                  <span className="font-semibold text-zinc-700">
+                    {reminderVaccine.name}
+                  </span>
+                </>
               ) : (
                 "Choose how and when to be reminded"
               )}
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="py-4 space-y-4">
             <div>
               <label className="text-[13px] font-semibold text-zinc-700 mb-2 block">
@@ -582,8 +742,12 @@ export default function BabyCareHome() {
                   }`}
                   data-testid="reminder-type-call"
                 >
-                  <Phone className={`w-5 h-5 ${reminderType === "call" ? "text-blue-600" : "text-zinc-400"}`} />
-                  <span className={`text-[11px] font-medium ${reminderType === "call" ? "text-blue-700" : "text-zinc-600"}`}>
+                  <Phone
+                    className={`w-5 h-5 ${reminderType === "call" ? "text-blue-600" : "text-zinc-400"}`}
+                  />
+                  <span
+                    className={`text-[11px] font-medium ${reminderType === "call" ? "text-blue-700" : "text-zinc-600"}`}
+                  >
                     Call
                   </span>
                 </button>
@@ -596,8 +760,12 @@ export default function BabyCareHome() {
                   }`}
                   data-testid="reminder-type-sms"
                 >
-                  <MessageSquare className={`w-5 h-5 ${reminderType === "sms" ? "text-blue-600" : "text-zinc-400"}`} />
-                  <span className={`text-[11px] font-medium ${reminderType === "sms" ? "text-blue-700" : "text-zinc-600"}`}>
+                  <MessageSquare
+                    className={`w-5 h-5 ${reminderType === "sms" ? "text-blue-600" : "text-zinc-400"}`}
+                  />
+                  <span
+                    className={`text-[11px] font-medium ${reminderType === "sms" ? "text-blue-700" : "text-zinc-600"}`}
+                  >
                     SMS
                   </span>
                 </button>
@@ -610,8 +778,12 @@ export default function BabyCareHome() {
                   }`}
                   data-testid="reminder-type-push"
                 >
-                  <Bell className={`w-5 h-5 ${reminderType === "push" ? "text-blue-600" : "text-zinc-400"}`} />
-                  <span className={`text-[11px] font-medium ${reminderType === "push" ? "text-blue-700" : "text-zinc-600"}`}>
+                  <Bell
+                    className={`w-5 h-5 ${reminderType === "push" ? "text-blue-600" : "text-zinc-400"}`}
+                  />
+                  <span
+                    className={`text-[11px] font-medium ${reminderType === "push" ? "text-blue-700" : "text-zinc-600"}`}
+                  >
                     Push
                   </span>
                 </button>
@@ -632,10 +804,14 @@ export default function BabyCareHome() {
                   }`}
                   data-testid="reminder-time-1day"
                 >
-                  <span className={`text-[13px] font-medium ${reminderTime === "1day" ? "text-blue-700" : "text-zinc-600"}`}>
+                  <span
+                    className={`text-[13px] font-medium ${reminderTime === "1day" ? "text-blue-700" : "text-zinc-600"}`}
+                  >
                     1 day before due date
                   </span>
-                  {reminderTime === "1day" && <Check className="w-4 h-4 text-blue-600" />}
+                  {reminderTime === "1day" && (
+                    <Check className="w-4 h-4 text-blue-600" />
+                  )}
                 </button>
                 <button
                   onClick={() => setReminderTime("3days")}
@@ -646,10 +822,14 @@ export default function BabyCareHome() {
                   }`}
                   data-testid="reminder-time-3days"
                 >
-                  <span className={`text-[13px] font-medium ${reminderTime === "3days" ? "text-blue-700" : "text-zinc-600"}`}>
+                  <span
+                    className={`text-[13px] font-medium ${reminderTime === "3days" ? "text-blue-700" : "text-zinc-600"}`}
+                  >
                     3 days before due date
                   </span>
-                  {reminderTime === "3days" && <Check className="w-4 h-4 text-blue-600" />}
+                  {reminderTime === "3days" && (
+                    <Check className="w-4 h-4 text-blue-600" />
+                  )}
                 </button>
                 <button
                   onClick={() => setReminderTime("1week")}
@@ -660,10 +840,14 @@ export default function BabyCareHome() {
                   }`}
                   data-testid="reminder-time-1week"
                 >
-                  <span className={`text-[13px] font-medium ${reminderTime === "1week" ? "text-blue-700" : "text-zinc-600"}`}>
+                  <span
+                    className={`text-[13px] font-medium ${reminderTime === "1week" ? "text-blue-700" : "text-zinc-600"}`}
+                  >
                     1 week before due date
                   </span>
-                  {reminderTime === "1week" && <Check className="w-4 h-4 text-blue-600" />}
+                  {reminderTime === "1week" && (
+                    <Check className="w-4 h-4 text-blue-600" />
+                  )}
                 </button>
               </div>
             </div>
@@ -671,15 +855,15 @@ export default function BabyCareHome() {
             <div className="bg-amber-50 rounded-xl p-3 flex items-start gap-2">
               <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
               <p className="text-[11px] text-amber-700 leading-relaxed">
-                {reminderType === "call" 
+                {reminderType === "call"
                   ? "You'll receive an automated call reminder at 10:00 AM on the scheduled day."
                   : reminderType === "sms"
-                  ? "You'll receive an SMS reminder with vaccine details and booking link."
-                  : "You'll receive a push notification on your device."}
+                    ? "You'll receive an SMS reminder with vaccine details and booking link."
+                    : "You'll receive a push notification on your device."}
               </p>
             </div>
           </div>
-          
+
           <DialogFooter className="flex gap-2">
             <Button
               variant="outline"
@@ -694,7 +878,11 @@ export default function BabyCareHome() {
                 toast({
                   title: "Reminder set!",
                   description: `You'll receive a ${reminderType === "call" ? "call" : reminderType === "sms" ? "SMS" : "notification"} ${
-                    reminderTime === "1day" ? "1 day" : reminderTime === "3days" ? "3 days" : "1 week"
+                    reminderTime === "1day"
+                      ? "1 day"
+                      : reminderTime === "3days"
+                        ? "3 days"
+                        : "1 week"
                   } before the vaccine is due.`,
                 });
                 setShowReminderDialog(false);
@@ -710,8 +898,14 @@ export default function BabyCareHome() {
       </Dialog>
 
       {/* Plan Details Modal */}
-      <Dialog open={showPlanDetailsModal !== null} onOpenChange={() => setShowPlanDetailsModal(null)}>
-        <DialogContent className="max-w-[340px] rounded-2xl" data-testid="dialog-plan-details">
+      <Dialog
+        open={showPlanDetailsModal !== null}
+        onOpenChange={() => setShowPlanDetailsModal(null)}
+      >
+        <DialogContent
+          className="max-w-[340px] rounded-2xl"
+          data-testid="dialog-plan-details"
+        >
           <DialogHeader>
             <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
               <Crown className="w-7 h-7 text-white" />
@@ -720,32 +914,40 @@ export default function BabyCareHome() {
               {showPlanDetailsModal === "child" && childPlanInfo
                 ? childPlanInfo.name
                 : showPlanDetailsModal === "mother" && motherPlanInfo
-                ? motherPlanInfo.name
-                : "Your Plan"}
+                  ? motherPlanInfo.name
+                  : "Your Plan"}
             </DialogTitle>
             <DialogDescription className="text-[13px] text-zinc-500 text-center">
               {showPlanDetailsModal === "child" && childPlanInfo
                 ? childPlanInfo.description
                 : showPlanDetailsModal === "mother" && motherPlanInfo
-                ? motherPlanInfo.description
-                : "Premium care benefits active"}
+                  ? motherPlanInfo.description
+                  : "Premium care benefits active"}
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="py-4 space-y-3">
             <div className="flex items-center gap-3 bg-emerald-50 rounded-xl p-3">
               <Shield className="w-5 h-5 text-emerald-600 flex-shrink-0" />
               <div>
-                <p className="text-[13px] font-semibold text-zinc-800">Plan Active</p>
-                <p className="text-[12px] text-zinc-500">Your benefits are ready to use</p>
+                <p className="text-[13px] font-semibold text-zinc-800">
+                  Plan Active
+                </p>
+                <p className="text-[12px] text-zinc-500">
+                  Your benefits are ready to use
+                </p>
               </div>
             </div>
             {showPlanDetailsModal === "child" && (
               <div className="flex items-center gap-3 bg-blue-50 rounded-xl p-3">
                 <Baby className="w-5 h-5 text-blue-600 flex-shrink-0" />
                 <div>
-                  <p className="text-[13px] font-semibold text-zinc-800">Baby Care Coverage</p>
-                  <p className="text-[12px] text-zinc-500">Vaccines, consultations & more</p>
+                  <p className="text-[13px] font-semibold text-zinc-800">
+                    Baby Care Coverage
+                  </p>
+                  <p className="text-[12px] text-zinc-500">
+                    Vaccines, consultations & more
+                  </p>
                 </div>
               </div>
             )}
@@ -753,13 +955,17 @@ export default function BabyCareHome() {
               <div className="flex items-center gap-3 bg-pink-50 rounded-xl p-3">
                 <Heart className="w-5 h-5 text-pink-600 flex-shrink-0" />
                 <div>
-                  <p className="text-[13px] font-semibold text-zinc-800">Mother Wellness</p>
-                  <p className="text-[12px] text-zinc-500">Recovery & mental health support</p>
+                  <p className="text-[13px] font-semibold text-zinc-800">
+                    Mother Wellness
+                  </p>
+                  <p className="text-[12px] text-zinc-500">
+                    Recovery & mental health support
+                  </p>
                 </div>
               </div>
             )}
           </div>
-          
+
           <DialogFooter className="flex flex-col gap-2">
             <Link href="/babycare/plans" className="w-full">
               <Button
@@ -782,8 +988,14 @@ export default function BabyCareHome() {
       </Dialog>
 
       {/* Reset Confirmation Dialog */}
-      <Dialog open={showResetConfirmDialog} onOpenChange={setShowResetConfirmDialog}>
-        <DialogContent className="max-w-[340px] rounded-2xl" data-testid="dialog-reset-confirm">
+      <Dialog
+        open={showResetConfirmDialog}
+        onOpenChange={setShowResetConfirmDialog}
+      >
+        <DialogContent
+          className="max-w-[340px] rounded-2xl"
+          data-testid="dialog-reset-confirm"
+        >
           <DialogHeader>
             <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center shadow-lg">
               <RotateCcw className="w-7 h-7 text-white" />
@@ -792,10 +1004,11 @@ export default function BabyCareHome() {
               Reset App Data?
             </DialogTitle>
             <DialogDescription className="text-[13px] text-zinc-500 text-center">
-              This will clear all your saved data including baby profiles, plans, and preferences. You'll need to complete onboarding again.
+              This will clear all your saved data including baby profiles,
+              plans, and preferences. You'll need to complete onboarding again.
             </DialogDescription>
           </DialogHeader>
-          
+
           <DialogFooter className="flex flex-col gap-2 pt-4">
             <Button
               variant="destructive"

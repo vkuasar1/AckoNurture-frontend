@@ -83,7 +83,7 @@ export default function BabyCareWelcome() {
   const [showCodeEntry, setShowCodeEntry] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [scanStatus, setScanStatus] = useState<"scanning" | "found" | "idle">(
-    "idle"
+    "idle",
   );
   const [registrationCode, setRegistrationCode] = useState("");
   const [codeError, setCodeError] = useState("");
@@ -460,8 +460,8 @@ export default function BabyCareWelcome() {
               {selectedOptions.size === 2
                 ? "Setting up baby care and your wellness"
                 : selectedOptions.has("baby")
-                ? "Setting up baby care tools"
-                : "Setting up your wellness support"}
+                  ? "Setting up baby care tools"
+                  : "Setting up your wellness support"}
             </motion.p>
           )}
         </div>

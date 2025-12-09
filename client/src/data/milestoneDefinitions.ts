@@ -1,6 +1,21 @@
-export type MilestoneCategory = "gross_motor" | "fine_motor" | "language" | "cognitive" | "social_emotional" | "feeding" | "communication" | "oral_sensory" | "regulation";
+export type MilestoneCategory =
+  | "gross_motor"
+  | "fine_motor"
+  | "language"
+  | "cognitive"
+  | "social_emotional"
+  | "feeding"
+  | "communication"
+  | "oral_sensory"
+  | "regulation";
 
-export type TimingStatus = "early" | "normal" | "late" | "red_flag" | "upcoming" | "future";
+export type TimingStatus =
+  | "early"
+  | "normal"
+  | "late"
+  | "red_flag"
+  | "upcoming"
+  | "future";
 
 export interface MilestoneDefinition {
   week: number;
@@ -31,7 +46,8 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     id: "wk1_recognises_your_voice",
     name: "Recognises your voice",
     category: "social_emotional",
-    description: "Baby is soothed by your voice and smell, beginning early bonding.",
+    description:
+      "Baby is soothed by your voice and smell, beginning early bonding.",
     typicalWeek: 1,
     earlyRangeStart: 0,
     earlyRangeEnd: 0,
@@ -39,21 +55,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 9,
     lateStartWeek: 10,
     redFlagWeek: 17,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Recognises your voice' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Recognises your voice' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Recognises your voice' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Recognises your voice' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Recognises your voice' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Recognises your voice' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Recognises your voice' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Recognises your voice' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Recognises your voice' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Recognises your voice' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Recognises your voice' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Recognises your voice' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 2,
     id: "wk2_briefly_tracks_faces",
     name: "Briefly tracks faces",
     category: "cognitive",
-    description: "Baby can briefly follow your face or a high-contrast object with their eyes.",
+    description:
+      "Baby can briefly follow your face or a high-contrast object with their eyes.",
     typicalWeek: 2,
     earlyRangeStart: 0,
     earlyRangeEnd: 1,
@@ -61,21 +84,26 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 10,
     lateStartWeek: 11,
     redFlagWeek: 18,
-    earlyParentCopy: "Your baby reached 'Briefly tracks faces' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Briefly tracks faces' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Briefly tracks faces'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Briefly tracks faces' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Briefly tracks faces' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Briefly tracks faces' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Briefly tracks faces'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Briefly tracks faces' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 3,
     id: "wk3_snuggles_into_your_body",
     name: "Snuggles into your body",
     category: "social_emotional",
-    description: "Baby adjusts posture and moulds into you when held, showing comfort.",
+    description:
+      "Baby adjusts posture and moulds into you when held, showing comfort.",
     typicalWeek: 3,
     earlyRangeStart: 0,
     earlyRangeEnd: 2,
@@ -83,14 +111,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 11,
     lateStartWeek: 12,
     redFlagWeek: 19,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Snuggles into your body' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Snuggles into your body' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Snuggles into your body' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Snuggles into your body' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Snuggles into your body' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Snuggles into your body' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Snuggles into your body' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Snuggles into your body' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Snuggles into your body' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Snuggles into your body' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Snuggles into your body' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Snuggles into your body' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 4,
@@ -105,14 +139,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 12,
     lateStartWeek: 13,
     redFlagWeek: 20,
-    earlyParentCopy: "Your baby reached 'First cooing sounds' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'First cooing sounds' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'First cooing sounds' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'First cooing sounds' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'First cooing sounds' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'First cooing sounds' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'First cooing sounds' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'First cooing sounds' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'First cooing sounds' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'First cooing sounds' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'First cooing sounds' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'First cooing sounds' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 4,
@@ -127,21 +167,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 12,
     lateStartWeek: 13,
     redFlagWeek: 20,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Responds to your smile' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Responds to your smile' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Responds to your smile' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Responds to your smile' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Responds to your smile' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Responds to your smile' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Responds to your smile' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Responds to your smile' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Responds to your smile' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Responds to your smile' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Responds to your smile' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Responds to your smile' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 5,
     id: "wk5_smoother_arm_and_leg_movements",
     name: "Smoother arm and leg movements",
     category: "gross_motor",
-    description: "Flailing becomes a bit more controlled; movements look smoother.",
+    description:
+      "Flailing becomes a bit more controlled; movements look smoother.",
     typicalWeek: 5,
     earlyRangeStart: 2,
     earlyRangeEnd: 4,
@@ -149,14 +196,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 13,
     lateStartWeek: 14,
     redFlagWeek: 21,
-    earlyParentCopy: "Your baby reached 'Smoother arm and leg movements' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Smoother arm and leg movements' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Smoother arm and leg movements' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Smoother arm and leg movements' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Smoother arm and leg movements' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Smoother arm and leg movements' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Smoother arm and leg movements' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Smoother arm and leg movements' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Smoother arm and leg movements' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Smoother arm and leg movements' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Smoother arm and leg movements' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Smoother arm and leg movements' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 6,
@@ -171,14 +224,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 14,
     lateStartWeek: 15,
     redFlagWeek: 22,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Social smile' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Social smile' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Social smile' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Social smile' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Social smile' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Social smile' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Social smile' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Social smile' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Early Smiler",
-    earlyBadgeCopy: "Those early smiles are pure magic. Your baby is loving the connection.",
+    earlyBadgeCopy:
+      "Those early smiles are pure magic. Your baby is loving the connection.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Social smile' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Social smile' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 6,
@@ -193,21 +252,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 14,
     lateStartWeek: 15,
     redFlagWeek: 22,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Looks at you during feeds' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Looks at you during feeds' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Looks at you during feeds' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Looks at you during feeds' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Looks at you during feeds' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Looks at you during feeds' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Looks at you during feeds' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Looks at you during feeds' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Looks at you during feeds' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Looks at you during feeds' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Looks at you during feeds' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Looks at you during feeds' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 7,
     id: "wk7_watches_and_listens_together",
     name: "Watches and listens together",
     category: "cognitive",
-    description: "Baby links your face and voice, staring at your mouth and eyes.",
+    description:
+      "Baby links your face and voice, staring at your mouth and eyes.",
     typicalWeek: 7,
     earlyRangeStart: 4,
     earlyRangeEnd: 6,
@@ -215,14 +281,18 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 15,
     lateStartWeek: 16,
     redFlagWeek: 23,
-    earlyParentCopy: "Your baby reached 'Watches and listens together' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Watches and listens together' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Watches and listens together'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Watches and listens together' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Watches and listens together' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Watches and listens together' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Watches and listens together'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Watches and listens together' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 8,
@@ -237,14 +307,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 16,
     lateStartWeek: 17,
     redFlagWeek: 24,
-    earlyParentCopy: "Your baby reached 'Lifts head during tummy time' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Lifts head during tummy time' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Lifts head during tummy time' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Lifts head during tummy time' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Lifts head during tummy time' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Lifts head during tummy time' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Lifts head during tummy time' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Lifts head during tummy time' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Lifts head during tummy time' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Lifts head during tummy time' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Lifts head during tummy time' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Lifts head during tummy time' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 8,
@@ -259,14 +335,18 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 16,
     lateStartWeek: 17,
     redFlagWeek: 24,
-    earlyParentCopy: "Your baby reached 'Holds gaze on a toy' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Holds gaze on a toy' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Holds gaze on a toy'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Holds gaze on a toy' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Holds gaze on a toy' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Holds gaze on a toy' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Holds gaze on a toy'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Holds gaze on a toy' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 9,
@@ -281,14 +361,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 17,
     lateStartWeek: 18,
     redFlagWeek: 25,
-    earlyParentCopy: "Your baby reached 'More cooing and vowel sounds' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'More cooing and vowel sounds' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'More cooing and vowel sounds' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'More cooing and vowel sounds' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'More cooing and vowel sounds' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'More cooing and vowel sounds' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'More cooing and vowel sounds' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'More cooing and vowel sounds' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'More cooing and vowel sounds' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'More cooing and vowel sounds' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'More cooing and vowel sounds' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'More cooing and vowel sounds' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 10,
@@ -303,21 +389,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 18,
     lateStartWeek: 19,
     redFlagWeek: 26,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Recognises familiar faces' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Recognises familiar faces' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Recognises familiar faces' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Recognises familiar faces' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Recognises familiar faces' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Recognises familiar faces' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Recognises familiar faces' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Recognises familiar faces' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Recognises familiar faces' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Recognises familiar faces' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Recognises familiar faces' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Recognises familiar faces' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 11,
     id: "wk11_looks_away_when_overstimulated",
     name: "Looks away when overstimulated",
     category: "regulation",
-    description: "Baby turns head or looks away when they've had enough interaction.",
+    description:
+      "Baby turns head or looks away when they've had enough interaction.",
     typicalWeek: 11,
     earlyRangeStart: 8,
     earlyRangeEnd: 10,
@@ -325,14 +418,18 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 19,
     lateStartWeek: 20,
     redFlagWeek: 27,
-    earlyParentCopy: "Your baby reached 'Looks away when overstimulated' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Looks away when overstimulated' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Looks away when overstimulated'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Looks away when overstimulated' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Looks away when overstimulated' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Looks away when overstimulated' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Looks away when overstimulated'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Looks away when overstimulated' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 12,
@@ -347,14 +444,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 20,
     lateStartWeek: 21,
     redFlagWeek: 28,
-    earlyParentCopy: "Your baby reached 'Discovers hands' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Discovers hands' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Discovers hands'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Discovers hands' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Discovers hands' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Discovers hands' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Discovers hands'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Discovers hands' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "Hand Explorer",
-    earlyBadgeCopy: "Your baby is discovering their hands early—so much to grab and feel.",
+    earlyBadgeCopy:
+      "Your baby is discovering their hands early—so much to grab and feel.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Discovers hands' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Discovers hands' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 12,
@@ -369,14 +472,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 20,
     lateStartWeek: 21,
     redFlagWeek: 28,
-    earlyParentCopy: "Your baby reached 'Brings hands to midline' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Brings hands to midline' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Brings hands to midline' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Brings hands to midline' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Brings hands to midline' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Brings hands to midline' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Brings hands to midline' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Brings hands to midline' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Brings hands to midline' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Brings hands to midline' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Brings hands to midline' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Brings hands to midline' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 13,
@@ -391,14 +500,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 21,
     lateStartWeek: 22,
     redFlagWeek: 29,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Laughs out loud' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Laughs out loud' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Laughs out loud' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Laughs out loud' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Laughs out loud' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Laughs out loud' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Laughs out loud' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Laughs out loud' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Giggle Starter",
-    earlyBadgeCopy: "First laughs came early—your baby clearly loves your sense of humour.",
+    earlyBadgeCopy:
+      "First laughs came early—your baby clearly loves your sense of humour.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Laughs out loud' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Laughs out loud' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 14,
@@ -413,14 +528,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 22,
     lateStartWeek: 23,
     redFlagWeek: 30,
-    earlyParentCopy: "Your baby reached 'Bats at toys' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Bats at toys' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Bats at toys'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Bats at toys' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Bats at toys' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Bats at toys' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Bats at toys'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Bats at toys' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Bats at toys' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Bats at toys' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Bats at toys' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Bats at toys' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 15,
@@ -435,14 +556,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 24,
     lateStartWeek: 25,
     redFlagWeek: 28,
-    earlyParentCopy: "Your baby reached 'Rolls over (one direction)' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Rolls over (one direction)' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Rolls over (one direction)' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Rolls over (one direction)' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Rolls over (one direction)' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Rolls over (one direction)' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Rolls over (one direction)' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Rolls over (one direction)' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Early Roller",
-    earlyBadgeCopy: "Your baby rolled earlier than most—time to double-check those changing tables and sofas!",
+    earlyBadgeCopy:
+      "Your baby rolled earlier than most—time to double-check those changing tables and sofas!",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Rolls over (one direction)' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Rolls over (one direction)' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 15,
@@ -457,21 +584,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 23,
     lateStartWeek: 24,
     redFlagWeek: 31,
-    earlyParentCopy: "Your baby reached 'Grabs toys with both hands' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Grabs toys with both hands' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Grabs toys with both hands'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Grabs toys with both hands' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Grabs toys with both hands' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Grabs toys with both hands' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Grabs toys with both hands'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Grabs toys with both hands' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Grabs toys with both hands' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Grabs toys with both hands' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Grabs toys with both hands' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Grabs toys with both hands' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 16,
     id: "wk16_holds_head_steady_when_supported",
     name: "Holds head steady when supported",
     category: "gross_motor",
-    description: "Baby holds head more steadily when held upright or sitting with support.",
+    description:
+      "Baby holds head more steadily when held upright or sitting with support.",
     typicalWeek: 16,
     earlyRangeStart: 13,
     earlyRangeEnd: 15,
@@ -479,14 +613,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 24,
     lateStartWeek: 25,
     redFlagWeek: 32,
-    earlyParentCopy: "Your baby reached 'Holds head steady when supported' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Holds head steady when supported' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Holds head steady when supported' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Holds head steady when supported' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Holds head steady when supported' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Holds head steady when supported' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Holds head steady when supported' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Holds head steady when supported' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Holds head steady when supported' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Holds head steady when supported' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Holds head steady when supported' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Holds head steady when supported' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 17,
@@ -501,14 +641,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 25,
     lateStartWeek: 26,
     redFlagWeek: 33,
-    earlyParentCopy: "Your baby reached 'Blows raspberries' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Blows raspberries' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'Blows raspberries' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'Blows raspberries' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'Blows raspberries' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Blows raspberries' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'Blows raspberries' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'Blows raspberries' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Blows raspberries' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Blows raspberries' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Blows raspberries' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Blows raspberries' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 18,
@@ -523,21 +669,26 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 26,
     lateStartWeek: 27,
     redFlagWeek: 34,
-    earlyParentCopy: "Your baby reached 'Engages in short solo play' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Engages in short solo play' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Engages in short solo play'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Engages in short solo play' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Engages in short solo play' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Engages in short solo play' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Engages in short solo play'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Engages in short solo play' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 19,
     id: "wk19_babbles_consonant_vowel_sounds",
     name: "Babbles consonant-vowel sounds",
     category: "language",
-    description: "Baby strings sounds like 'baba', 'gaga', 'dada' (no meaning yet).",
+    description:
+      "Baby strings sounds like 'baba', 'gaga', 'dada' (no meaning yet).",
     typicalWeek: 19,
     earlyRangeStart: 16,
     earlyRangeEnd: 18,
@@ -545,14 +696,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 27,
     lateStartWeek: 28,
     redFlagWeek: 35,
-    earlyParentCopy: "Your baby reached 'Babbles consonant-vowel sounds' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Babbles consonant-vowel sounds' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'Babbles consonant-vowel sounds' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'Babbles consonant-vowel sounds' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'Babbles consonant-vowel sounds' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Babbles consonant-vowel sounds' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'Babbles consonant-vowel sounds' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'Babbles consonant-vowel sounds' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Babbles consonant-vowel sounds' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Babbles consonant-vowel sounds' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Babbles consonant-vowel sounds' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Babbles consonant-vowel sounds' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 19,
@@ -567,14 +724,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 27,
     lateStartWeek: 28,
     redFlagWeek: 35,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Shows excitement when you appear' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Shows excitement when you appear' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Shows excitement when you appear' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Shows excitement when you appear' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Shows excitement when you appear' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Shows excitement when you appear' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Shows excitement when you appear' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Shows excitement when you appear' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Shows excitement when you appear' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Shows excitement when you appear' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Shows excitement when you appear' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Shows excitement when you appear' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 20,
@@ -589,14 +752,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 28,
     lateStartWeek: 29,
     redFlagWeek: 36,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Enjoys mirror and own reflection' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Enjoys mirror and own reflection' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Enjoys mirror and own reflection' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Enjoys mirror and own reflection' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Enjoys mirror and own reflection' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Enjoys mirror and own reflection' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Enjoys mirror and own reflection' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Enjoys mirror and own reflection' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Enjoys mirror and own reflection' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Enjoys mirror and own reflection' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Enjoys mirror and own reflection' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Enjoys mirror and own reflection' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 21,
@@ -611,14 +780,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 29,
     lateStartWeek: 30,
     redFlagWeek: 37,
-    earlyParentCopy: "Your baby reached 'Scoots or shuffles on tummy' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Scoots or shuffles on tummy' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Scoots or shuffles on tummy' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Scoots or shuffles on tummy' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Scoots or shuffles on tummy' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Scoots or shuffles on tummy' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Scoots or shuffles on tummy' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Scoots or shuffles on tummy' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Scoots or shuffles on tummy' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Scoots or shuffles on tummy' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Scoots or shuffles on tummy' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Scoots or shuffles on tummy' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 22,
@@ -633,14 +808,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 30,
     lateStartWeek: 31,
     redFlagWeek: 38,
-    earlyParentCopy: "Your baby reached 'Sits with some support' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Sits with some support' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Sits with some support' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Sits with some support' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Sits with some support' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Sits with some support' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Sits with some support' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Sits with some support' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Sits with some support' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Sits with some support' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Sits with some support' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Sits with some support' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 22,
@@ -655,14 +836,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 30,
     lateStartWeek: 31,
     redFlagWeek: 38,
-    earlyParentCopy: "Your baby reached 'Transfers objects between hands' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Transfers objects between hands' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Transfers objects between hands'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Transfers objects between hands' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Transfers objects between hands' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Transfers objects between hands' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Transfers objects between hands'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Transfers objects between hands' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Transfers objects between hands' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Transfers objects between hands' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Transfers objects between hands' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Transfers objects between hands' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 23,
@@ -677,21 +864,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 31,
     lateStartWeek: 32,
     redFlagWeek: 39,
-    earlyParentCopy: "Your baby reached 'Responds to own name' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Responds to own name' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'Responds to own name' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'Responds to own name' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'Responds to own name' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Responds to own name' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'Responds to own name' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'Responds to own name' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Name Recognizer",
-    earlyBadgeCopy: "Your baby knows their name already—wonderful listening skills!",
+    earlyBadgeCopy:
+      "Your baby knows their name already—wonderful listening skills!",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Responds to own name' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Responds to own name' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 24,
     id: "wk24_grabs_and_mouths_toys",
     name: "Grabs and mouths toys",
     category: "fine_motor",
-    description: "Baby holds toys firmly and brings them straight to the mouth.",
+    description:
+      "Baby holds toys firmly and brings them straight to the mouth.",
     typicalWeek: 24,
     earlyRangeStart: 21,
     earlyRangeEnd: 23,
@@ -699,21 +893,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 32,
     lateStartWeek: 33,
     redFlagWeek: 40,
-    earlyParentCopy: "Your baby reached 'Grabs and mouths toys' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Grabs and mouths toys' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Grabs and mouths toys'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Grabs and mouths toys' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Grabs and mouths toys' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Grabs and mouths toys' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Grabs and mouths toys'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Grabs and mouths toys' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Grabs and mouths toys' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Grabs and mouths toys' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Grabs and mouths toys' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Grabs and mouths toys' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 25,
     id: "wk25_sits_independently",
     name: "Sits independently",
     category: "gross_motor",
-    description: "Baby can sit on their own without support for a minute or more.",
+    description:
+      "Baby can sit on their own without support for a minute or more.",
     typicalWeek: 25,
     earlyRangeStart: 22,
     earlyRangeEnd: 24,
@@ -721,14 +922,19 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 33,
     lateStartWeek: 34,
     redFlagWeek: 41,
-    earlyParentCopy: "Your baby reached 'Sits independently' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Sits independently' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Sits independently' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Sits independently' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Sits independently' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Sits independently' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Sits independently' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Sits independently' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Early Sitter",
     earlyBadgeCopy: "Your baby is sitting early—what a view of the world!",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Sits independently' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Sits independently' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 26,
@@ -743,21 +949,26 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 34,
     lateStartWeek: 35,
     redFlagWeek: 42,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'May show stranger wariness' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'May show stranger wariness' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'May show stranger wariness' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'May show stranger wariness' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'May show stranger wariness' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'May show stranger wariness' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'May show stranger wariness' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'May show stranger wariness' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 27,
     id: "wk27_uses_raking_grasp_for_small_objects",
     name: "Uses raking grasp for small objects",
     category: "fine_motor",
-    description: "Baby tries to pick up small things using fingers like a rake.",
+    description:
+      "Baby tries to pick up small things using fingers like a rake.",
     typicalWeek: 27,
     earlyRangeStart: 24,
     earlyRangeEnd: 26,
@@ -765,21 +976,26 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 35,
     lateStartWeek: 36,
     redFlagWeek: 43,
-    earlyParentCopy: "Your baby reached 'Uses raking grasp for small objects' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Uses raking grasp for small objects' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Uses raking grasp for small objects'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Uses raking grasp for small objects' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Uses raking grasp for small objects' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Uses raking grasp for small objects' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Uses raking grasp for small objects'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Uses raking grasp for small objects' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 28,
     id: "wk28_explores_food_with_hands",
     name: "Explores food with hands",
     category: "feeding",
-    description: "Baby touches, squishes or brings small bits of food toward mouth.",
+    description:
+      "Baby touches, squishes or brings small bits of food toward mouth.",
     typicalWeek: 28,
     earlyRangeStart: 25,
     earlyRangeEnd: 27,
@@ -787,14 +1003,18 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 36,
     lateStartWeek: 37,
     redFlagWeek: 44,
-    earlyParentCopy: "Your baby reached 'Explores food with hands' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Explores food with hands' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Explores food with hands'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Explores food with hands' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Explores food with hands' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Explores food with hands' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Explores food with hands'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Explores food with hands' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 29,
@@ -809,21 +1029,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 37,
     lateStartWeek: 38,
     redFlagWeek: 45,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Enjoys simple games like peek-a-boo' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Enjoys simple games like peek-a-boo' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Enjoys simple games like peek-a-boo' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Enjoys simple games like peek-a-boo' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Enjoys simple games like peek-a-boo' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Enjoys simple games like peek-a-boo' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Enjoys simple games like peek-a-boo' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Enjoys simple games like peek-a-boo' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Enjoys simple games like peek-a-boo' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Enjoys simple games like peek-a-boo' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Enjoys simple games like peek-a-boo' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Enjoys simple games like peek-a-boo' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 30,
     id: "wk30_rocks_on_hands_and_knees",
     name: "Rocks on hands and knees",
     category: "gross_motor",
-    description: "Baby may rock back and forth on hands and knees, preparing to crawl.",
+    description:
+      "Baby may rock back and forth on hands and knees, preparing to crawl.",
     typicalWeek: 30,
     earlyRangeStart: 27,
     earlyRangeEnd: 29,
@@ -831,14 +1058,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 38,
     lateStartWeek: 39,
     redFlagWeek: 46,
-    earlyParentCopy: "Your baby reached 'Rocks on hands and knees' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Rocks on hands and knees' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Rocks on hands and knees' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Rocks on hands and knees' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Rocks on hands and knees' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Rocks on hands and knees' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Rocks on hands and knees' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Rocks on hands and knees' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Rocks on hands and knees' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Rocks on hands and knees' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Rocks on hands and knees' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Rocks on hands and knees' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 31,
@@ -853,21 +1086,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 39,
     lateStartWeek: 40,
     redFlagWeek: 47,
-    earlyParentCopy: "Your baby reached 'Improving pincer grasp' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Improving pincer grasp' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Improving pincer grasp'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Improving pincer grasp' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Improving pincer grasp' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Improving pincer grasp' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Improving pincer grasp'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Improving pincer grasp' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Improving pincer grasp' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Improving pincer grasp' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Improving pincer grasp' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Improving pincer grasp' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 32,
     id: "wk32_pulls_to_stand_at_furniture",
     name: "Pulls to stand at furniture",
     category: "gross_motor",
-    description: "Baby uses furniture or people to pull to a standing position.",
+    description:
+      "Baby uses furniture or people to pull to a standing position.",
     typicalWeek: 32,
     earlyRangeStart: 29,
     earlyRangeEnd: 31,
@@ -875,14 +1115,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 40,
     lateStartWeek: 41,
     redFlagWeek: 48,
-    earlyParentCopy: "Your baby reached 'Pulls to stand at furniture' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Pulls to stand at furniture' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Pulls to stand at furniture' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Pulls to stand at furniture' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Pulls to stand at furniture' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Pulls to stand at furniture' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Pulls to stand at furniture' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Pulls to stand at furniture' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Early Stand-Up",
-    earlyBadgeCopy: "Standing up already? Your baby is working hard on strength and balance.",
+    earlyBadgeCopy:
+      "Standing up already? Your baby is working hard on strength and balance.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Pulls to stand at furniture' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Pulls to stand at furniture' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 32,
@@ -897,14 +1143,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 44,
     lateStartWeek: 45,
     redFlagWeek: 52,
-    earlyParentCopy: "Your baby reached 'Crawls or shuffles to move' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Crawls or shuffles to move' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Crawls or shuffles to move' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Crawls or shuffles to move' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Crawls or shuffles to move' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Crawls or shuffles to move' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Crawls or shuffles to move' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Crawls or shuffles to move' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Early Explorer",
-    earlyBadgeCopy: "Your baby started moving around early—hello, babyproofing!",
+    earlyBadgeCopy:
+      "Your baby started moving around early—hello, babyproofing!",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Crawls or shuffles to move' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Crawls or shuffles to move' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 33,
@@ -919,14 +1171,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 41,
     lateStartWeek: 42,
     redFlagWeek: 49,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Shows strong likes and dislikes' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Shows strong likes and dislikes' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Shows strong likes and dislikes' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Shows strong likes and dislikes' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Shows strong likes and dislikes' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Shows strong likes and dislikes' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Shows strong likes and dislikes' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Shows strong likes and dislikes' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Shows strong likes and dislikes' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Shows strong likes and dislikes' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Shows strong likes and dislikes' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Shows strong likes and dislikes' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 34,
@@ -941,14 +1199,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 42,
     lateStartWeek: 43,
     redFlagWeek: 50,
-    earlyParentCopy: "Your baby reached 'Cruises along furniture' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Cruises along furniture' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Cruises along furniture' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Cruises along furniture' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Cruises along furniture' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Cruises along furniture' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Cruises along furniture' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Cruises along furniture' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Cruises along furniture' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Cruises along furniture' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Cruises along furniture' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Cruises along furniture' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 34,
@@ -963,14 +1227,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 42,
     lateStartWeek: 43,
     redFlagWeek: 50,
-    earlyParentCopy: "Your baby reached 'Points or reaches toward wanted items' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Points or reaches toward wanted items' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'Points or reaches toward wanted items' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'Points or reaches toward wanted items' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'Points or reaches toward wanted items' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Points or reaches toward wanted items' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'Points or reaches toward wanted items' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'Points or reaches toward wanted items' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Points or reaches toward wanted items' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Points or reaches toward wanted items' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Points or reaches toward wanted items' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Points or reaches toward wanted items' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 35,
@@ -985,21 +1255,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 43,
     lateStartWeek: 44,
     redFlagWeek: 51,
-    earlyParentCopy: "Your baby reached 'Understands simple words' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Understands simple words' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'Understands simple words' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'Understands simple words' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'Understands simple words' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Understands simple words' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'Understands simple words' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'Understands simple words' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Understands simple words' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Understands simple words' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Understands simple words' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Understands simple words' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 36,
     id: "wk36_plays_simple_cause_and_effect_games",
     name: "Plays simple cause-and-effect games",
     category: "cognitive",
-    description: "Baby pushes, bangs, or drops items to cause predictable effects.",
+    description:
+      "Baby pushes, bangs, or drops items to cause predictable effects.",
     typicalWeek: 36,
     earlyRangeStart: 33,
     earlyRangeEnd: 35,
@@ -1007,14 +1284,18 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 44,
     lateStartWeek: 45,
     redFlagWeek: 52,
-    earlyParentCopy: "Your baby reached 'Plays simple cause-and-effect games' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Plays simple cause-and-effect games' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Plays simple cause-and-effect games'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Plays simple cause-and-effect games' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Plays simple cause-and-effect games' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Plays simple cause-and-effect games' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Plays simple cause-and-effect games'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Plays simple cause-and-effect games' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 36,
@@ -1029,14 +1310,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 44,
     lateStartWeek: 45,
     redFlagWeek: 52,
-    earlyParentCopy: "Your baby reached 'Stacks or bangs toys together' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Stacks or bangs toys together' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Stacks or bangs toys together'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Stacks or bangs toys together' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Stacks or bangs toys together' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Stacks or bangs toys together' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Stacks or bangs toys together'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Stacks or bangs toys together' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Stacks or bangs toys together' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Stacks or bangs toys together' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Stacks or bangs toys together' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Stacks or bangs toys together' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 37,
@@ -1051,14 +1338,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 45,
     lateStartWeek: 46,
     redFlagWeek: 53,
-    earlyParentCopy: "Your baby reached 'Explores the house more' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Explores the house more' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Explores the house more' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Explores the house more' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Explores the house more' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Explores the house more' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Explores the house more' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Explores the house more' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Explores the house more' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Explores the house more' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Explores the house more' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Explores the house more' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 38,
@@ -1073,14 +1366,18 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 46,
     lateStartWeek: 47,
     redFlagWeek: 54,
-    earlyParentCopy: "Your baby reached 'Empties shelves or containers' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Empties shelves or containers' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Empties shelves or containers'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Empties shelves or containers' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Empties shelves or containers' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Empties shelves or containers' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Empties shelves or containers'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Empties shelves or containers' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 39,
@@ -1095,21 +1392,26 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 47,
     lateStartWeek: 48,
     redFlagWeek: 55,
-    earlyParentCopy: "Your baby reached 'Intense mouthing of objects' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Intense mouthing of objects' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Intense mouthing of objects'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Intense mouthing of objects' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Intense mouthing of objects' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Intense mouthing of objects' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Intense mouthing of objects'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Intense mouthing of objects' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 40,
     id: "wk40_imitates_daily_routines",
     name: "Imitates daily routines",
     category: "cognitive",
-    description: "Baby imitates brushing hair, using phone, or stirring with a spoon.",
+    description:
+      "Baby imitates brushing hair, using phone, or stirring with a spoon.",
     typicalWeek: 40,
     earlyRangeStart: 37,
     earlyRangeEnd: 39,
@@ -1117,14 +1419,18 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 48,
     lateStartWeek: 49,
     redFlagWeek: 56,
-    earlyParentCopy: "Your baby reached 'Imitates daily routines' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Imitates daily routines' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Imitates daily routines'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Imitates daily routines' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Imitates daily routines' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Imitates daily routines' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Imitates daily routines'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Imitates daily routines' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 40,
@@ -1139,14 +1445,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 48,
     lateStartWeek: 49,
     redFlagWeek: 56,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Waves bye-bye or claps' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Waves bye-bye or claps' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Waves bye-bye or claps' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Waves bye-bye or claps' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Waves bye-bye or claps' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Waves bye-bye or claps' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Waves bye-bye or claps' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Waves bye-bye or claps' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Waves bye-bye or claps' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Waves bye-bye or claps' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Waves bye-bye or claps' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Waves bye-bye or claps' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 41,
@@ -1161,14 +1473,18 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 49,
     lateStartWeek: 50,
     redFlagWeek: 57,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Separation anxiety may peak' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Separation anxiety may peak' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Separation anxiety may peak' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Separation anxiety may peak' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Separation anxiety may peak' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Separation anxiety may peak' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Separation anxiety may peak' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Separation anxiety may peak' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 42,
@@ -1183,14 +1499,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 50,
     lateStartWeek: 51,
     redFlagWeek: 58,
-    earlyParentCopy: "Your baby reached 'Follows simple instructions' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Follows simple instructions' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'Follows simple instructions' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'Follows simple instructions' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'Follows simple instructions' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Follows simple instructions' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'Follows simple instructions' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'Follows simple instructions' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Follows simple instructions' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Follows simple instructions' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Follows simple instructions' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Follows simple instructions' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 43,
@@ -1205,21 +1527,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 51,
     lateStartWeek: 52,
     redFlagWeek: 59,
-    earlyParentCopy: "Your baby reached 'Stands alone briefly' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Stands alone briefly' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'Stands alone briefly' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'Stands alone briefly' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'Stands alone briefly' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Stands alone briefly' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'Stands alone briefly' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'Stands alone briefly' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Stands alone briefly' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Stands alone briefly' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Stands alone briefly' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Stands alone briefly' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 44,
     id: "wk44_uses_objects_for_pretend_play",
     name: "Uses objects for pretend play",
     category: "cognitive",
-    description: "Baby may 'feed' a doll or hold a block to their ear like a phone.",
+    description:
+      "Baby may 'feed' a doll or hold a block to their ear like a phone.",
     typicalWeek: 44,
     earlyRangeStart: 41,
     earlyRangeEnd: 43,
@@ -1227,14 +1556,18 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 52,
     lateStartWeek: 53,
     redFlagWeek: 60,
-    earlyParentCopy: "Your baby reached 'Uses objects for pretend play' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Uses objects for pretend play' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Uses objects for pretend play'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Uses objects for pretend play' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Uses objects for pretend play' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Uses objects for pretend play' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Uses objects for pretend play'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Uses objects for pretend play' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 45,
@@ -1249,14 +1582,18 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 53,
     lateStartWeek: 54,
     redFlagWeek: 61,
-    earlyParentCopy: "Your baby reached 'Drinks from an open cup with help' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Drinks from an open cup with help' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Drinks from an open cup with help'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Drinks from an open cup with help' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Drinks from an open cup with help' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Drinks from an open cup with help' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Drinks from an open cup with help'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Drinks from an open cup with help' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 46,
@@ -1271,14 +1608,19 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 60,
     lateStartWeek: 61,
     redFlagWeek: 72,
-    earlyParentCopy: "Your baby reached 'First independent steps' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'First independent steps' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Gross motor skills like 'First independent steps' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
-    redFlagParentCopy: "If your baby still hasn't reached 'First independent steps' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
+    earlyParentCopy:
+      "Your baby reached 'First independent steps' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'First independent steps' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Gross motor skills like 'First independent steps' can vary a lot. Encourage floor time, safe movement, and exploration. If you stay concerned, talk with your pediatrician.",
+    redFlagParentCopy:
+      "If your baby still hasn't reached 'First independent steps' and you're worried about strength or movement, it's a good idea to speak with your pediatrician for guidance.",
     earlyBadgeName: "Early Walker",
     earlyBadgeCopy: "Those first steps came early—your baby is on the move!",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'First independent steps' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'First independent steps' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 47,
@@ -1293,21 +1635,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 55,
     lateStartWeek: 56,
     redFlagWeek: 63,
-    earlyParentCopy: "Your baby reached 'Tries to use spoon' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Tries to use spoon' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Tries to use spoon'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Tries to use spoon' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Tries to use spoon' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Tries to use spoon' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Tries to use spoon'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Tries to use spoon' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Tries to use spoon' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Tries to use spoon' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Tries to use spoon' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Tries to use spoon' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 48,
     id: "wk48_seeks_attention_with_gestures_or_sounds",
     name: "Seeks attention with gestures or sounds",
     category: "communication",
-    description: "Baby intentionally uses sounds or actions to get you to notice them.",
+    description:
+      "Baby intentionally uses sounds or actions to get you to notice them.",
     typicalWeek: 48,
     earlyRangeStart: 45,
     earlyRangeEnd: 47,
@@ -1315,21 +1664,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 56,
     lateStartWeek: 57,
     redFlagWeek: 64,
-    earlyParentCopy: "Your baby reached 'Seeks attention with gestures or sounds' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Seeks attention with gestures or sounds' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'Seeks attention with gestures or sounds' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'Seeks attention with gestures or sounds' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'Seeks attention with gestures or sounds' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Seeks attention with gestures or sounds' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'Seeks attention with gestures or sounds' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'Seeks attention with gestures or sounds' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Seeks attention with gestures or sounds' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Seeks attention with gestures or sounds' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Seeks attention with gestures or sounds' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Seeks attention with gestures or sounds' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 49,
     id: "wk49_understands_many_words",
     name: "Understands many words",
     category: "language",
-    description: "Baby follows meaning of 20+ words even if they can't say them.",
+    description:
+      "Baby follows meaning of 20+ words even if they can't say them.",
     typicalWeek: 49,
     earlyRangeStart: 46,
     earlyRangeEnd: 48,
@@ -1337,14 +1693,20 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 57,
     lateStartWeek: 58,
     redFlagWeek: 65,
-    earlyParentCopy: "Your baby reached 'Understands many words' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Understands many words' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'Understands many words' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'Understands many words' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'Understands many words' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Understands many words' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'Understands many words' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'Understands many words' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Understands many words' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Understands many words' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Understands many words' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Understands many words' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 50,
@@ -1359,21 +1721,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 58,
     lateStartWeek: 59,
     redFlagWeek: 66,
-    earlyParentCopy: "Your baby is showing social-emotional milestone 'Shows empathy (responds to others' emotions)' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
-    normalParentCopy: "'Shows empathy (responds to others' emotions)' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Social milestones like 'Shows empathy (responds to others' emotions)' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
-    redFlagParentCopy: "If you rarely see 'Shows empathy (responds to others' emotions)' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
+    earlyParentCopy:
+      "Your baby is showing social-emotional milestone 'Shows empathy (responds to others' emotions)' a bit early, which can be perfectly normal. Enjoy the connection and keep following their lead.",
+    normalParentCopy:
+      "'Shows empathy (responds to others' emotions)' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Social milestones like 'Shows empathy (responds to others' emotions)' can vary. Offer face-to-face time, gentle play, and predictable routines to help your baby feel secure.",
+    redFlagParentCopy:
+      "If you rarely see 'Shows empathy (responds to others' emotions)' and your baby seems very hard to engage or comfort, it's worth discussing this with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Shows empathy (responds to others' emotions)' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Shows empathy (responds to others' emotions)' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Shows empathy (responds to others' emotions)' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Shows empathy (responds to others' emotions)' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 51,
     id: "wk51_handles_multiple_objects_cleverly",
     name: "Handles multiple objects cleverly",
     category: "cognitive",
-    description: "Baby carries more than one object, tucks toys under arm or in containers.",
+    description:
+      "Baby carries more than one object, tucks toys under arm or in containers.",
     typicalWeek: 51,
     earlyRangeStart: 48,
     earlyRangeEnd: 50,
@@ -1381,21 +1750,26 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 59,
     lateStartWeek: 60,
     redFlagWeek: 67,
-    earlyParentCopy: "Your baby reached 'Handles multiple objects cleverly' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Handles multiple objects cleverly' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Your baby is taking a little longer to reach 'Handles multiple objects cleverly'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
-    redFlagParentCopy: "Because many babies have reached 'Handles multiple objects cleverly' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
+    earlyParentCopy:
+      "Your baby reached 'Handles multiple objects cleverly' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Handles multiple objects cleverly' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Your baby is taking a little longer to reach 'Handles multiple objects cleverly'. Many babies do skills slightly later and still grow typically. You can support this milestone with simple daily play.",
+    redFlagParentCopy:
+      "Because many babies have reached 'Handles multiple objects cleverly' by now, it may help to mention this to your pediatrician, especially if you also have other concerns.",
     earlyBadgeName: "",
     earlyBadgeCopy: "",
     normalBadgeName: "",
-    normalBadgeCopy: ""
+    normalBadgeCopy: "",
   },
   {
     week: 52,
     id: "wk52_uses_first_meaningful_word",
     name: "Uses first meaningful word",
     category: "language",
-    description: "Baby uses a word like 'mama' or 'dada' to mean a specific person.",
+    description:
+      "Baby uses a word like 'mama' or 'dada' to mean a specific person.",
     typicalWeek: 52,
     earlyRangeStart: 40,
     earlyRangeEnd: 48,
@@ -1403,21 +1777,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 64,
     lateStartWeek: 65,
     redFlagWeek: 72,
-    earlyParentCopy: "Your baby reached 'Uses first meaningful word' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Uses first meaningful word' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'Uses first meaningful word' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'Uses first meaningful word' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'Uses first meaningful word' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Uses first meaningful word' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'Uses first meaningful word' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'Uses first meaningful word' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Early Talker",
-    earlyBadgeCopy: "Your baby spoke a real word ahead of the curve. Keep chatting and naming everything.",
+    earlyBadgeCopy:
+      "Your baby spoke a real word ahead of the curve. Keep chatting and naming everything.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Uses first meaningful word' has been reached—lovely progress. Take a second to celebrate this stage."
+    normalBadgeCopy:
+      "'Uses first meaningful word' has been reached—lovely progress. Take a second to celebrate this stage.",
   },
   {
     week: 52,
     id: "wk52_points_to_show_or_share_interest",
     name: "Points to show or share interest",
     category: "communication",
-    description: "Baby points toward interesting things to share them with you.",
+    description:
+      "Baby points toward interesting things to share them with you.",
     typicalWeek: 52,
     earlyRangeStart: 49,
     earlyRangeEnd: 51,
@@ -1425,18 +1806,28 @@ export const MILESTONE_DEFINITIONS: MilestoneDefinition[] = [
     normalRangeEnd: 60,
     lateStartWeek: 61,
     redFlagWeek: 68,
-    earlyParentCopy: "Your baby reached 'Points to show or share interest' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
-    normalParentCopy: "'Points to show or share interest' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
-    lateParentCopy: "Communication skills like 'Points to show or share interest' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
-    redFlagParentCopy: "If you don't see signs of 'Points to show or share interest' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
+    earlyParentCopy:
+      "Your baby reached 'Points to show or share interest' a bit earlier than average. Babies develop at their own pace, and early can be perfectly normal if your baby seems comfortable and happy.",
+    normalParentCopy:
+      "'Points to show or share interest' is within the usual range. Every baby is unique, and you're supporting great development by responding to their cues and playing together.",
+    lateParentCopy:
+      "Communication skills like 'Points to show or share interest' can come a bit later for some babies. Talk, sing, name objects, and read out loud every day to support language.",
+    redFlagParentCopy:
+      "If you don't see signs of 'Points to show or share interest' and your baby also makes few sounds or responses, please bring this up with your pediatrician.",
     earlyBadgeName: "Milestone Ahead",
-    earlyBadgeCopy: "'Points to show or share interest' showed up a little early. Every baby has their own pace—enjoy this moment.",
+    earlyBadgeCopy:
+      "'Points to show or share interest' showed up a little early. Every baby has their own pace—enjoy this moment.",
     normalBadgeName: "Milestone Reached",
-    normalBadgeCopy: "'Points to show or share interest' has been reached—lovely progress. Take a second to celebrate this stage."
-  }
+    normalBadgeCopy:
+      "'Points to show or share interest' has been reached—lovely progress. Take a second to celebrate this stage.",
+  },
 ];
 
-export function getTimingStatus(babyAgeWeeks: number, milestone: MilestoneDefinition, isCompleted: boolean = false): TimingStatus {
+export function getTimingStatus(
+  babyAgeWeeks: number,
+  milestone: MilestoneDefinition,
+  isCompleted: boolean = false,
+): TimingStatus {
   if (isCompleted) {
     if (babyAgeWeeks <= milestone.earlyRangeEnd) {
       return "early";
@@ -1453,10 +1844,16 @@ export function getTimingStatus(babyAgeWeeks: number, milestone: MilestoneDefini
   if (babyAgeWeeks < milestone.normalRangeStart) {
     return "future";
   }
-  if (babyAgeWeeks >= milestone.normalRangeStart && babyAgeWeeks <= milestone.normalRangeEnd) {
+  if (
+    babyAgeWeeks >= milestone.normalRangeStart &&
+    babyAgeWeeks <= milestone.normalRangeEnd
+  ) {
     return "normal";
   }
-  if (babyAgeWeeks > milestone.normalRangeEnd && babyAgeWeeks < milestone.redFlagWeek) {
+  if (
+    babyAgeWeeks > milestone.normalRangeEnd &&
+    babyAgeWeeks < milestone.redFlagWeek
+  ) {
     return "late";
   }
   if (babyAgeWeeks >= milestone.redFlagWeek) {
@@ -1472,10 +1869,16 @@ export function getMilestonesForAge(babyAgeWeeks: number): {
   const happeningNow: MilestoneDefinition[] = [];
   const comingSoon: MilestoneDefinition[] = [];
 
-  MILESTONE_DEFINITIONS.forEach(m => {
-    if (babyAgeWeeks >= m.normalRangeStart && babyAgeWeeks <= m.normalRangeEnd) {
+  MILESTONE_DEFINITIONS.forEach((m) => {
+    if (
+      babyAgeWeeks >= m.normalRangeStart &&
+      babyAgeWeeks <= m.normalRangeEnd
+    ) {
       happeningNow.push(m);
-    } else if (m.normalRangeStart > babyAgeWeeks && m.normalRangeStart <= babyAgeWeeks + 2) {
+    } else if (
+      m.normalRangeStart > babyAgeWeeks &&
+      m.normalRangeStart <= babyAgeWeeks + 2
+    ) {
       comingSoon.push(m);
     }
   });

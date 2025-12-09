@@ -52,4 +52,3 @@ export function setUserId(userId: string): void {
 export function initializeUserId(): string {
   return getUserId();
 }
-

@@ -17,7 +17,7 @@ export function getActivePlans(): ActivePlans {
   if (typeof window === "undefined") {
     return { childPlan: null, motherPlan: null, comboPlan: null };
   }
-  
+
   try {
     const stored = localStorage.getItem(PLAN_STORAGE_KEY);
     if (stored) {
@@ -26,16 +26,16 @@ export function getActivePlans(): ActivePlans {
   } catch (e) {
     console.error("Failed to parse stored plans:", e);
   }
-  
+
   return { childPlan: null, motherPlan: null, comboPlan: null };
 }
 
 export function setActivePlans(plans: Partial<ActivePlans>): void {
   if (typeof window === "undefined") return;
-  
+
   const current = getActivePlans();
   const updated = { ...current, ...plans };
-  
+
   try {
     localStorage.setItem(PLAN_STORAGE_KEY, JSON.stringify(updated));
   } catch (e) {
@@ -59,8 +59,8 @@ export const childPlanDetails = {
       "Unlimited AaI",
       "Vaccine tracking + logs",
       "Growth tracking (no percentiles)",
-      "Monthly wellness summary"
-    ]
+      "Monthly wellness summary",
+    ],
   },
   vaccination: {
     name: "Vaccination & Checkup Pack",
@@ -70,8 +70,8 @@ export const childPlanDetails = {
       "Everything in Digital Pack",
       "Vaccines at partner hospital",
       "2 pediatric checkups",
-      "Appointment assistance"
-    ]
+      "Appointment assistance",
+    ],
   },
   premium: {
     name: "Premium Growth Care Pack",
@@ -81,9 +81,9 @@ export const childPlanDetails = {
       "Everything in Vaccination Pack",
       "Limited nanny support (3 calls/month)",
       "1 child nutrition consult",
-      "1 sleep guidance session"
-    ]
-  }
+      "1 sleep guidance session",
+    ],
+  },
 };
 
 export const motherPlanDetails = {
@@ -94,8 +94,8 @@ export const motherPlanDetails = {
     benefits: [
       "Postpartum recovery tips",
       "1 lactation consult (video)",
-      "1 physiotherapy consult (video)"
-    ]
+      "1 physiotherapy consult (video)",
+    ],
   },
   wellness: {
     name: "Mother Wellness Care Pack",
@@ -105,9 +105,9 @@ export const motherPlanDetails = {
       "Everything in Recovery Pack",
       "1 in-person physio session (or extra video)",
       "1 mental wellness consultation",
-      "Basic nutrition guidance"
-    ]
-  }
+      "Basic nutrition guidance",
+    ],
+  },
 };
 
 export const comboPlanDetails = {
@@ -116,36 +116,46 @@ export const comboPlanDetails = {
     shortDescription: "Digital tools for both baby and mother.",
     price: "₹2,499/year",
     childPart: "Child Digital Wellness Pack",
-    motherPart: "Mother Recovery Pack (digital)"
+    motherPart: "Mother Recovery Pack (digital)",
   },
   essential: {
     name: "Essential Care Combo",
     shortDescription: "Vaccines, checkups and recovery support.",
     price: "₹7,999/year",
     childPart: "Vaccination & Checkup Pack",
-    motherPart: "Mother Recovery Pack"
+    motherPart: "Mother Recovery Pack",
   },
   premium: {
     name: "Premium Care Combo",
     shortDescription: "Complete care for the whole family.",
     price: "₹13,999/year",
     childPart: "Premium Growth Care Pack",
-    motherPart: "Mother Wellness Care Pack"
-  }
+    motherPart: "Mother Wellness Care Pack",
+  },
 };
 
 // Helper to get the effective child plan (either direct or from combo)
-export function getEffectiveChildPlan(plans: ActivePlans): ChildPlanType | "combo-digital" | "combo-essential" | "combo-premium" {
+export function getEffectiveChildPlan(
+  plans: ActivePlans,
+): ChildPlanType | "combo-digital" | "combo-essential" | "combo-premium" {
   if (plans.comboPlan) {
-    return `combo-${plans.comboPlan}` as "combo-digital" | "combo-essential" | "combo-premium";
+    return `combo-${plans.comboPlan}` as
+      | "combo-digital"
+      | "combo-essential"
+      | "combo-premium";
   }
   return plans.childPlan;
 }
 
 // Helper to get the effective mother plan (either direct or from combo)
-export function getEffectiveMotherPlan(plans: ActivePlans): MotherPlanType | "combo-digital" | "combo-essential" | "combo-premium" {
+export function getEffectiveMotherPlan(
+  plans: ActivePlans,
+): MotherPlanType | "combo-digital" | "combo-essential" | "combo-premium" {
   if (plans.comboPlan) {
-    return `combo-${plans.comboPlan}` as "combo-digital" | "combo-essential" | "combo-premium";
+    return `combo-${plans.comboPlan}` as
+      | "combo-digital"
+      | "combo-essential"
+      | "combo-premium";
   }
   return plans.motherPlan;
 }

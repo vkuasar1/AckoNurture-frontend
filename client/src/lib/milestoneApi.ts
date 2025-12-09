@@ -85,24 +85,39 @@ export async function getAllMilestones(): Promise<Milestone[]> {
  * Get milestone by milestoneId
  * Note: Using milestone-id endpoint as specified
  */
-export async function getMilestoneByMilestoneId(milestoneId: string): Promise<Milestone> {
-  const response = await apiRequest("GET", `/api/v1/milestones/milestone-id/${milestoneId}`);
+export async function getMilestoneByMilestoneId(
+  milestoneId: string,
+): Promise<Milestone> {
+  const response = await apiRequest(
+    "GET",
+    `/api/v1/milestones/milestone-id/${milestoneId}`,
+  );
   return response.json();
 }
 
 /**
  * Get milestones by age in months
  */
-export async function getMilestonesByAge(ageInMonths: number): Promise<Milestone[]> {
-  const response = await apiRequest("GET", `/api/v1/milestones/age/${ageInMonths}`);
+export async function getMilestonesByAge(
+  ageInMonths: number,
+): Promise<Milestone[]> {
+  const response = await apiRequest(
+    "GET",
+    `/api/v1/milestones/age/${ageInMonths}`,
+  );
   return response.json();
 }
 
 /**
  * Get milestone schedules for a baby
  */
-export async function getMilestoneSchedulesByBabyId(babyId: string): Promise<BabyMilestoneSchedule[]> {
-  const response = await apiRequest("GET", `/api/v1/milestone-schedules/baby/${babyId}`);
+export async function getMilestoneSchedulesByBabyId(
+  babyId: string,
+): Promise<BabyMilestoneSchedule[]> {
+  const response = await apiRequest(
+    "GET",
+    `/api/v1/milestone-schedules/baby/${babyId}`,
+  );
   return response.json();
 }
 
@@ -111,9 +126,12 @@ export async function getMilestoneSchedulesByBabyId(babyId: string): Promise<Bab
  */
 export async function getMilestoneSchedulesByBabyIdAndStatus(
   babyId: string,
-  status: "PENDING" | "ACHIEVED" | "OVERDUE"
+  status: "PENDING" | "ACHIEVED" | "OVERDUE",
 ): Promise<BabyMilestoneSchedule[]> {
-  const response = await apiRequest("GET", `/api/v1/milestone-schedules/baby/${babyId}/status/${status}`);
+  const response = await apiRequest(
+    "GET",
+    `/api/v1/milestone-schedules/baby/${babyId}/status/${status}`,
+  );
   return response.json();
 }
 
@@ -121,11 +139,16 @@ export async function getMilestoneSchedulesByBabyIdAndStatus(
  * Generate milestone schedule from DOB
  */
 export async function generateMilestoneSchedule(babyId: string): Promise<void> {
-  const response = await apiRequest("POST", `/api/v1/milestone-schedules/generate/${babyId}`);
+  const response = await apiRequest(
+    "POST",
+    `/api/v1/milestone-schedules/generate/${babyId}`,
+  );
   await response.json();
-  
+
   // Invalidate schedules query
-  queryClient.invalidateQueries({ queryKey: [`/api/v1/milestone-schedules/baby/${babyId}`] });
+  queryClient.invalidateQueries({
+    queryKey: [`/api/v1/milestone-schedules/baby/${babyId}`],
+  });
 }
 
 /**
@@ -134,24 +157,24 @@ export async function generateMilestoneSchedule(babyId: string): Promise<void> {
 export async function markMilestoneAsAchieved(
   scheduleId: string,
   achievedDate?: string,
-  imageFile?: File
+  imageFile?: File,
 ): Promise<BabyMilestoneSchedule> {
   const formData = new FormData();
   if (imageFile) {
     formData.append("image", imageFile);
   }
-  
+
   const url = achievedDate
     ? `/api/v1/milestone-schedules/${scheduleId}/achieve?achievedDate=${encodeURIComponent(achievedDate)}`
     : `/api/v1/milestone-schedules/${scheduleId}/achieve`;
-  
+
   const response = await apiRequest("POST", url, formData);
   const result = await response.json();
-  
+
   // Invalidate schedules query - we need babyId to invalidate properly
   // This will be handled by the caller
   queryClient.invalidateQueries({ queryKey: [`/api/v1/milestone-schedules`] });
-  
+
   return result;
 }
 
@@ -159,18 +182,28 @@ export async function markMilestoneAsAchieved(
  * Update milestone schedule statuses
  */
 export async function updateMilestoneStatuses(babyId: string): Promise<void> {
-  const response = await apiRequest("POST", `/api/v1/milestone-schedules/baby/${babyId}/update-status`);
+  const response = await apiRequest(
+    "POST",
+    `/api/v1/milestone-schedules/baby/${babyId}/update-status`,
+  );
   await response.json();
-  
+
   // Invalidate schedules query
-  queryClient.invalidateQueries({ queryKey: [`/api/v1/milestone-schedules/baby/${babyId}`] });
+  queryClient.invalidateQueries({
+    queryKey: [`/api/v1/milestone-schedules/baby/${babyId}`],
+  });
 }
 
 /**
  * Get milestone reports for a baby
  */
-export async function getMilestoneReports(babyId: string): Promise<MilestoneReport[]> {
-  const response = await apiRequest("GET", `/api/v1/babies/${babyId}/milestone-reports`);
+export async function getMilestoneReports(
+  babyId: string,
+): Promise<MilestoneReport[]> {
+  const response = await apiRequest(
+    "GET",
+    `/api/v1/babies/${babyId}/milestone-reports`,
+  );
   return response.json();
 }
 
@@ -179,19 +212,21 @@ export async function getMilestoneReports(babyId: string): Promise<MilestoneRepo
  */
 export async function submitMilestoneReport(
   babyId: string,
-  report: MilestoneReportRequest
+  report: MilestoneReportRequest,
 ): Promise<MilestoneReport> {
   const userId = getUserId();
   const response = await apiRequest(
     "POST",
     `/api/v1/babies/${babyId}/milestone-reports?userId=${userId}`,
-    report
+    report,
   );
   const result = await response.json();
-  
+
   // Invalidate reports query
-  queryClient.invalidateQueries({ queryKey: [`/api/v1/babies/${babyId}/milestone-reports`] });
-  
+  queryClient.invalidateQueries({
+    queryKey: [`/api/v1/babies/${babyId}/milestone-reports`],
+  });
+
   return result;
 }
 
@@ -201,39 +236,46 @@ export async function submitMilestoneReport(
 export async function submitMilestoneReportWithImage(
   babyId: string,
   report: MilestoneReportRequest,
-  imageFile?: File
+  imageFile?: File,
 ): Promise<MilestoneReport> {
   const userId = getUserId();
-  
+
   // If no image, use the JSON-only endpoint
   if (!imageFile) {
     return submitMilestoneReport(babyId, report);
   }
-  
+
   const formData = new FormData();
-  
+
   // Convert report to JSON string for multipart form
   formData.append("report", JSON.stringify(report));
   formData.append("image", imageFile);
-  
+
   const response = await apiRequest(
     "POST",
     `/api/v1/babies/${babyId}/milestone-reports/with-image?userId=${userId}`,
-    formData
+    formData,
   );
   const result = await response.json();
-  
+
   // Invalidate reports query
-  queryClient.invalidateQueries({ queryKey: [`/api/v1/babies/${babyId}/milestone-reports`] });
-  
+  queryClient.invalidateQueries({
+    queryKey: [`/api/v1/babies/${babyId}/milestone-reports`],
+  });
+
   return result;
 }
 
 /**
  * Get milestone report by reportId
  */
-export async function getMilestoneReportById(reportId: string): Promise<MilestoneReport> {
-  const response = await apiRequest("GET", `/api/v1/milestone-reports/${reportId}`);
+export async function getMilestoneReportById(
+  reportId: string,
+): Promise<MilestoneReport> {
+  const response = await apiRequest(
+    "GET",
+    `/api/v1/milestone-reports/${reportId}`,
+  );
   return response.json();
 }
 
@@ -242,7 +284,7 @@ export async function getMilestoneReportById(reportId: string): Promise<Mileston
  */
 export async function deleteMilestoneReport(reportId: string): Promise<void> {
   await apiRequest("DELETE", `/api/v1/milestone-reports/${reportId}`);
-  
+
   // Invalidate reports query
   queryClient.invalidateQueries({ queryKey: [`/api/v1/milestone-reports`] });
 }
@@ -250,8 +292,12 @@ export async function deleteMilestoneReport(reportId: string): Promise<void> {
 /**
  * Get milestone profile for a baby
  */
-export async function getMilestoneProfile(babyId: string): Promise<MilestoneProfileResult> {
-  const response = await apiRequest("GET", `/api/v1/babies/${babyId}/milestone-profile`);
+export async function getMilestoneProfile(
+  babyId: string,
+): Promise<MilestoneProfileResult> {
+  const response = await apiRequest(
+    "GET",
+    `/api/v1/babies/${babyId}/milestone-profile`,
+  );
   return response.json();
 }
-

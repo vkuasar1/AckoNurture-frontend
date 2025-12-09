@@ -37,15 +37,15 @@ Preferred communication style: Simple, everyday language.
 ### Core Features
 
 - **Nurture Module:**
-    - **Baby Care:** Vaccine tracking, growth charts, developmental milestones, AI Nanny.
-    - **Mother Care:** Postpartum recovery, mental health support, lactation guidance, Mother AI assistant.
-    - **Resources:** Interactive wellness guide with multi-step flow for pain relief, nutrition, energy, sleep, and stress management. Recommends exercises with video content and nutrition tips. Includes "Consult a Doctor" fallback for specialist bookings (physiotherapist, nutritionist, general physician).
+  - **Baby Care:** Vaccine tracking, growth charts, developmental milestones, AI Nanny.
+  - **Mother Care:** Postpartum recovery, mental health support, lactation guidance, Mother AI assistant.
+  - **Resources:** Interactive wellness guide with multi-step flow for pain relief, nutrition, energy, sleep, and stress management. Recommends exercises with video content and nutrition tips. Includes "Consult a Doctor" fallback for specialist bookings (physiotherapist, nutritionist, general physician).
 - **Plan Management:** Multi-step plan selection (Child Wellness, Mother Wellness, Combo packages) with localStorage persistence for prototyping, and dashboard integration.
 - **Milestones:** Redesigned with age filters, two-state toggles, photo memory capture, and non-judgmental language.
 - **Onboarding:** Flexible onboarding flows for "Baby Care," "My Wellness," or both:
-    - Baby-only mode: Skips caregiver form, starts directly at baby details, no confirmation step.
-    - Caregiver-only mode: Shows caregiver form, then navigates to home with mother tab active.
-    - Both mode: Shows caregiver form, baby form, then confirmation.
+  - Baby-only mode: Skips caregiver form, starts directly at baby details, no confirmation step.
+  - Caregiver-only mode: Shows caregiver form, then navigates to home with mother tab active.
+  - Both mode: Shows caregiver form, baby form, then confirmation.
 - **Caregiver Profile Management:** Uses `caregiverStore.ts` (localStorage) to track caregiver setup state. Home page shows placeholder tile with pitch dialog when caregiver not set up.
 - **Authentication:** Basic user management, session management, and foundation for passport.js integration.
 

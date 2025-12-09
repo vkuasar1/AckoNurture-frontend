@@ -1,5 +1,13 @@
 import { useState, useRef } from "react";
-import { X, Share2, ChevronRight, Shield, Heart, Baby, Sparkles } from "lucide-react";
+import {
+  X,
+  Share2,
+  ChevronRight,
+  Shield,
+  Heart,
+  Baby,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
@@ -15,7 +23,15 @@ interface VaccineCelebrationProps {
   completedDate: string;
 }
 
-function ConfettiPiece({ delay, left, color }: { delay: number; left: number; color: string }) {
+function ConfettiPiece({
+  delay,
+  left,
+  color,
+}: {
+  delay: number;
+  left: number;
+  color: string;
+}) {
   return (
     <div
       className="absolute w-2 h-3 rounded-sm opacity-80"
@@ -31,7 +47,14 @@ function ConfettiPiece({ delay, left, color }: { delay: number; left: number; co
 }
 
 function Confetti() {
-  const colors = ["#7c3aed", "#a78bfa", "#f472b6", "#fbbf24", "#34d399", "#60a5fa"];
+  const colors = [
+    "#7c3aed",
+    "#a78bfa",
+    "#f472b6",
+    "#fbbf24",
+    "#34d399",
+    "#60a5fa",
+  ];
   const pieces = Array.from({ length: 50 }, (_, i) => ({
     id: i,
     delay: Math.random() * 2,
@@ -54,7 +77,12 @@ function Confetti() {
         }
       `}</style>
       {pieces.map((piece) => (
-        <ConfettiPiece key={piece.id} delay={piece.delay} left={piece.left} color={piece.color} />
+        <ConfettiPiece
+          key={piece.id}
+          delay={piece.delay}
+          left={piece.left}
+          color={piece.color}
+        />
       ))}
     </div>
   );
@@ -107,21 +135,28 @@ export default function VaccineCelebration({
     // Badge: Baby face circle (left)
     const badgeCenterX = width / 2;
     const badgeCenterY = 85;
-    
+
     // Pink circle for baby face
-    const babyGradient = ctx.createRadialGradient(badgeCenterX - 25, badgeCenterY - 5, 0, badgeCenterX - 25, badgeCenterY, 40);
+    const babyGradient = ctx.createRadialGradient(
+      badgeCenterX - 25,
+      badgeCenterY - 5,
+      0,
+      badgeCenterX - 25,
+      badgeCenterY,
+      40,
+    );
     babyGradient.addColorStop(0, "#f472b6");
     babyGradient.addColorStop(1, "#ec4899");
     ctx.fillStyle = babyGradient;
     ctx.beginPath();
     ctx.arc(badgeCenterX - 25, badgeCenterY, 40, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // White border on baby circle
     ctx.strokeStyle = "#ffffff";
     ctx.lineWidth = 4;
     ctx.stroke();
-    
+
     // Baby face icon (simplified)
     ctx.fillStyle = "#ffffff";
     // Baby head
@@ -132,28 +167,40 @@ export default function VaccineCelebration({
     ctx.beginPath();
     ctx.ellipse(badgeCenterX - 25, badgeCenterY + 20, 12, 8, 0, Math.PI, 0);
     ctx.fill();
-    
+
     // Purple circle for shield (right, overlapping)
-    const shieldGradient = ctx.createRadialGradient(badgeCenterX + 25, badgeCenterY - 5, 0, badgeCenterX + 25, badgeCenterY, 40);
+    const shieldGradient = ctx.createRadialGradient(
+      badgeCenterX + 25,
+      badgeCenterY - 5,
+      0,
+      badgeCenterX + 25,
+      badgeCenterY,
+      40,
+    );
     shieldGradient.addColorStop(0, "#8b5cf6");
     shieldGradient.addColorStop(1, "#7c3aed");
     ctx.fillStyle = shieldGradient;
     ctx.beginPath();
     ctx.arc(badgeCenterX + 25, badgeCenterY, 40, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // White border on shield circle
     ctx.strokeStyle = "#ffffff";
     ctx.lineWidth = 4;
     ctx.stroke();
-    
+
     // Shield icon
     ctx.fillStyle = "#ffffff";
     ctx.beginPath();
     ctx.moveTo(badgeCenterX + 25, badgeCenterY - 20);
     ctx.lineTo(badgeCenterX + 45, badgeCenterY - 5);
     ctx.lineTo(badgeCenterX + 45, badgeCenterY + 10);
-    ctx.quadraticCurveTo(badgeCenterX + 25, badgeCenterY + 30, badgeCenterX + 5, badgeCenterY + 10);
+    ctx.quadraticCurveTo(
+      badgeCenterX + 25,
+      badgeCenterY + 30,
+      badgeCenterX + 5,
+      badgeCenterY + 10,
+    );
     ctx.lineTo(badgeCenterX + 5, badgeCenterY - 5);
     ctx.closePath();
     ctx.fill();
@@ -249,7 +296,11 @@ export default function VaccineCelebration({
 
     ctx.fillStyle = "#a1a1aa";
     ctx.font = "12px Inter, sans-serif";
-    ctx.fillText("Protecting little ones, one vaccine at a time", width / 2, 725);
+    ctx.fillText(
+      "Protecting little ones, one vaccine at a time",
+      width / 2,
+      725,
+    );
 
     // Small hearts decoration
     ctx.fillStyle = "#f472b6";
@@ -276,7 +327,7 @@ export default function VaccineCelebration({
     y: number,
     width: number,
     height: number,
-    radius: number
+    radius: number,
   ) {
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
@@ -299,7 +350,9 @@ export default function VaccineCelebration({
         throw new Error("Failed to generate image");
       }
 
-      const file = new File([blob], `${babyName}-vaccine-certificate.png`, { type: "image/png" });
+      const file = new File([blob], `${babyName}-vaccine-certificate.png`, {
+        type: "image/png",
+      });
 
       if (navigator.share && navigator.canShare({ files: [file] })) {
         await navigator.share({
@@ -338,9 +391,12 @@ export default function VaccineCelebration({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" data-testid="celebration-overlay">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+      data-testid="celebration-overlay"
+    >
       <Confetti />
-      
+
       {/* Hidden canvas for image generation */}
       <canvas ref={canvasRef} className="hidden" />
 
@@ -356,10 +412,13 @@ export default function VaccineCelebration({
       </Button>
 
       {/* Certificate Card */}
-      <Card className="relative w-[340px] bg-gradient-to-b from-violet-50 to-purple-50 border-2 border-violet-200 rounded-3xl shadow-2xl overflow-hidden mx-4" data-testid="celebration-certificate">
+      <Card
+        className="relative w-[340px] bg-gradient-to-b from-violet-50 to-purple-50 border-2 border-violet-200 rounded-3xl shadow-2xl overflow-hidden mx-4"
+        data-testid="celebration-certificate"
+      >
         {/* Top decoration */}
         <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-violet-400 via-purple-500 to-pink-400" />
-        
+
         <CardContent className="p-6 pt-8 text-center">
           {/* Badge - Baby face + Shield/Heart */}
           <div className="relative mx-auto mb-5">
@@ -382,28 +441,45 @@ export default function VaccineCelebration({
           </div>
 
           {/* Title */}
-          <h2 className="text-[22px] font-bold text-zinc-900 mb-2" data-testid="text-celebration-title">
+          <h2
+            className="text-[22px] font-bold text-zinc-900 mb-2"
+            data-testid="text-celebration-title"
+          >
             Protection milestone unlocked!
           </h2>
 
           {/* Subtitle */}
-          <p className="text-[15px] text-zinc-600 mb-4" data-testid="text-celebration-subtitle">
-            <span className="font-bold text-violet-600">{babyName}</span> completed the{" "}
-            <span className="font-bold text-violet-600">{ageGroup}</span> vaccine visit
+          <p
+            className="text-[15px] text-zinc-600 mb-4"
+            data-testid="text-celebration-subtitle"
+          >
+            <span className="font-bold text-violet-600">{babyName}</span>{" "}
+            completed the{" "}
+            <span className="font-bold text-violet-600">{ageGroup}</span>{" "}
+            vaccine visit
           </p>
 
           {/* Vaccine name badge */}
-          <div className="inline-block bg-violet-100 text-violet-700 text-[13px] font-medium px-3 py-1 rounded-full mb-4" data-testid="text-vaccine-name">
+          <div
+            className="inline-block bg-violet-100 text-violet-700 text-[13px] font-medium px-3 py-1 rounded-full mb-4"
+            data-testid="text-vaccine-name"
+          >
             {vaccineName}
           </div>
 
           {/* Date */}
-          <div className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-[14px] font-bold py-2 px-4 rounded-xl inline-block mb-5" data-testid="text-celebration-date">
+          <div
+            className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-[14px] font-bold py-2 px-4 rounded-xl inline-block mb-5"
+            data-testid="text-celebration-date"
+          >
             {formattedDate}
           </div>
 
           {/* Praise */}
-          <p className="text-[14px] text-zinc-500 italic mb-6" data-testid="text-praise">
+          <p
+            className="text-[14px] text-zinc-500 italic mb-6"
+            data-testid="text-praise"
+          >
             Great job keeping your baby safe and healthy!
           </p>
 
@@ -432,7 +508,9 @@ export default function VaccineCelebration({
 
           {/* Branding */}
           <div className="mt-6 pt-4 border-t border-violet-100">
-            <p className="text-[11px] text-violet-400 font-medium">BabyCare by Acko</p>
+            <p className="text-[11px] text-violet-400 font-medium">
+              BabyCare by Acko
+            </p>
           </div>
         </CardContent>
       </Card>

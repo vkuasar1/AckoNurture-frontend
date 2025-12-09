@@ -1,25 +1,24 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { 
-  insertBabyProfileSchema, 
-  insertVaccineSchema, 
-  insertGrowthEntrySchema, 
-  insertMilestoneSchema, 
+import {
+  insertBabyProfileSchema,
+  insertVaccineSchema,
+  insertGrowthEntrySchema,
+  insertMilestoneSchema,
   insertMilestoneProgressSchema,
   insertMilestoneMemorySchema,
   insertChatMessageSchema,
   insertDoctorVisitSchema,
   insertMedicalReportSchema,
   insertMotherProfileSchema,
-  insertUserPreferencesSchema
+  insertUserPreferencesSchema,
 } from "@shared/schema";
 
 export async function registerRoutes(
   httpServer: Server,
-  app: Express
+  app: Express,
 ): Promise<Server> {
-  
   // Baby Profile routes
   app.get("/api/baby-profiles", async (req, res) => {
     const profiles = await storage.getAllBabyProfiles();
@@ -39,13 +38,13 @@ export async function registerRoutes(
     if (!parsed.success) {
       return res.status(400).json({ error: parsed.error.errors });
     }
-    
+
     const profile = await storage.createBabyProfile(parsed.data);
-    
+
     // Initialize vaccines and milestones for the baby
     await storage.initializeVaccinesForBaby(profile.id, profile.dob);
     await storage.initializeMilestonesForBaby(profile.id);
-    
+
     res.status(201).json(profile);
   });
 
@@ -85,7 +84,7 @@ export async function registerRoutes(
     if (!parsed.success) {
       return res.status(400).json({ error: parsed.error.errors });
     }
-    
+
     const entry = await storage.createGrowthEntry(parsed.data);
     res.status(201).json(entry);
   });
@@ -106,27 +105,37 @@ export async function registerRoutes(
 
   // Milestone Progress routes (for new definition-based tracking)
   app.get("/api/baby-profiles/:babyId/milestone-progress", async (req, res) => {
-    const progress = await storage.getMilestoneProgressByBabyId(req.params.babyId);
+    const progress = await storage.getMilestoneProgressByBabyId(
+      req.params.babyId,
+    );
     res.json(progress);
   });
 
-  app.post("/api/baby-profiles/:babyId/milestone-progress", async (req, res) => {
-    const parsed = insertMilestoneProgressSchema.omit({ babyId: true }).safeParse(req.body);
-    if (!parsed.success) {
-      return res.status(400).json({ error: parsed.error.errors });
-    }
-    
-    const { milestoneDefId, ...rest } = parsed.data;
-    const progress = await storage.upsertMilestoneProgress(
-      req.params.babyId,
-      milestoneDefId,
-      rest
-    );
-    res.status(201).json(progress);
-  });
+  app.post(
+    "/api/baby-profiles/:babyId/milestone-progress",
+    async (req, res) => {
+      const parsed = insertMilestoneProgressSchema
+        .omit({ babyId: true })
+        .safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: parsed.error.errors });
+      }
+
+      const { milestoneDefId, ...rest } = parsed.data;
+      const progress = await storage.upsertMilestoneProgress(
+        req.params.babyId,
+        milestoneDefId,
+        rest,
+      );
+      res.status(201).json(progress);
+    },
+  );
 
   app.patch("/api/milestone-progress/:id", async (req, res) => {
-    const updated = await storage.updateMilestoneProgress(req.params.id, req.body);
+    const updated = await storage.updateMilestoneProgress(
+      req.params.id,
+      req.body,
+    );
     if (!updated) {
       return res.status(404).json({ error: "Milestone progress not found" });
     }
@@ -135,12 +144,16 @@ export async function registerRoutes(
 
   // Milestone Memory routes
   app.get("/api/baby-profiles/:babyId/memories", async (req, res) => {
-    const memories = await storage.getMilestoneMemoriesByBabyId(req.params.babyId);
+    const memories = await storage.getMilestoneMemoriesByBabyId(
+      req.params.babyId,
+    );
     res.json(memories);
   });
 
   app.get("/api/milestones/:milestoneId/memories", async (req, res) => {
-    const memories = await storage.getMilestoneMemoriesByMilestoneId(req.params.milestoneId);
+    const memories = await storage.getMilestoneMemoriesByMilestoneId(
+      req.params.milestoneId,
+    );
     res.json(memories);
   });
 
@@ -152,7 +165,7 @@ export async function registerRoutes(
     if (!parsed.success) {
       return res.status(400).json({ error: parsed.error.errors });
     }
-    
+
     const memory = await storage.createMilestoneMemory(parsed.data);
     res.status(201).json(memory);
   });
@@ -179,7 +192,7 @@ export async function registerRoutes(
     if (!parsed.success) {
       return res.status(400).json({ error: parsed.error.errors });
     }
-    
+
     const message = await storage.createChatMessage(parsed.data);
     res.status(201).json(message);
   });
@@ -198,7 +211,7 @@ export async function registerRoutes(
     if (!parsed.success) {
       return res.status(400).json({ error: parsed.error.errors });
     }
-    
+
     const visit = await storage.createDoctorVisit(parsed.data);
     res.status(201).json(visit);
   });
@@ -217,7 +230,7 @@ export async function registerRoutes(
     if (!parsed.success) {
       return res.status(400).json({ error: parsed.error.errors });
     }
-    
+
     const report = await storage.createMedicalReport(parsed.data);
     res.status(201).json(report);
   });
@@ -236,7 +249,7 @@ export async function registerRoutes(
     if (!parsed.success) {
       return res.status(400).json({ error: parsed.error.errors });
     }
-    
+
     const profile = await storage.createMotherProfile(parsed.data);
     res.status(201).json(profile);
   });
@@ -255,7 +268,7 @@ export async function registerRoutes(
     if (!parsed.success) {
       return res.status(400).json({ error: parsed.error.errors });
     }
-    
+
     const prefs = await storage.createUserPreferences(parsed.data);
     res.status(201).json(prefs);
   });

@@ -12,8 +12,8 @@ export default function BabyCareHospitalWelcome() {
       <div className="bg-[#1a1a1a] text-white px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href="/">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               className="text-white/70 hover:text-white hover:bg-white/10 -ml-2"
               data-testid="button-back-home"
@@ -21,7 +21,9 @@ export default function BabyCareHospitalWelcome() {
               Back to Explore
             </Button>
           </Link>
-          <span className="text-[13px] text-white/60 font-medium">Hospital Onboarding</span>
+          <span className="text-[13px] text-white/60 font-medium">
+            Hospital Onboarding
+          </span>
         </div>
       </div>
 
@@ -38,35 +40,67 @@ export default function BabyCareHospitalWelcome() {
         </div>
 
         {/* Welcome Text */}
-        <h1 className="text-[26px] font-bold text-zinc-900 text-center mb-3 leading-tight" data-testid="text-hospital-title">
+        <h1
+          className="text-[26px] font-bold text-zinc-900 text-center mb-3 leading-tight"
+          data-testid="text-hospital-title"
+        >
           Welcome to BabyCare
         </h1>
         <div className="flex items-center gap-2 bg-violet-100 rounded-full px-4 py-2 mb-4">
           <CheckCircle2 className="w-4 h-4 text-violet-600" />
-          <p className="text-[13px] text-violet-700 font-medium" data-testid="text-hospital-badge">
+          <p
+            className="text-[13px] text-violet-700 font-medium"
+            data-testid="text-hospital-badge"
+          >
             Recommended by Apollo Hospital
           </p>
         </div>
-        <p className="text-[15px] text-zinc-500 text-center max-w-[300px] leading-relaxed mb-8" data-testid="text-hospital-subtitle">
-          Your baby's health records have been prepared by the hospital. Let's complete the setup together.
+        <p
+          className="text-[15px] text-zinc-500 text-center max-w-[300px] leading-relaxed mb-8"
+          data-testid="text-hospital-subtitle"
+        >
+          Your baby's health records have been prepared by the hospital. Let's
+          complete the setup together.
         </p>
 
         {/* Pre-filled Info Card */}
-        <Card className="w-full max-w-xs bg-white border border-violet-100 shadow-md rounded-2xl mb-8" data-testid="card-hospital-info">
+        <Card
+          className="w-full max-w-xs bg-white border border-violet-100 shadow-md rounded-2xl mb-8"
+          data-testid="card-hospital-info"
+        >
           <CardContent className="p-5">
-            <p className="text-[12px] text-zinc-500 mb-3 font-medium">Your baby's details</p>
+            <p className="text-[12px] text-zinc-500 mb-3 font-medium">
+              Your baby's details
+            </p>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-[13px] text-zinc-500">Birth Date</span>
-                <span className="text-[14px] font-semibold text-zinc-900" data-testid="text-birth-date">Dec 15, 2024</span>
+                <span
+                  className="text-[14px] font-semibold text-zinc-900"
+                  data-testid="text-birth-date"
+                >
+                  Dec 15, 2024
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-[13px] text-zinc-500">Hospital</span>
-                <span className="text-[14px] font-semibold text-zinc-900" data-testid="text-hospital-name">Apollo Hospital</span>
+                <span
+                  className="text-[14px] font-semibold text-zinc-900"
+                  data-testid="text-hospital-name"
+                >
+                  Apollo Hospital
+                </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-[13px] text-zinc-500">Vaccines Given</span>
-                <span className="text-[14px] font-semibold text-zinc-900" data-testid="text-vaccines-given">BCG, Hep B</span>
+                <span className="text-[13px] text-zinc-500">
+                  Vaccines Given
+                </span>
+                <span
+                  className="text-[14px] font-semibold text-zinc-900"
+                  data-testid="text-vaccines-given"
+                >
+                  BCG, Hep B
+                </span>
               </div>
             </div>
           </CardContent>
@@ -76,22 +110,28 @@ export default function BabyCareHospitalWelcome() {
         <div className="w-full max-w-xs space-y-2">
           <div className="flex items-center gap-2" data-testid="benefit-1">
             <CheckCircle2 className="w-4 h-4 text-green-500" />
-            <span className="text-[13px] text-zinc-600">Birth vaccines pre-recorded</span>
+            <span className="text-[13px] text-zinc-600">
+              Birth vaccines pre-recorded
+            </span>
           </div>
           <div className="flex items-center gap-2" data-testid="benefit-2">
             <CheckCircle2 className="w-4 h-4 text-green-500" />
-            <span className="text-[13px] text-zinc-600">Personalized vaccine schedule</span>
+            <span className="text-[13px] text-zinc-600">
+              Personalized vaccine schedule
+            </span>
           </div>
           <div className="flex items-center gap-2" data-testid="benefit-3">
             <CheckCircle2 className="w-4 h-4 text-green-500" />
-            <span className="text-[13px] text-zinc-600">Growth tracking from day 1</span>
+            <span className="text-[13px] text-zinc-600">
+              Growth tracking from day 1
+            </span>
           </div>
         </div>
       </div>
 
       {/* Bottom CTA */}
       <div className="px-6 pb-8 bg-white">
-        <Button 
+        <Button
           onClick={() => setLocation("/babycare/setup?hospital=apollo")}
           className="w-full bg-violet-600 hover:bg-violet-700 text-white rounded-2xl h-14 text-[16px] font-semibold shadow-lg shadow-violet-200/50 gap-2"
           data-testid="button-continue-setup"
@@ -100,7 +140,10 @@ export default function BabyCareHospitalWelcome() {
           <ArrowRight className="w-5 h-5" />
         </Button>
         <Link href="/babycare">
-          <p className="text-[13px] text-violet-600 text-center mt-4 font-medium cursor-pointer" data-testid="link-start-fresh">
+          <p
+            className="text-[13px] text-violet-600 text-center mt-4 font-medium cursor-pointer"
+            data-testid="link-start-fresh"
+          >
             Start fresh instead
           </p>
         </Link>
