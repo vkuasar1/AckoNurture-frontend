@@ -82,6 +82,7 @@ app.use("/api/v1", async (req, res, next) => {
   try {
     const targetUrl = `${VITE_API_BASE_URL}${req.originalUrl}`;
     const isGetOrHead = req.method === "GET" || req.method === "HEAD";
+    const contentType = req.headers["content-type"] || "";
 
     const fetchOptions: RequestInit = {
       method: req.method,
@@ -89,11 +90,17 @@ app.use("/api/v1", async (req, res, next) => {
         string,
         string
       >,
-      body: isGetOrHead ? undefined : req.body,
+      body: isGetOrHead
+        ? undefined
+        : contentType.includes("application/json")
+          ? JSON.stringify(req.body)
+          : req.body,
     };
 
     const response = await fetch(targetUrl, fetchOptions);
-    const data = await response.text();
+    const data = await response.json();
+
+    console.log(data);
 
     // Forward status and headers
     res.status(response.status);
@@ -103,8 +110,7 @@ app.use("/api/v1", async (req, res, next) => {
 
     // Try to parse as JSON, otherwise send as text
     try {
-      const jsonData = JSON.parse(data);
-      res.json(jsonData);
+      res.json(data);
     } catch {
       res.send(data);
     }

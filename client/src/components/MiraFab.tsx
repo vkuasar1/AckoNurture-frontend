@@ -17,8 +17,8 @@ export function MiraFab({ babyId }: MiraFabProps) {
             data-testid="button-mira-fab"
           >
             <Heart className="w-5 h-5" />
-            <span className="text-[13px] font-semibold tracking-wide">
-              Ask AI
+            <span className="text-[13px] font-mono font-semibold tracking-wide">
+              Ask AaI
             </span>
           </button>
         </Link>

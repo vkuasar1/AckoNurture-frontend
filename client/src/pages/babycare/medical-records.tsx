@@ -52,16 +52,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type {
-  BabyProfile,
-  Vaccine,
-  GrowthEntry,
-  Milestone,
-  DoctorVisit,
-  MedicalReport,
-} from "@shared/schema";
+import type { Vaccine, GrowthEntry, Milestone } from "@shared/schema";
+import {
+  getMedicalRecordsByProfileId,
+  createMedicalRecord,
+  type MedicalRecord,
+} from "@/lib/medicalRecordsApi";
 import {
   format,
   parseISO,
@@ -156,24 +154,34 @@ export default function BabyCareMedicalRecords() {
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [showVisitDialog, setShowVisitDialog] = useState(false);
   const [showReportDialog, setShowReportDialog] = useState(false);
-  const [viewingReport, setViewingReport] = useState<MedicalReport | null>(
+  const [viewingReport, setViewingReport] = useState<MedicalRecord | null>(
     null,
   );
 
   const [visitForm, setVisitForm] = useState({
-    visitDate: new Date().toISOString().split("T")[0],
+    recordDate: new Date().toISOString().split("T")[0],
+    title: "",
     doctorName: "",
-    clinicName: "",
-    reason: "",
-    notes: "",
+    hospitalName: "",
+    diagnosis: "",
+    description: "",
+    category: "visit",
+    recordType: "visit",
+    tags: [] as string[],
+    files: [] as File[],
   });
 
   const [reportForm, setReportForm] = useState({
-    reportDate: new Date().toISOString().split("T")[0],
+    recordDate: new Date().toISOString().split("T")[0],
     title: "",
-    reportType: "other" as string,
-    notes: "",
-    fileUrl: "",
+    recordType: "report",
+    category: "document",
+    description: "",
+    doctorName: "",
+    hospitalName: "",
+    diagnosis: "",
+    tags: [] as string[],
+    files: [] as File[],
   });
 
   // Fetch profiles from API
@@ -184,9 +192,7 @@ export default function BabyCareMedicalRecords() {
   });
 
   // Find baby profile - route param babyId is actually profileId
-  const baby = profiles.find(
-    (p) => p.type === "baby" && p.profileId === babyId,
-  );
+  const baby = profiles.find((p) => p.profileId === babyId);
   const babyProfileId = baby?.profileId || babyId; // Use profileId for navigation
 
   const { data: vaccines = [] } = useQuery<Vaccine[]>({
@@ -204,28 +210,33 @@ export default function BabyCareMedicalRecords() {
     enabled: !!babyId,
   });
 
-  const { data: doctorVisits = [] } = useQuery<DoctorVisit[]>({
-    queryKey: ["/api/baby-profiles", babyId, "visits"],
-    enabled: !!babyId,
-  });
-
-  const { data: medicalReports = [] } = useQuery<MedicalReport[]>({
-    queryKey: ["/api/baby-profiles", babyId, "reports"],
-    enabled: !!babyId,
+  const { data: medicalRecords = [] } = useQuery<MedicalRecord[]>({
+    queryKey: ["/api/v1/medical-records/profile", babyProfileId],
+    queryFn: () => getMedicalRecordsByProfileId(babyProfileId as string),
+    enabled: !!babyProfileId,
   });
 
   const createVisit = useMutation({
     mutationFn: async (data: typeof visitForm) => {
-      const res = await apiRequest(
-        "POST",
-        `/api/baby-profiles/${babyId}/visits`,
-        data,
+      return createMedicalRecord(
+        {
+          profileId: babyProfileId as string,
+          recordType: data.recordType,
+          category: data.category,
+          recordDate: data.recordDate,
+          title: data.title,
+          description: data.description || null,
+          doctorName: data.doctorName || null,
+          hospitalName: data.hospitalName || null,
+          diagnosis: data.diagnosis || null,
+          tags: data.tags.length > 0 ? data.tags : null,
+        },
+        data.files.length > 0 ? data.files : null,
       );
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["/api/baby-profiles", babyId, "visits"],
+        queryKey: ["/api/v1/medical-records/profile", babyProfileId],
       });
       toast({
         title: "Visit logged!",
@@ -233,27 +244,41 @@ export default function BabyCareMedicalRecords() {
       });
       setShowVisitDialog(false);
       setVisitForm({
-        visitDate: new Date().toISOString().split("T")[0],
+        recordDate: new Date().toISOString().split("T")[0],
+        title: "",
         doctorName: "",
-        clinicName: "",
-        reason: "",
-        notes: "",
+        hospitalName: "",
+        diagnosis: "",
+        description: "",
+        category: "visit",
+        recordType: "visit",
+        tags: [],
+        files: [],
       });
     },
   });
 
   const createReport = useMutation({
     mutationFn: async (data: typeof reportForm) => {
-      const res = await apiRequest(
-        "POST",
-        `/api/baby-profiles/${babyId}/reports`,
-        data,
+      return createMedicalRecord(
+        {
+          profileId: babyProfileId as string,
+          recordType: data.recordType,
+          category: data.category,
+          recordDate: data.recordDate,
+          title: data.title,
+          description: data.description || null,
+          doctorName: data.doctorName || null,
+          hospitalName: data.hospitalName || null,
+          diagnosis: data.diagnosis || null,
+          tags: data.tags.length > 0 ? data.tags : null,
+        },
+        data.files.length > 0 ? data.files : null,
       );
-      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["/api/baby-profiles", babyId, "reports"],
+        queryKey: ["/api/v1/medical-records/profile", babyProfileId],
       });
       toast({
         title: "Report saved!",
@@ -261,11 +286,16 @@ export default function BabyCareMedicalRecords() {
       });
       setShowReportDialog(false);
       setReportForm({
-        reportDate: new Date().toISOString().split("T")[0],
+        recordDate: new Date().toISOString().split("T")[0],
         title: "",
-        reportType: "other",
-        notes: "",
-        fileUrl: "",
+        recordType: "report",
+        category: "document",
+        description: "",
+        doctorName: "",
+        hospitalName: "",
+        diagnosis: "",
+        tags: [],
+        files: [],
       });
     },
   });
@@ -319,35 +349,40 @@ export default function BabyCareMedicalRecords() {
         });
       });
 
-    doctorVisits.forEach((visit) => {
-      records.push({
-        id: `visit-${visit.id}`,
-        date: parseISO(visit.visitDate),
-        type: "visit",
-        title: visit.reason,
-        detail: visit.doctorName ? `Dr. ${visit.doctorName}` : "Doctor visit",
-        additionalInfo: visit.clinicName || undefined,
-      });
-    });
-
-    medicalReports.forEach((report) => {
-      const typeInfo =
-        reportTypeLabels[report.reportType] || reportTypeLabels.other;
-      records.push({
-        id: `report-${report.id}`,
-        date: parseISO(report.reportDate),
-        type: "report",
-        title: report.title,
-        detail: typeInfo.label,
-        hasAttachment: !!report.fileUrl,
-        attachmentUrl: report.fileUrl || undefined,
-        additionalInfo: report.notes || undefined,
-      });
+    // Map medical records to timeline records
+    medicalRecords.forEach((record) => {
+      if (record.recordType === "visit") {
+        records.push({
+          id: `visit-${record.recordId}`,
+          date: parseISO(record.recordDate),
+          type: "visit",
+          title: record.title,
+          detail: record.doctorName
+            ? `Dr. ${record.doctorName}`
+            : "Doctor visit",
+          additionalInfo: record.hospitalName || undefined,
+          hasAttachment: !!(record.fileUrls && record.fileUrls.length > 0),
+          attachmentUrl: record.fileUrls?.[0] || undefined,
+        });
+      } else if (record.recordType === "report") {
+        const typeInfo =
+          reportTypeLabels[record.category] || reportTypeLabels.other;
+        records.push({
+          id: `report-${record.recordId}`,
+          date: parseISO(record.recordDate),
+          type: "report",
+          title: record.title,
+          detail: typeInfo.label,
+          hasAttachment: !!(record.fileUrls && record.fileUrls.length > 0),
+          attachmentUrl: record.fileUrls?.[0] || undefined,
+          additionalInfo: record.description || undefined,
+        });
+      }
     });
 
     records.sort((a, b) => b.date.getTime() - a.date.getTime());
     return records;
-  }, [vaccines, growthEntries, milestones, doctorVisits, medicalReports]);
+  }, [vaccines, growthEntries, milestones, medicalRecords]);
 
   const filteredRecords = useMemo(() => {
     if (activeFilter === "all") return timelineRecords;
@@ -360,18 +395,11 @@ export default function BabyCareMedicalRecords() {
       vaccines: vaccines.filter((v) => v.status === "completed").length,
       growth: growthEntries.length,
       milestones: milestones.filter((m) => m.completed).length,
-      visits: doctorVisits.length,
-      reports: medicalReports.length,
+      visits: medicalRecords.filter((r) => r.recordType === "visit").length,
+      reports: medicalRecords.filter((r) => r.recordType === "report").length,
       total: timelineRecords.length,
     }),
-    [
-      vaccines,
-      growthEntries,
-      milestones,
-      doctorVisits,
-      medicalReports,
-      timelineRecords,
-    ],
+    [vaccines, growthEntries, milestones, medicalRecords, timelineRecords],
   );
 
   const filters: { key: FilterType; label: string; count: number }[] = [
@@ -395,7 +423,7 @@ export default function BabyCareMedicalRecords() {
   }, [filteredRecords]);
 
   const babyAgeMonths = baby
-    ? differenceInMonths(new Date(), new Date(baby.dob))
+    ? differenceInMonths(new Date(), new Date(baby.dob as string))
     : 0;
 
   if (!baby) {
@@ -435,7 +463,7 @@ export default function BabyCareMedicalRecords() {
               Health Records
             </h1>
             <p className="text-[12px] text-white/80">
-              {baby.name}'s complete medical history
+              {baby.babyName}'s complete medical history
             </p>
           </div>
           <div className="relative">
@@ -881,27 +909,27 @@ export default function BabyCareMedicalRecords() {
               <Input
                 id="visitDate"
                 type="date"
-                value={visitForm.visitDate}
+                value={visitForm.recordDate}
                 onChange={(e) =>
-                  setVisitForm({ ...visitForm, visitDate: e.target.value })
+                  setVisitForm({ ...visitForm, recordDate: e.target.value })
                 }
                 className="mt-1.5 rounded-xl h-11"
                 data-testid="input-visit-date"
               />
             </div>
             <div>
-              <Label htmlFor="reason" className="text-[13px] font-semibold">
-                Reason for Visit *
+              <Label htmlFor="title" className="text-[13px] font-semibold">
+                Title / Reason for Visit *
               </Label>
               <Input
-                id="reason"
+                id="title"
                 placeholder="e.g., Regular checkup, Fever, Vaccination"
-                value={visitForm.reason}
+                value={visitForm.title}
                 onChange={(e) =>
-                  setVisitForm({ ...visitForm, reason: e.target.value })
+                  setVisitForm({ ...visitForm, title: e.target.value })
                 }
                 className="mt-1.5 rounded-xl h-11"
-                data-testid="input-visit-reason"
+                data-testid="input-visit-title"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -925,37 +953,71 @@ export default function BabyCareMedicalRecords() {
               </div>
               <div>
                 <Label
-                  htmlFor="clinicName"
+                  htmlFor="hospitalName"
                   className="text-[13px] font-semibold"
                 >
                   Hospital/Clinic
                 </Label>
                 <Input
-                  id="clinicName"
+                  id="hospitalName"
                   placeholder="Apollo"
-                  value={visitForm.clinicName}
+                  value={visitForm.hospitalName}
                   onChange={(e) =>
-                    setVisitForm({ ...visitForm, clinicName: e.target.value })
+                    setVisitForm({ ...visitForm, hospitalName: e.target.value })
                   }
                   className="mt-1.5 rounded-xl h-11"
-                  data-testid="input-clinic-name"
+                  data-testid="input-hospital-name"
                 />
               </div>
             </div>
             <div>
-              <Label htmlFor="notes" className="text-[13px] font-semibold">
+              <Label htmlFor="diagnosis" className="text-[13px] font-semibold">
+                Diagnosis (optional)
+              </Label>
+              <Input
+                id="diagnosis"
+                placeholder="e.g., Routine checkup, Common cold"
+                value={visitForm.diagnosis}
+                onChange={(e) =>
+                  setVisitForm({ ...visitForm, diagnosis: e.target.value })
+                }
+                className="mt-1.5 rounded-xl h-11"
+                data-testid="input-diagnosis"
+              />
+            </div>
+            <div>
+              <Label
+                htmlFor="description"
+                className="text-[13px] font-semibold"
+              >
                 Notes (optional)
               </Label>
               <Textarea
-                id="notes"
+                id="description"
                 placeholder="Diagnosis, prescriptions, follow-up..."
-                value={visitForm.notes}
+                value={visitForm.description}
                 onChange={(e) =>
-                  setVisitForm({ ...visitForm, notes: e.target.value })
+                  setVisitForm({ ...visitForm, description: e.target.value })
                 }
                 className="mt-1.5 rounded-xl resize-none"
                 rows={2}
                 data-testid="input-visit-notes"
+              />
+            </div>
+            <div>
+              <Label htmlFor="visitFiles" className="text-[13px] font-semibold">
+                Attach Files (optional)
+              </Label>
+              <Input
+                id="visitFiles"
+                type="file"
+                multiple
+                onChange={(e) => {
+                  const files = Array.from(e.target.files || []);
+                  setVisitForm({ ...visitForm, files });
+                }}
+                className="mt-1.5 rounded-xl h-11"
+                data-testid="input-visit-files"
               />
             </div>
           </div>
@@ -970,7 +1032,7 @@ export default function BabyCareMedicalRecords() {
             </Button>
             <Button
               onClick={() => createVisit.mutate(visitForm)}
-              disabled={!visitForm.reason || createVisit.isPending}
+              disabled={!visitForm.title || createVisit.isPending}
               className="flex-1 bg-gradient-to-r from-violet-500 to-purple-600 hover:opacity-90 rounded-xl h-11 font-semibold shadow-lg"
               data-testid="button-save-visit"
             >
@@ -1005,9 +1067,9 @@ export default function BabyCareMedicalRecords() {
               <Input
                 id="reportDate"
                 type="date"
-                value={reportForm.reportDate}
+                value={reportForm.recordDate}
                 onChange={(e) =>
-                  setReportForm({ ...reportForm, reportDate: e.target.value })
+                  setReportForm({ ...reportForm, recordDate: e.target.value })
                 }
                 className="mt-1.5 rounded-xl h-11"
                 data-testid="input-report-date"
@@ -1032,18 +1094,21 @@ export default function BabyCareMedicalRecords() {
               />
             </div>
             <div>
-              <Label htmlFor="reportType" className="text-[13px] font-semibold">
+              <Label
+                htmlFor="reportCategory"
+                className="text-[13px] font-semibold"
+              >
                 Document Type
               </Label>
               <Select
-                value={reportForm.reportType}
+                value={reportForm.category}
                 onValueChange={(value) =>
-                  setReportForm({ ...reportForm, reportType: value })
+                  setReportForm({ ...reportForm, category: value })
                 }
               >
                 <SelectTrigger
                   className="mt-1.5 rounded-xl h-11"
-                  data-testid="select-report-type"
+                  data-testid="select-report-category"
                 >
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
@@ -1084,7 +1149,7 @@ export default function BabyCareMedicalRecords() {
                       Birth Certificate
                     </span>
                   </SelectItem>
-                  <SelectItem value="other">
+                  <SelectItem value="document">
                     <span className="flex items-center gap-2">
                       <File className="w-4 h-4 text-zinc-600" />
                       Other Document
@@ -1093,49 +1158,102 @@ export default function BabyCareMedicalRecords() {
                 </SelectContent>
               </Select>
             </div>
-
-            {/* File URL Input */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label
+                  htmlFor="doctorName"
+                  className="text-[13px] font-semibold"
+                >
+                  Doctor Name
+                </Label>
+                <Input
+                  id="doctorName"
+                  placeholder="Dr. Sharma"
+                  value={reportForm.doctorName}
+                  onChange={(e) =>
+                    setReportForm({ ...reportForm, doctorName: e.target.value })
+                  }
+                  className="mt-1.5 rounded-xl h-11"
+                  data-testid="input-doctor-name"
+                />
+              </div>
+              <div>
+                <Label
+                  htmlFor="hospitalName"
+                  className="text-[13px] font-semibold"
+                >
+                  Hospital/Clinic
+                </Label>
+                <Input
+                  id="hospitalName"
+                  placeholder="Apollo"
+                  value={reportForm.hospitalName}
+                  onChange={(e) =>
+                    setReportForm({
+                      ...reportForm,
+                      hospitalName: e.target.value,
+                    })
+                  }
+                  className="mt-1.5 rounded-xl h-11"
+                  data-testid="input-hospital-name"
+                />
+              </div>
+            </div>
             <div>
-              <Label
-                htmlFor="fileUrl"
-                className="text-[13px] font-semibold flex items-center gap-2"
-              >
-                <Paperclip className="w-3.5 h-3.5" />
-                Document URL (optional)
+              <Label htmlFor="diagnosis" className="text-[13px] font-semibold">
+                Diagnosis (optional)
               </Label>
               <Input
-                id="fileUrl"
-                placeholder="Paste link to document or image"
-                value={reportForm.fileUrl}
+                id="diagnosis"
+                placeholder="e.g., Routine checkup"
+                value={reportForm.diagnosis}
                 onChange={(e) =>
-                  setReportForm({ ...reportForm, fileUrl: e.target.value })
+                  setReportForm({ ...reportForm, diagnosis: e.target.value })
                 }
                 className="mt-1.5 rounded-xl h-11"
-                data-testid="input-file-url"
+                data-testid="input-diagnosis"
               />
-              <p className="text-[10px] text-zinc-400 mt-1">
-                Upload to Google Drive, Dropbox, etc. and paste link here
-              </p>
             </div>
-
             <div>
               <Label
-                htmlFor="reportNotes"
+                htmlFor="reportDescription"
                 className="text-[13px] font-semibold"
               >
-                Notes (optional)
+                Description (optional)
               </Label>
               <Textarea
-                id="reportNotes"
+                id="reportDescription"
                 placeholder="Brief description of the report..."
-                value={reportForm.notes}
+                value={reportForm.description}
                 onChange={(e) =>
-                  setReportForm({ ...reportForm, notes: e.target.value })
+                  setReportForm({ ...reportForm, description: e.target.value })
                 }
                 className="mt-1.5 rounded-xl resize-none"
                 rows={2}
-                data-testid="input-report-notes"
+                data-testid="input-report-description"
               />
+            </div>
+            <div>
+              <Label
+                htmlFor="reportFiles"
+                className="text-[13px] font-semibold"
+              >
+                Attach Files *
+              </Label>
+              <Input
+                id="reportFiles"
+                type="file"
+                multiple
+                onChange={(e) => {
+                  const files = Array.from(e.target.files || []);
+                  setReportForm({ ...reportForm, files });
+                }}
+                className="mt-1.5 rounded-xl h-11"
+                data-testid="input-report-files"
+              />
+              <p className="text-[10px] text-zinc-400 mt-1">
+                Upload documents, photos, PDFs, etc.
+              </p>
             </div>
           </div>
           <DialogFooter className="flex gap-2">
@@ -1149,7 +1267,11 @@ export default function BabyCareMedicalRecords() {
             </Button>
             <Button
               onClick={() => createReport.mutate(reportForm)}
-              disabled={!reportForm.title || createReport.isPending}
+              disabled={
+                !reportForm.title ||
+                reportForm.files.length === 0 ||
+                createReport.isPending
+              }
               className="flex-1 bg-gradient-to-r from-rose-500 to-pink-600 hover:opacity-90 rounded-xl h-11 font-semibold shadow-lg"
               data-testid="button-save-report"
             >

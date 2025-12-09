@@ -1,12 +1,30 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useParams } from "wouter";
-import { ArrowLeft, Send, User, Heart, Sparkles } from "lucide-react";
+import {
+  ArrowLeft,
+  Send,
+  User,
+  Heart,
+  Sparkles,
+  AlertCircle,
+  CheckCircle2,
+  Home,
+  Stethoscope,
+  ChevronRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
-import type { BabyProfile } from "@shared/schema";
 import { getProfiles, type Profile } from "@/lib/profileApi";
 import { getUserId } from "@/lib/userId";
+import {
+  sendChatMessage,
+  clearChatSession,
+  type ParsedChatResponse,
+} from "@/lib/chatApi";
+import { useToast } from "@/hooks/use-toast";
 
 const STARTER_PROMPTS = [
   "When should my baby start solid foods?",
@@ -15,65 +33,18 @@ const STARTER_PROMPTS = [
   "Tips for teething pain relief",
 ];
 
-const AI_RESPONSES: Record<string, string> = {
-  "solid foods":
-    "Most babies are ready to start solid foods around 6 months of age. Look for signs like sitting up with support, showing interest in food, and losing the tongue-thrust reflex. Start with single-ingredient purees like rice cereal, mashed banana, or sweet potato. I'm here if you need more guidance along the way.",
-  sleep:
-    "Sleep needs vary by age: Newborns (0-3 months) need 14-17 hours, infants (4-11 months) need 12-15 hours, and toddlers (1-2 years) need 11-14 hours. Establishing a bedtime routine can help your baby sleep better. You're doing great - rest is important for both of you.",
-  growth:
-    "Every baby grows at their own pace, and that's perfectly okay! Regular check-ups with your pediatrician are the best way to track growth. Generally, babies double their birth weight by 5 months and triple it by 1 year. If you're ever concerned, I'm here to help you find the right support.",
-  teething:
-    "Teething can be tough for both baby and parents! Try these tips: Cold teething rings, gentle gum massage with a clean finger, teething toys, and if approved by your doctor, infant pain relievers. Drooling and fussiness are normal during teething. You're not alone in this.",
-  default:
-    "That's a great question! While I can provide general guidance, every baby is unique and wonderful in their own way. For specific medical concerns, please consult with your pediatrician. Is there anything else you'd like to know? I'm here for you.",
-};
-
-function getAIResponse(message: string): string {
-  const lowerMessage = message.toLowerCase();
-
-  if (
-    lowerMessage.includes("solid") ||
-    lowerMessage.includes("food") ||
-    lowerMessage.includes("eat")
-  ) {
-    return AI_RESPONSES["solid foods"];
-  }
-  if (
-    lowerMessage.includes("sleep") ||
-    lowerMessage.includes("nap") ||
-    lowerMessage.includes("bedtime")
-  ) {
-    return AI_RESPONSES["sleep"];
-  }
-  if (
-    lowerMessage.includes("growth") ||
-    lowerMessage.includes("weight") ||
-    lowerMessage.includes("height") ||
-    lowerMessage.includes("track")
-  ) {
-    return AI_RESPONSES["growth"];
-  }
-  if (
-    lowerMessage.includes("teeth") ||
-    lowerMessage.includes("teething") ||
-    lowerMessage.includes("gum")
-  ) {
-    return AI_RESPONSES["teething"];
-  }
-
-  return AI_RESPONSES["default"];
-}
-
 interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
   timestamp: string;
+  parsedResponse?: ParsedChatResponse;
 }
 
 export default function MiraChat() {
   const params = useParams();
   const babyId = params.babyId;
+  const { toast } = useToast();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -87,9 +58,7 @@ export default function MiraChat() {
   });
 
   // Find baby profile - route param babyId is actually profileId
-  const baby = profiles.find(
-    (p) => p.type === "baby" && p.profileId === babyId,
-  );
+  const baby = profiles.find((p) => p.profileId === babyId);
   const babyProfileId = baby?.profileId || babyId; // Use profileId for navigation
 
   const scrollToBottom = () => {
@@ -101,7 +70,7 @@ export default function MiraChat() {
   }, [messages]);
 
   const sendMessage = async (text: string) => {
-    if (!text.trim()) return;
+    if (!text.trim() || !babyProfileId) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -114,19 +83,39 @@ export default function MiraChat() {
     setInput("");
     setIsTyping(true);
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, 1000 + Math.random() * 1000),
-    );
+    try {
+      const response = await sendChatMessage(text);
 
-    const aiResponse: Message = {
-      id: (Date.now() + 1).toString(),
-      role: "assistant",
-      content: getAIResponse(text),
-      timestamp: new Date().toISOString(),
-    };
+      // Use parsed response if available, otherwise fallback to raw response
+      const aiMessage = response.parsedResponse
+        ? response.parsedResponse.summary
+        : response.response ||
+          "I'm here to help! Please try asking your question again.";
 
-    setMessages((prev) => [...prev, aiResponse]);
-    setIsTyping(false);
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: aiMessage,
+        timestamp: new Date().toISOString(),
+        parsedResponse: response.parsedResponse,
+      };
+
+      setMessages((prev) => [...prev, aiResponse]);
+    } catch (error) {
+      console.error("Error sending chat message:", error);
+
+      // Show error message to user
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content:
+          "I'm sorry, I'm having trouble responding right now. Please try again in a moment.",
+        timestamp: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, errorResponse]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -163,7 +152,10 @@ export default function MiraChat() {
             </Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-[18px] font-bold" data-testid="text-title">
+            <h1
+              className="text-[18px] font-bold font-mono"
+              data-testid="text-title"
+            >
               AaI
             </h1>
             <p className="text-[12px] text-white/80">
@@ -182,7 +174,7 @@ export default function MiraChat() {
       {/* Chat Content */}
       <div className="flex-1 flex flex-col bg-white">
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto px-4 pt-5 pb-4">
+        <div className="flex-1 overflow-y-auto px-4 pt-5 pb-4 mb-24">
           {messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center">
               <div className="w-20 h-20 bg-gradient-to-br from-rose-100 to-pink-100 rounded-full flex items-center justify-center mb-4 shadow-sm">
@@ -192,7 +184,7 @@ export default function MiraChat() {
                 className="text-[20px] font-bold text-zinc-900 mb-2"
                 data-testid="text-welcome-heading"
               >
-                Hi, I'm AaI
+                Hi, I'm <span className="font-mono">AaI</span>
               </h2>
               <p
                 className="text-[14px] text-zinc-600 text-center max-w-[280px] mb-2"
@@ -205,7 +197,7 @@ export default function MiraChat() {
                 data-testid="text-welcome-description"
               >
                 Motherly comfort with pediatrician-level clarity. Ask me
-                anything about {baby.name}'s health, feeding, sleep, or
+                anything about {baby.babyName}'s health, feeding, sleep, or
                 development.
               </p>
 
@@ -231,7 +223,9 @@ export default function MiraChat() {
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                  className={`flex gap-3 ${
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  }`}
                   data-testid={`message-${message.id}`}
                 >
                   {message.role === "assistant" && (
@@ -240,15 +234,127 @@ export default function MiraChat() {
                     </div>
                   )}
                   <div
-                    className={`max-w-[75%] px-4 py-3 rounded-2xl ${
+                    className={`max-w-[75%] ${
                       message.role === "user"
-                        ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-br-md"
-                        : "bg-zinc-100 text-zinc-800 rounded-bl-md"
+                        ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-2xl rounded-br-md px-4 py-3"
+                        : "bg-zinc-100 text-zinc-800 rounded-2xl rounded-bl-md"
                     }`}
                   >
-                    <p className="text-[14px] leading-relaxed">
-                      {message.content}
-                    </p>
+                    {message.role === "user" ? (
+                      <p className="text-[14px] leading-relaxed">
+                        {message.content}
+                      </p>
+                    ) : message.parsedResponse ? (
+                      <div className="p-4 space-y-4">
+                        {/* Summary */}
+                        <p className="text-[14px] leading-relaxed text-zinc-800">
+                          {message.parsedResponse.summary}
+                        </p>
+
+                        {/* Red Flags */}
+                        {message.parsedResponse.redFlags &&
+                          message.parsedResponse.redFlags.length > 0 && (
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2">
+                                <AlertCircle className="w-4 h-4 text-rose-500" />
+                                <span className="text-[13px] font-semibold text-rose-700">
+                                  Watch out for:
+                                </span>
+                              </div>
+                              <ul className="space-y-1.5 pl-6">
+                                {message.parsedResponse.redFlags.map(
+                                  (flag, idx) => (
+                                    <li
+                                      key={idx}
+                                      className="text-[13px] text-rose-600 list-disc"
+                                    >
+                                      {flag}
+                                    </li>
+                                  ),
+                                )}
+                              </ul>
+                            </div>
+                          )}
+
+                        {/* Home Steps */}
+                        {message.parsedResponse.homeSteps &&
+                          message.parsedResponse.homeSteps.length > 0 && (
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2">
+                                <Home className="w-4 h-4 text-emerald-500" />
+                                <span className="text-[13px] font-semibold text-emerald-700">
+                                  What you can do:
+                                </span>
+                              </div>
+                              <ul className="space-y-1.5 pl-6">
+                                {message.parsedResponse.homeSteps.map(
+                                  (step, idx) => (
+                                    <li
+                                      key={idx}
+                                      className="text-[13px] text-emerald-600 list-disc"
+                                    >
+                                      {step}
+                                    </li>
+                                  ),
+                                )}
+                              </ul>
+                            </div>
+                          )}
+
+                        {/* Service Cards */}
+                        {message.parsedResponse.serviceCards &&
+                          message.parsedResponse.serviceCards.length > 0 && (
+                            <div className="space-y-2 pt-2">
+                              <div className="flex items-center gap-2">
+                                <Stethoscope className="w-4 h-4 text-violet-500" />
+                                <span className="text-[13px] font-semibold text-violet-700">
+                                  Recommended actions:
+                                </span>
+                              </div>
+                              <div className="space-y-2">
+                                {message.parsedResponse.serviceCards.map(
+                                  (card, idx) => (
+                                    <Card
+                                      key={idx}
+                                      className="bg-white border border-violet-200 rounded-xl overflow-hidden"
+                                    >
+                                      <CardContent className="p-3">
+                                        <div className="flex items-center justify-between">
+                                          <div className="flex-1">
+                                            <p className="text-[13px] font-semibold text-zinc-900 mb-1">
+                                              {card.title}
+                                            </p>
+                                            <Badge
+                                              variant="outline"
+                                              className="text-[11px] text-violet-600 border-violet-300"
+                                            >
+                                              {card.cta}
+                                            </Badge>
+                                          </div>
+                                          <ChevronRight className="w-4 h-4 text-violet-400 flex-shrink-0 ml-2" />
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                  ),
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                        {/* Disclaimer */}
+                        {message.parsedResponse.disclaimer && (
+                          <div className="pt-2 border-t border-zinc-200">
+                            <p className="text-[11px] text-zinc-500 italic">
+                              {message.parsedResponse.disclaimer}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-[14px] leading-relaxed px-4 py-3">
+                        {message.content}
+                      </p>
+                    )}
                   </div>
                   {message.role === "user" && (
                     <div className="w-8 h-8 bg-zinc-200 rounded-full flex items-center justify-center flex-shrink-0">
@@ -292,7 +398,7 @@ export default function MiraChat() {
         </div>
 
         {/* Input Area */}
-        <div className="px-4 py-4 border-t border-zinc-100 bg-white">
+        <div className="fixed bottom-0 left-0 right-0 px-4 py-4 border-t border-zinc-100 bg-white">
           <form
             onSubmit={handleSubmit}
             className="flex gap-2"
@@ -302,7 +408,7 @@ export default function MiraChat() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask AaI anything..."
-              className="flex-1 h-12 rounded-2xl bg-zinc-50 border-zinc-200 text-[14px] px-4"
+              className="flex-1 h-12 font-mono rounded-2xl bg-zinc-50 border-zinc-200 text-[14px] px-4"
               data-testid="input-message"
             />
             <Button
@@ -318,8 +424,8 @@ export default function MiraChat() {
             className="text-[10px] text-zinc-400 text-center mt-2"
             data-testid="text-disclaimer"
           >
-            AaI provides guidance with care. For medical advice, consult your
-            healthcare provider.
+            <span className="font-mono">AaI</span> provides guidance with care.
+            For medical advice, consult your healthcare provider.
           </p>
         </div>
       </div>

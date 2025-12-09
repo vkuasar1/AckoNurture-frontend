@@ -28,13 +28,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
+import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { BabyProfile, GrowthEntry } from "@shared/schema";
+import type { GrowthEntry } from "@shared/schema";
 import { format, differenceInMonths } from "date-fns";
 import { MiraFab } from "@/components/MiraFab";
 import { getProfiles, type Profile } from "@/lib/profileApi";
 import { getUserId } from "@/lib/userId";
+import {
+  getGrowthByProfileId,
+  createGrowth,
+  type BabyGrowth,
+} from "@/lib/growthApi";
 
 type GrowthType = "weight" | "height" | "head";
 
@@ -93,7 +98,9 @@ export default function BabyCareGrowth() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<GrowthType>("weight");
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newValue, setNewValue] = useState("");
+  const [newWeight, setNewWeight] = useState("");
+  const [newHeight, setNewHeight] = useState("");
+  const [newHead, setNewHead] = useState("");
   const [newDate, setNewDate] = useState(
     new Date().toISOString().split("T")[0],
   );
@@ -106,50 +113,115 @@ export default function BabyCareGrowth() {
   });
 
   // Find baby profile - use profileId for matching (route param is profileId)
-  const baby = profiles.find(
-    (p) => p.type === "baby" && p.profileId === babyId,
-  );
+  const baby = profiles.find((p) => p.profileId === babyId);
   const babyProfileId = baby?.profileId || babyId; // Use profileId as babyId for API calls
 
-  const { data: growthEntries = [], isLoading } = useQuery<GrowthEntry[]>({
-    queryKey: ["/api/baby-profiles", babyId, "growth"],
-    enabled: !!babyId,
+  // Transform BabyGrowth records into GrowthEntry format for UI compatibility
+  const transformGrowthToEntries = (
+    growthRecords: BabyGrowth[],
+  ): GrowthEntry[] => {
+    const entries: GrowthEntry[] = [];
+    growthRecords.forEach((record) => {
+      if (record.weight != null) {
+        entries.push({
+          id: `${record.growthId}-weight`,
+          babyId: record.profileId,
+          type: "weight",
+          value: record.weight.toString(),
+          recordedAt: record.measurementDate,
+          percentile: null,
+        });
+      }
+      if (record.height != null) {
+        entries.push({
+          id: `${record.growthId}-height`,
+          babyId: record.profileId,
+          type: "height",
+          value: record.height.toString(),
+          recordedAt: record.measurementDate,
+          percentile: null,
+        });
+      }
+      if (record.headCircumference != null) {
+        entries.push({
+          id: `${record.growthId}-head`,
+          babyId: record.profileId,
+          type: "head",
+          value: record.headCircumference.toString(),
+          recordedAt: record.measurementDate,
+          percentile: null,
+        });
+      }
+    });
+    return entries;
+  };
+
+  const { data: growthRecords = [], isLoading } = useQuery<BabyGrowth[]>({
+    queryKey: ["/api/v1/baby-growth/profile", babyProfileId],
+    queryFn: () => getGrowthByProfileId(babyProfileId as string),
+    enabled: !!babyProfileId,
   });
+
+  const growthEntries = transformGrowthToEntries(growthRecords);
 
   const addEntry = useMutation({
     mutationFn: async (data: {
-      type: string;
-      value: string;
-      recordedAt: string;
+      profileId: string;
+      measurementDate: string;
+      weight?: number | null;
+      height?: number | null;
+      headCircumference?: number | null;
     }) => {
-      const response = await apiRequest(
-        "POST",
-        `/api/baby-profiles/${babyId}/growth`,
-        data,
-      );
-      return response.json();
+      return createGrowth(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["/api/baby-profiles", babyId, "growth"],
+        queryKey: ["/api/v1/baby-growth/profile", babyProfileId],
       });
       toast({
-        title: "Measurement added!",
-        description: "Growth entry recorded successfully.",
+        title: "Measurements added!",
+        description: "Growth entries recorded successfully.",
       });
       setShowAddModal(false);
-      setNewValue("");
+      setNewWeight("");
+      setNewHeight("");
+      setNewHead("");
     },
   });
 
   const handleAddEntry = () => {
-    if (newValue && newDate) {
-      addEntry.mutate({
-        type: activeTab,
-        value: newValue,
-        recordedAt: newDate,
+    // At least one measurement must be provided
+    if (!newWeight && !newHeight && !newHead) {
+      toast({
+        title: "Please enter at least one measurement",
+        variant: "destructive",
       });
+      return;
     }
+
+    if (!newDate) {
+      toast({
+        title: "Please select a date",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!babyProfileId) {
+      toast({
+        title: "Baby profile not found",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    addEntry.mutate({
+      profileId: babyProfileId,
+      measurementDate: newDate,
+      weight: newWeight ? parseFloat(newWeight) : null,
+      height: newHeight ? parseFloat(newHeight) : null,
+      headCircumference: newHead ? parseFloat(newHead) : null,
+    });
   };
 
   const filteredEntries = growthEntries
@@ -518,7 +590,7 @@ export default function BabyCareGrowth() {
             data-testid="button-add-measurement"
           >
             <Plus className="w-5 h-5" />
-            Add {config.label} Measurement
+            Add Measurements
           </Button>
         </div>
       )}
@@ -530,31 +602,57 @@ export default function BabyCareGrowth() {
           data-testid="dialog-add-measurement"
         >
           <DialogHeader>
-            <div
-              className={`w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br ${config.gradient} flex items-center justify-center shadow-lg`}
-            >
-              <config.icon className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center shadow-lg">
+              <TrendingUp className="w-7 h-7 text-white" />
             </div>
             <DialogTitle className="text-[18px] font-bold text-center">
-              Add {config.label}
+              Add Growth Measurements
             </DialogTitle>
             <DialogDescription className="text-center text-[13px]">
-              Record a new measurement for {baby.name}
+              Record measurements for {baby.name}
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div className="space-y-2">
               <Label className="text-[14px] font-semibold text-zinc-700">
-                {config.label} ({config.unit})
+                Weight (kg)
               </Label>
               <Input
                 type="number"
                 step="0.1"
-                value={newValue}
-                onChange={(e) => setNewValue(e.target.value)}
-                placeholder={`Enter ${config.label.toLowerCase()}`}
+                value={newWeight}
+                onChange={(e) => setNewWeight(e.target.value)}
+                placeholder="Enter weight"
                 className="h-12 rounded-xl text-[16px]"
-                data-testid="input-value"
+                data-testid="input-weight"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[14px] font-semibold text-zinc-700">
+                Height (cm)
+              </Label>
+              <Input
+                type="number"
+                step="0.1"
+                value={newHeight}
+                onChange={(e) => setNewHeight(e.target.value)}
+                placeholder="Enter height"
+                className="h-12 rounded-xl text-[16px]"
+                data-testid="input-height"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[14px] font-semibold text-zinc-700">
+                Head Circumference (cm)
+              </Label>
+              <Input
+                type="number"
+                step="0.1"
+                value={newHead}
+                onChange={(e) => setNewHead(e.target.value)}
+                placeholder="Enter head circumference"
+                className="h-12 rounded-xl text-[16px]"
+                data-testid="input-head"
               />
             </div>
             <div className="space-y-2">
@@ -573,7 +671,12 @@ export default function BabyCareGrowth() {
           <DialogFooter className="gap-2">
             <Button
               variant="outline"
-              onClick={() => setShowAddModal(false)}
+              onClick={() => {
+                setShowAddModal(false);
+                setNewWeight("");
+                setNewHeight("");
+                setNewHead("");
+              }}
               className="flex-1 rounded-xl"
               data-testid="button-cancel"
             >
@@ -581,8 +684,10 @@ export default function BabyCareGrowth() {
             </Button>
             <Button
               onClick={handleAddEntry}
-              disabled={!newValue || addEntry.isPending}
-              className={`flex-1 bg-gradient-to-r ${config.gradient} hover:opacity-90 rounded-xl`}
+              disabled={
+                (!newWeight && !newHeight && !newHead) || addEntry.isPending
+              }
+              className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-90 rounded-xl"
               data-testid="button-save-measurement"
             >
               {addEntry.isPending ? "Saving..." : "Save"}
