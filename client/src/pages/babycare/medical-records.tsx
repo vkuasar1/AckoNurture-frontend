@@ -74,14 +74,18 @@ import { getUserId } from "@/lib/userId";
 type RecordType = "vaccine" | "growth" | "milestone" | "visit" | "report";
 type FilterType = "all" | RecordType;
 
+interface Attachment {
+  url: string;
+  fileName?: string;
+}
+
 interface TimelineRecord {
   id: string;
   date: Date;
   type: RecordType;
   title: string;
   detail: string;
-  hasAttachment?: boolean;
-  attachmentUrl?: string;
+  attachments?: Attachment[];
   additionalInfo?: string;
 }
 
@@ -306,14 +310,17 @@ export default function BabyCareMedicalRecords() {
     vaccines
       .filter((v) => v.status === "completed" && v.completedDate)
       .forEach((vaccine) => {
+        const attachments: Attachment[] = [];
+        if (vaccine.proofUrl) {
+          attachments.push({ url: vaccine.proofUrl });
+        }
         records.push({
           id: `vaccine-${vaccine.id}`,
           date: parseISO(vaccine.completedDate!),
           type: "vaccine",
           title: vaccine.name,
           detail: `${vaccine.ageGroup} vaccination completed`,
-          hasAttachment: !!vaccine.proofUrl,
-          attachmentUrl: vaccine.proofUrl || undefined,
+          attachments: attachments.length > 0 ? attachments : undefined,
         });
       });
 
@@ -351,6 +358,26 @@ export default function BabyCareMedicalRecords() {
 
     // Map medical records to timeline records
     medicalRecords.forEach((record) => {
+      // Build attachments array from fileUrls and fileAttachments
+      const attachments: Attachment[] = [];
+      if (record.fileAttachments && record.fileAttachments.length > 0) {
+        // Use fileAttachments if available (has fileName)
+        record.fileAttachments.forEach((file) => {
+          attachments.push({
+            url: file.fileUrl,
+            fileName: file.fileName,
+          });
+        });
+      } else if (record.fileUrls && record.fileUrls.length > 0) {
+        // Fallback to fileUrls if fileAttachments not available
+        // Extract filename from URL if possible
+        record.fileUrls.forEach((url) => {
+          const urlParts = url.split("/");
+          const fileName = urlParts[urlParts.length - 1] || undefined;
+          attachments.push({ url, fileName });
+        });
+      }
+
       if (record.recordType === "visit") {
         records.push({
           id: `visit-${record.recordId}`,
@@ -361,8 +388,7 @@ export default function BabyCareMedicalRecords() {
             ? `Dr. ${record.doctorName}`
             : "Doctor visit",
           additionalInfo: record.hospitalName || undefined,
-          hasAttachment: !!(record.fileUrls && record.fileUrls.length > 0),
-          attachmentUrl: record.fileUrls?.[0] || undefined,
+          attachments: attachments.length > 0 ? attachments : undefined,
         });
       } else if (record.recordType === "report") {
         const typeInfo =
@@ -373,8 +399,7 @@ export default function BabyCareMedicalRecords() {
           type: "report",
           title: record.title,
           detail: typeInfo.label,
-          hasAttachment: !!(record.fileUrls && record.fileUrls.length > 0),
-          attachmentUrl: record.fileUrls?.[0] || undefined,
+          attachments: attachments.length > 0 ? attachments : undefined,
           additionalInfo: record.description || undefined,
         });
       }
@@ -778,35 +803,52 @@ export default function BabyCareMedicalRecords() {
                                           {record.additionalInfo}
                                         </span>
                                       )}
-                                      {record.hasAttachment && (
-                                        <span className="text-[11px] text-violet-600 flex items-center gap-1 font-medium">
-                                          <Paperclip className="w-3 h-3" />
-                                          Attachment
-                                        </span>
-                                      )}
+                                      {record.attachments &&
+                                        record.attachments.length > 0 && (
+                                          <span className="text-[11px] text-violet-600 flex items-center gap-1 font-medium">
+                                            <Paperclip className="w-3 h-3" />
+                                            {record.attachments.length}{" "}
+                                            {record.attachments.length === 1
+                                              ? "file"
+                                              : "files"}
+                                          </span>
+                                        )}
                                     </div>
                                   </div>
                                 </div>
 
-                                {/* View Attachment Button */}
-                                {record.hasAttachment &&
-                                  record.attachmentUrl && (
-                                    <div className="mt-3 pt-3 border-t border-zinc-100">
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="w-full rounded-xl text-[12px] gap-2 border-violet-200 text-violet-700"
-                                        onClick={() =>
-                                          window.open(
-                                            record.attachmentUrl,
-                                            "_blank",
-                                          )
-                                        }
-                                        data-testid={`button-view-attachment-${record.id}`}
-                                      >
-                                        <Eye className="w-3.5 h-3.5" />
-                                        View Attachment
-                                      </Button>
+                                {/* View Attachment Buttons */}
+                                {record.attachments &&
+                                  record.attachments.length > 0 && (
+                                    <div className="mt-3 pt-3 border-t border-zinc-100 space-y-2">
+                                      {record.attachments.map(
+                                        (attachment, idx) => {
+                                          const displayName =
+                                            attachment.fileName
+                                              ? attachment.fileName.length > 20
+                                                ? `${attachment.fileName.substring(0, 20)}...`
+                                                : attachment.fileName
+                                              : `File ${idx + 1}`;
+                                          return (
+                                            <Button
+                                              key={idx}
+                                              variant="outline"
+                                              size="sm"
+                                              className="w-full rounded-xl text-[12px] gap-2 border-violet-200 text-violet-700 hover:bg-violet-50"
+                                              onClick={() =>
+                                                window.open(
+                                                  attachment.url,
+                                                  "_blank",
+                                                )
+                                              }
+                                              data-testid={`button-view-attachment-${record.id}-${idx}`}
+                                            >
+                                              <Eye className="w-3.5 h-3.5" />
+                                              {displayName}
+                                            </Button>
+                                          );
+                                        },
+                                      )}
                                     </div>
                                   )}
                               </CardContent>

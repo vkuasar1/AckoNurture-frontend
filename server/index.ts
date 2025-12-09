@@ -83,24 +83,82 @@ app.use("/api/v1", async (req, res, next) => {
     const targetUrl = `${VITE_API_BASE_URL}${req.originalUrl}`;
     const isGetOrHead = req.method === "GET" || req.method === "HEAD";
     const contentType = req.headers["content-type"] || "";
+    const isMultipart = contentType.includes("multipart/form-data");
+
+    // For multipart requests, we need to collect the raw body stream
+    let body: BodyInit | undefined;
+
+    if (!isGetOrHead) {
+      if (isMultipart) {
+        // Collect raw body chunks for multipart requests
+        // The stream should still be readable since we skip parsing for multipart
+        const chunks: Buffer[] = [];
+
+        // Collect all data chunks using event handlers
+        await new Promise<void>((resolve, reject) => {
+          // If stream is already ended, we can't read it
+          if (req.readableEnded) {
+            reject(new Error("Request stream already ended"));
+            return;
+          }
+
+          // Ensure stream is in flowing mode (not paused)
+          if (req.isPaused()) {
+            req.resume();
+          }
+
+          // Set up event handlers
+          const dataHandler = (chunk: Buffer) => {
+            chunks.push(chunk);
+          };
+
+          const endHandler = () => {
+            // Clean up listeners
+            req.removeListener("data", dataHandler);
+            req.removeListener("end", endHandler);
+            req.removeListener("error", errorHandler);
+            body = Buffer.concat(chunks);
+            resolve();
+          };
+
+          const errorHandler = (err: Error) => {
+            // Clean up listeners
+            req.removeListener("data", dataHandler);
+            req.removeListener("end", endHandler);
+            req.removeListener("error", errorHandler);
+            reject(err);
+          };
+
+          // Attach listeners
+          req.on("data", dataHandler);
+          req.on("end", endHandler);
+          req.on("error", errorHandler);
+        });
+      } else if (contentType.includes("application/json")) {
+        body = JSON.stringify(req.body);
+      } else {
+        body = req.body;
+      }
+    }
+
+    // Build headers - forward all original headers for multipart
+    const headers: Record<string, string> = {};
+    Object.keys(req.headers).forEach((key) => {
+      const value = req.headers[key];
+      if (value && typeof value === "string") {
+        headers[key] = value;
+      } else if (Array.isArray(value) && value.length > 0) {
+        headers[key] = value[0];
+      }
+    });
 
     const fetchOptions: RequestInit = {
       method: req.method,
-      headers: Object.fromEntries(Object.entries(req.headers)) as Record<
-        string,
-        string
-      >,
-      body: isGetOrHead
-        ? undefined
-        : contentType.includes("application/json")
-          ? JSON.stringify(req.body)
-          : req.body,
+      headers,
+      body,
     };
 
     const response = await fetch(targetUrl, fetchOptions);
-    const data = await response.json();
-
-    console.log(data);
 
     // Forward status and headers
     res.status(response.status);
@@ -108,11 +166,15 @@ app.use("/api/v1", async (req, res, next) => {
       res.setHeader(key, value);
     });
 
+    // Stream the response body
+    const responseData = await response.text();
+
     // Try to parse as JSON, otherwise send as text
     try {
-      res.json(data);
+      const jsonData = JSON.parse(responseData);
+      res.json(jsonData);
     } catch {
-      res.send(data);
+      res.send(responseData);
     }
   } catch (error) {
     next(error);
