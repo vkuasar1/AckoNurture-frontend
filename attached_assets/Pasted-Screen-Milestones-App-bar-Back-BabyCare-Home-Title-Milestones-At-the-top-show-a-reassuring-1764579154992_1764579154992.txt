@@ -1,0 +1,132 @@
+Screen: Milestones
+
+App bar:
+
+Back → BabyCare Home
+
+Title: Milestones
+
+At the top, show a reassuring intro block:
+
+“Every baby grows at their own pace.”
+“Here are some skills that many babies around this age may start showing. Use this list to notice and celebrate what your baby does, not to compare or judge.”
+
+Below this, show age chips or tabs:
+
+0–3 months
+
+3–6 months
+
+6–9 months
+
+etc.
+(0–3 months can be fully designed as the main example.)
+
+📋 Milestones List (for an age range)
+
+For the selected age range (e.g., 0–3 months), show a list of milestones.
+
+Each milestone row contains:
+
+Milestone title (e.g., “Smiles back at you”)
+
+Optional short description (e.g., “Responds to your face and voice with social smiles.”)
+
+Status selector with 3 gentle options:
+
+✅ “Yes, I’ve noticed this”
+
+🌱 “Not yet / not sure”
+
+✨ “Emerging (sometimes)” (optional third state)
+
+Visually:
+
+When marked “Yes, I’ve noticed this”, show a gentle green check and maybe a small celebration icon (tiny star), but keep it subtle and not “gamified ranking”.
+
+When marked “Not yet / not sure”, do not show any red or warning. Keep it neutral.
+
+📊 Progress Summary (Non-judgmental)
+
+At the top or bottom, show a soft progress summary:
+
+“You’ve noticed X of Y common skills for this age.”
+
+Neutral progress bar, no red zone.
+
+Below the progress bar, add a fixed reassuring message, for example:
+
+“It’s okay if you haven’t seen everything on this list yet. Babies develop at different speeds, and that’s completely normal.”
+
+🧠 Smart, But Gentle “Missing” Handling
+
+If the parent has marked many items as “Not yet / not sure” or left most items unmarked by the upper bound of that age range, the system can show a calm, informative note, never a warning.
+
+Example:
+
+“You’ve marked a few skills as ‘not yet’ or haven’t had a chance to observe them.
+This doesn’t mean something is wrong — many babies take their own time.
+If you’re feeling worried or unsure, it can help to talk to your pediatrician for reassurance.”
+
+Key points:
+
+No red labels.
+
+No “delay” or “late” wording.
+
+This note appears as information + reassurance, not as an alert.
+
+🩺 “Talk to a doctor” Entry (By Parent Choice)
+
+At the bottom of the screen, add a small, gentle CTA:
+
+Text button: “Talk to a doctor if you feel concerned”
+
+This can open:
+
+A teleconsult option, or
+
+A simple “how to prepare for a developmental check-up” info sheet.
+
+Again, the wording: “if you feel concerned”, not “you should be concerned”.
+
+🎉 Celebratory Tone When Logging Milestones
+
+When a parent marks a milestone as “Yes, I’ve noticed this”:
+
+Show a tiny micro-feedback (e.g., a small check + “That’s lovely to see!”).
+
+Optional small toast:
+
+“Logged as a new milestone for {Baby Name}.”
+
+But do not rank, score, or create FOMO. It’s about recording & celebrating, not competing.
+
+😌 Empty State (Early Use)
+
+If they haven’t logged anything yet in a given age range, show:
+
+“As your baby grows, you’ll start noticing new little skills and behaviours.
+Use this list to gently keep track of them over time. There’s no rush — every baby has their own pace.”
+
+🔁 Data Interaction With Other Parts (Optional)
+
+When a milestone is marked “Yes”, it also appears in Medical Records Timeline as a “Milestone logged” entry (e.g., “Aria started smiling socially.”).
+
+But this is for celebration / journaling, not diagnosis.
+
+📌 Design Constraints
+
+All visuals must remain soft, pastel, non-threatening.
+
+No red icons, exclamation marks, sirens, or alarming copy.
+
+The primary design goals:
+
+Reduce parental anxiety
+
+Encourage observation & celebration
+
+Normalize developmental variation
+
+Offer doctor as a safe option if parents already feel worried

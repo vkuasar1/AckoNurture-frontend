@@ -1,0 +1,112 @@
+1. week
+
+Integer (1–52).
+Represents the baby’s chronological week of age when this milestone typically emerges.
+
+2. id
+
+String (slug).
+Unique identifier for the milestone. Format: wk{week}_{milestone_slug}.
+Used as the internal key.
+
+3. name
+
+Human-readable title of the milestone.
+Displayed in UI.
+
+4. category
+
+Domain of development.
+Examples: gross_motor, fine_motor, language, cognitive, social_emotional, feeding, communication, oral_sensory, regulation.
+
+5. description
+
+Short explanation (1–2 lines) of what the milestone means.
+Use directly in UI milestone detail screens.
+
+6. typical_week
+
+Integer.
+The anchor week when this milestone is expected to occur most commonly.
+
+7. early_range_start
+
+Integer.
+Earliest reasonable week where achieving this milestone is considered “early but acceptable.”
+
+8. early_range_end
+
+Integer.
+Latest week that still qualifies as “early achievement.”
+If milestone is logged between early_range_start and early_range_end, award early badge.
+
+9. normal_range_start
+
+Integer.
+Starting week for the “typical/normal development window.”
+
+10. normal_range_end
+
+Integer.
+Ending week for the typical window.
+If logged between these values → “Normal timing.”
+
+11. late_start_week
+
+Integer.
+If baby reaches this milestone after this week, it is considered “late but still acceptable.”
+Provide supportive guidance.
+
+12. red_flag_week
+
+Integer.
+If milestone is still not achieved by this week, app should
+→ gently suggest discussing with a pediatrician.
+Avoid alarming language.
+
+13. early_parent_copy
+
+String.
+Message shown when milestone is achieved earlier than typical.
+Tone: positive, reassuring.
+
+14. normal_parent_copy
+
+String.
+Message shown when milestone is achieved during typical window.
+Tone: celebratory + encouraging.
+
+15. late_parent_copy
+
+String.
+Message shown when milestone is achieved later than typical but still within acceptable limits.
+Tone: calm + supportive with simple activities suggested.
+
+16. red_flag_parent_copy
+
+String.
+Message shown when milestone is delayed beyond clinical concern threshold.
+Tone: gentle + suggestive, NOT alarming.
+Encourages pediatrician discussion.
+
+17. early_badge_name
+
+String or empty.
+Name of badge to award if milestone is achieved early.
+Only applies to badge-worthy milestones.
+
+18. early_badge_copy
+
+String or empty.
+Short friendly text shown when early badge is awarded.
+
+19. normal_badge_name
+
+String or empty.
+Badge name for normal achievement.
+Used sparingly; provides positive reinforcement.
+
+20. normal_badge_copy
+
+String or empty.
+Short celebratory message for normal badge.
