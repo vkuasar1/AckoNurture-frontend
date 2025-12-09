@@ -1,0 +1,7521 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Template API",
+    "description": "Spring Boot Template API Documentation",
+    "contact": {
+      "name": "Acko Team",
+      "email": "support@acko.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://13.232.37.184:8008",
+      "description": "Current Server (from server.base-url)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User Plan",
+      "description": "User plan assignment and usage tracking API endpoints"
+    },
+    {
+      "name": "Order",
+      "description": "Order and payment management CRUD API endpoints"
+    },
+    {
+      "name": "Vaccine",
+      "description": "Vaccine CRUD API endpoints"
+    },
+    {
+      "name": "Hospital",
+      "description": "Hospital search and management API endpoints"
+    },
+    {
+      "name": "Booking",
+      "description": "Hospital booking and slot management API endpoints"
+    },
+    {
+      "name": "Template",
+      "description": "Template API endpoints"
+    },
+    {
+      "name": "Plan",
+      "description": "Wellness plan CRUD API endpoints"
+    },
+    {
+      "name": "Baby Milestone Report",
+      "description": "Baby milestone tracking and profile API endpoints"
+    },
+    {
+      "name": "Baby Milestone Schedule",
+      "description": "Baby milestone schedule API endpoints"
+    },
+    {
+      "name": "Milestone",
+      "description": "Milestone CRUD API endpoints"
+    },
+    {
+      "name": "Baby Growth",
+      "description": "Baby growth management CRUD API endpoints"
+    },
+    {
+      "name": "Medical Records",
+      "description": "Medical records management CRUD API endpoints"
+    },
+    {
+      "name": "OpenAI Chatbot",
+      "description": "Pediatric chatbot API for mothers to ask questions about their newborn's health"
+    },
+    {
+      "name": "Profile",
+      "description": "Profile CRUD API endpoints"
+    },
+    {
+      "name": "VaccineSet",
+      "description": "Vaccine Set Template API endpoints"
+    }
+  ],
+  "paths": {
+    "/api/v1/vaccines/{id}": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get vaccine by ID",
+        "description": "Retrieves a vaccine by MongoDB ID",
+        "operationId": "getVaccineById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vaccine"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Update vaccine",
+        "description": "Updates an existing vaccine",
+        "operationId": "updateVaccine",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Vaccine"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vaccine"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Delete vaccine",
+        "description": "Deletes a vaccine by ID",
+        "operationId": "deleteVaccine",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-plans/{userPlanId}/deactivate": {
+      "put": {
+        "tags": [
+          "User Plan"
+        ],
+        "summary": "Deactivate user plan",
+        "description": "Deactivates a user plan",
+        "operationId": "deactivatePlan",
+        "parameters": [
+          {
+            "name": "userPlanId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/{id}": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get profile by ID",
+        "description": "Retrieves a profile by MongoDB ID",
+        "operationId": "getProfileById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Update profile",
+        "description": "Updates an existing profile (JSON only)",
+        "operationId": "updateProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Profile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Delete profile",
+        "description": "Deletes a profile by ID",
+        "operationId": "deleteProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/{id}/with-image": {
+      "put": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Update profile with image",
+        "description": "Updates an existing profile with image file upload",
+        "operationId": "updateProfileWithImage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "image",
+                  "profile"
+                ],
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "$ref": "#/components/schemas/Profile"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/plans/{id}": {
+      "get": {
+        "tags": [
+          "Plan"
+        ],
+        "summary": "Get plan by ID",
+        "description": "Retrieves a plan by MongoDB ID",
+        "operationId": "getPlanById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plan"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Plan"
+        ],
+        "summary": "Update plan",
+        "description": "Updates an existing plan",
+        "operationId": "updatePlan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Plan"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Plan"
+        ],
+        "summary": "Delete plan",
+        "description": "Deletes a plan by ID",
+        "operationId": "deletePlan",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{orderId}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get order by orderId",
+        "description": "Retrieves an order by unique orderId",
+        "operationId": "getOrderByOrderId",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Update order",
+        "description": "Updates an existing order by orderId",
+        "operationId": "updateOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Order"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Delete order",
+        "description": "Deletes an order by orderId",
+        "operationId": "deleteOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mongo/{id}": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Get document by ID",
+        "description": "Retrieves a document from MongoDB by ID",
+        "operationId": "getDocumentById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleDocument"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Update document",
+        "description": "Updates an existing document in MongoDB",
+        "operationId": "updateDocument",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SampleDocument"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleDocument"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Delete document",
+        "description": "Deletes a document from MongoDB by ID",
+        "operationId": "deleteDocument",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/milestones/{id}": {
+      "get": {
+        "tags": [
+          "Milestone"
+        ],
+        "summary": "Get milestone by ID",
+        "description": "Retrieves a milestone by MongoDB ID",
+        "operationId": "getMilestoneById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Milestone"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Milestone"
+        ],
+        "summary": "Update milestone",
+        "description": "Updates an existing milestone",
+        "operationId": "updateMilestone",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Milestone"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Milestone"
+        ],
+        "summary": "Delete milestone",
+        "description": "Deletes a milestone by ID",
+        "operationId": "deleteMilestone",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-records/{recordId}": {
+      "get": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Get medical record by recordId",
+        "description": "Retrieves a medical record by unique recordId",
+        "operationId": "getMedicalRecordByRecordId",
+        "parameters": [
+          {
+            "name": "recordId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicalRecord"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Update medical record",
+        "description": "Updates an existing medical record by recordId with optional document uploads",
+        "operationId": "updateMedicalRecord",
+        "parameters": [
+          {
+            "name": "recordId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "request": {
+                    "$ref": "#/components/schemas/MedicalRecordUpdateRequest"
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Delete medical record",
+        "description": "Deletes a medical record and all associated files from S3 by recordId",
+        "operationId": "deleteMedicalRecord",
+        "parameters": [
+          {
+            "name": "recordId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/baby-growth/{growthId}": {
+      "get": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Get baby growth record by growthId",
+        "description": "Retrieves a growth record by unique growthId",
+        "operationId": "getBabyGrowthByGrowthId",
+        "parameters": [
+          {
+            "name": "growthId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BabyGrowth"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Update baby growth record",
+        "description": "Updates an existing baby growth record by growthId with optional document uploads",
+        "operationId": "updateBabyGrowth",
+        "parameters": [
+          {
+            "name": "growthId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "request": {
+                    "$ref": "#/components/schemas/BabyGrowthUpdateRequest"
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Delete baby growth record",
+        "description": "Deletes a baby growth record by growthId",
+        "operationId": "deleteBabyGrowth",
+        "parameters": [
+          {
+            "name": "growthId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get all vaccines",
+        "description": "Retrieves all vaccines",
+        "operationId": "getAllVaccines",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vaccine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Create vaccine",
+        "description": "Creates a new vaccine record",
+        "operationId": "createVaccine",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Vaccine"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vaccine"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/{vaccineId}/complete": {
+      "post": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Mark vaccine as completed",
+        "description": "Marks a vaccine as completed with optional proof upload",
+        "operationId": "markVaccineAsCompleted",
+        "parameters": [
+          {
+            "name": "vaccineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "completedDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "proofFile": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vaccine"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/sqs/send-and-process": {
+      "post": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Send message to SQS and process immediately",
+        "description": "Sends a vaccine schedule message to SQS and immediately processes it via consumer",
+        "operationId": "sendMessageAndProcess",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/generate/{babyId}": {
+      "post": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Generate vaccine schedule from DOB",
+        "description": "Generates vaccine schedule for a baby based on their date of birth",
+        "operationId": "generateScheduleFromDOB",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/generate/{babyId}/dob/{dob}": {
+      "post": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Generate vaccine schedule with DOB",
+        "description": "Generates vaccine schedule for a baby with provided DOB and userId",
+        "operationId": "generateScheduleWithDOB",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dob",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/baby/{babyId}/update-status": {
+      "post": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Update vaccine statuses",
+        "description": "Updates vaccine statuses based on due dates for a baby",
+        "operationId": "updateVaccineStatuses",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccine-sets/seed": {
+      "post": {
+        "tags": [
+          "VaccineSet"
+        ],
+        "summary": "Seed default vaccine set",
+        "description": "Seeds the default vaccine schedule template",
+        "operationId": "seedDefaultVaccineSet",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-plans/consume": {
+      "post": {
+        "tags": [
+          "User Plan"
+        ],
+        "summary": "Consume service",
+        "description": "Consumes a service from user's active plan",
+        "operationId": "consumeService",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-plans/assign": {
+      "post": {
+        "tags": [
+          "User Plan"
+        ],
+        "summary": "Assign plan to user",
+        "description": "Assigns a plan to a user. Deactivates any existing active plan.",
+        "operationId": "assignPlan",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sqs/send": {
+      "post": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Send message to SQS",
+        "description": "Sends a message to SQS queue",
+        "operationId": "sendSQSMessage",
+        "parameters": [
+          {
+            "name": "queueUrl",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sqs/send-default": {
+      "post": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Send message to default SQS queue (team-1013)",
+        "description": "Sends a message to default SQS queue",
+        "operationId": "sendSQSMessageToDefault",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/s3/upload": {
+      "post": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Upload file to S3",
+        "description": "Uploads a file to S3 bucket",
+        "operationId": "uploadFileToS3",
+        "parameters": [
+          {
+            "name": "bucketName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contentType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/s3/upload-default": {
+      "post": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Upload file to default S3 bucket (team-1013)",
+        "description": "Uploads a file to default S3 bucket with prefix",
+        "operationId": "uploadFileToDefaultS3",
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contentType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "file"
+                ],
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redis/set": {
+      "post": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Set value in Redis",
+        "description": "Stores a key-value pair in Redis",
+        "operationId": "setRedisValue",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redis/set-with-ttl": {
+      "post": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Set value in Redis with TTL",
+        "description": "Stores a key-value pair in Redis with expiration time",
+        "operationId": "setRedisValueWithTTL",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ttlInSeconds",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get all profiles",
+        "description": "Retrieves all profiles",
+        "operationId": "getAllProfiles",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Profile"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Create profile",
+        "description": "Creates a new profile (JSON only)",
+        "operationId": "createProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Profile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/with-image": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Create profile with image",
+        "description": "Creates a new profile with image file upload",
+        "operationId": "createProfileWithImage",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "image",
+                  "profile"
+                ],
+                "type": "object",
+                "properties": {
+                  "profile": {
+                    "$ref": "#/components/schemas/Profile"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/onboard": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Create parent and baby together",
+        "description": "Creates both parent (mother/father/caregiver) and baby profiles in a single request. Links baby to parent via guardianProfileId.",
+        "operationId": "onboardParentAndBaby",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OnboardingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/dummy-register": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Dummy registration with special code",
+        "description": "Creates a baby profile for users who have already registered offline. Valid codes: APOLLO2024, FORTIS2024, MAX2024. Optionally link to guardian via guardianProfileId.",
+        "operationId": "dummyRegister",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DummyRegistrationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/baby/{babyProfileId}/link-mother/{motherProfileId}": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Link mother to baby",
+        "description": "Links a baby profile to a mother profile by setting guardianProfileId",
+        "operationId": "linkMotherToBaby",
+        "parameters": [
+          {
+            "name": "babyProfileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "motherProfileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/plans": {
+      "get": {
+        "tags": [
+          "Plan"
+        ],
+        "summary": "Get all plans",
+        "description": "Retrieves all wellness plans",
+        "operationId": "getAllPlans",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Plan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Plan"
+        ],
+        "summary": "Create a new plan",
+        "description": "Creates a new wellness plan",
+        "operationId": "createPlan",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Plan"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/plans/seed": {
+      "post": {
+        "tags": [
+          "Plan"
+        ],
+        "summary": "Seed plans",
+        "description": "Manually trigger plan seeding from PLAN_SEED_DATA.json",
+        "operationId": "seedPlans",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get all orders",
+        "description": "Retrieves all orders",
+        "operationId": "getAllOrders",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Create a new order",
+        "description": "Creates a new order",
+        "operationId": "createOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Order"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{orderId}/refund": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Refund order",
+        "description": "Processes a refund for a paid order",
+        "operationId": "refundOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{orderId}/mark-payment-successful": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Mark payment as successful",
+        "description": "Marks an order payment as successful (typically called by payment gateway webhook)",
+        "operationId": "markPaymentSuccessful",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{orderId}/mark-payment-failed": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Mark payment as failed",
+        "description": "Marks an order payment as failed",
+        "operationId": "markPaymentFailed",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{orderId}/execute-payment": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Execute payment",
+        "description": "Initiates payment processing for an order",
+        "operationId": "executePayment",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/{orderId}/cancel": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Cancel order",
+        "description": "Cancels an order and initiates refund if payment was made",
+        "operationId": "cancelOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/plan-purchase": {
+      "post": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Create plan purchase order",
+        "description": "Creates an order for purchasing a plan",
+        "operationId": "createPlanOrder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/openai/chat": {
+      "post": {
+        "tags": [
+          "OpenAI Chatbot"
+        ],
+        "summary": "Chat with pediatric assistant",
+        "description": "Ask questions about your newborn's health. Supports session-based conversation history. Provide sessionId to maintain conversation context across multiple messages. The system uses a pediatric-aware AI assistant with built-in safety guidelines. Accepts babyProfileId and userMessage - internally retrieves baby profile, vaccines, and milestones data.",
+        "operationId": "chat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mongo/create": {
+      "post": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Create document in MongoDB",
+        "description": "Creates a new document in MongoDB",
+        "operationId": "createDocument",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SampleDocument"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleDocument"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/milestones": {
+      "get": {
+        "tags": [
+          "Milestone"
+        ],
+        "summary": "Get all milestones",
+        "description": "Retrieves all milestones ordered by age",
+        "operationId": "getAllMilestones",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Milestone"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Milestone"
+        ],
+        "summary": "Create a new milestone",
+        "description": "Creates a new milestone",
+        "operationId": "createMilestone",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Milestone"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/milestones/seed": {
+      "post": {
+        "tags": [
+          "Milestone"
+        ],
+        "summary": "Seed milestones",
+        "description": "Seeds milestones from MILESTONE_SEED_DATA.json",
+        "operationId": "seedMilestones",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/milestone-schedules/{scheduleId}/achieve": {
+      "post": {
+        "tags": [
+          "Baby Milestone Schedule"
+        ],
+        "summary": "Mark milestone as achieved",
+        "description": "Marks a milestone schedule item as achieved with optional image proof",
+        "operationId": "markAsAchieved",
+        "parameters": [
+          {
+            "name": "scheduleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "achievedDate",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/milestone-schedules/generate/{babyId}": {
+      "post": {
+        "tags": [
+          "Baby Milestone Schedule"
+        ],
+        "summary": "Generate milestone schedule from DOB",
+        "description": "Generates milestone schedule for a baby based on their date of birth",
+        "operationId": "generateScheduleFromDOB_1",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/milestone-schedules/baby/{babyId}/update-status": {
+      "post": {
+        "tags": [
+          "Baby Milestone Schedule"
+        ],
+        "summary": "Update milestone schedule statuses",
+        "description": "Updates milestone schedule statuses based on expected dates",
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-records": {
+      "get": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Get all medical records",
+        "description": "Retrieves all medical records",
+        "operationId": "getAllMedicalRecords",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MedicalRecord"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Create a new medical record",
+        "description": "Creates a new medical record for a baby with optional file uploads (photos, PDFs, etc.)",
+        "operationId": "createMedicalRecord",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "request": {
+                    "$ref": "#/components/schemas/MedicalRecordCreateRequest"
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-records/{recordId}/files": {
+      "post": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Add files to existing medical record",
+        "description": "Adds photos, PDFs, or other files to an existing medical record",
+        "operationId": "addFilesToRecord",
+        "parameters": [
+          {
+            "name": "recordId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "files"
+                ],
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Remove file from medical record",
+        "description": "Removes a file from a medical record and deletes it from S3",
+        "operationId": "removeFileFromRecord",
+        "parameters": [
+          {
+            "name": "recordId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileUrl",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings": {
+      "post": {
+        "tags": [
+          "Booking"
+        ],
+        "summary": "Create unified booking",
+        "description": "Unified booking API that automatically checks plan availability. If service is available in plan, books directly. Otherwise, requires payment. Supports regular bookings, service-check bookings, and payment bookings.",
+        "operationId": "createUnifiedBooking",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UnifiedBookingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/{bookingId}/confirm": {
+      "post": {
+        "tags": [
+          "Booking"
+        ],
+        "summary": "Confirm booking",
+        "description": "Confirms a pending booking",
+        "operationId": "confirmBooking",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/{bookingId}/cancel": {
+      "post": {
+        "tags": [
+          "Booking"
+        ],
+        "summary": "Cancel booking",
+        "description": "Cancels a booking",
+        "operationId": "cancelBooking",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/baby-growth": {
+      "get": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Get all baby growth records",
+        "description": "Retrieves all baby growth records",
+        "operationId": "getAllBabyGrowth",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BabyGrowth"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Create a new baby growth record",
+        "description": "Creates a new growth measurement record for a baby with optional document uploads (photos, PDFs, etc.)",
+        "operationId": "createBabyGrowth",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "request": {
+                    "$ref": "#/components/schemas/BabyGrowthCreateRequest"
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/baby-growth/{growthId}/files": {
+      "post": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Add files to baby growth record",
+        "description": "Adds documents (photos, PDFs, etc.) to an existing baby growth record",
+        "operationId": "addFilesToGrowth",
+        "parameters": [
+          {
+            "name": "growthId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "files"
+                ],
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Remove file from baby growth record",
+        "description": "Removes a document from a baby growth record and deletes it from S3",
+        "operationId": "removeFileFromGrowth",
+        "parameters": [
+          {
+            "name": "growthId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "documentUrl",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/babies/{babyId}/milestone-reports": {
+      "get": {
+        "tags": [
+          "Baby Milestone Report"
+        ],
+        "summary": "Get milestone reports for baby",
+        "description": "Retrieves all milestone reports for a specific baby",
+        "operationId": "getMilestoneReports",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BabyMilestoneReport"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Baby Milestone Report"
+        ],
+        "summary": "Submit milestone report (JSON only)",
+        "description": "Creates or updates a milestone report for a baby without image",
+        "operationId": "submitMilestoneReport",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MilestoneReport"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/babies/{babyId}/milestone-reports/with-image": {
+      "post": {
+        "tags": [
+          "Baby Milestone Report"
+        ],
+        "summary": "Submit milestone report with image",
+        "description": "Creates or updates a milestone report for a baby with optional image upload",
+        "operationId": "submitMilestoneReportWithImage",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "report"
+                ],
+                "type": "object",
+                "properties": {
+                  "report": {
+                    "$ref": "#/components/schemas/MilestoneReport"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/user/{userId}": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get vaccines by userId",
+        "description": "Retrieves all vaccines for a specific user",
+        "operationId": "getVaccinesByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vaccine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/user/{userId}/status/{status}": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get vaccines by userId and status",
+        "description": "Retrieves vaccines for a user filtered by status",
+        "operationId": "getVaccinesByUserIdAndStatus",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vaccine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/user/{userId}/reminders/upcoming": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get upcoming reminders by userId",
+        "description": "Retrieves X upcoming vaccine reminders for a specific user",
+        "operationId": "getUpcomingRemindersByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vaccine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/reminders": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get vaccines needing reminder",
+        "description": "Retrieves all vaccines that need reminders (reminder date \u003C= today and not completed)",
+        "operationId": "getVaccinesNeedingReminder",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vaccine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/reminders/upcoming": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get upcoming reminders",
+        "description": "Retrieves X upcoming vaccine reminders (sorted by reminder date, earliest first)",
+        "operationId": "getUpcomingReminders",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vaccine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/baby/{babyId}": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get vaccines by babyId",
+        "description": "Retrieves all vaccines for a specific baby",
+        "operationId": "getVaccinesByBabyId",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vaccine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/baby/{babyId}/user/{userId}": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get vaccines by babyId and userId",
+        "description": "Retrieves vaccines for a specific baby and user combination",
+        "operationId": "getVaccinesByBabyIdAndUserId",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vaccine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/baby/{babyId}/status/{status}": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get vaccines by babyId and status",
+        "description": "Retrieves vaccines for a baby filtered by status",
+        "operationId": "getVaccinesByBabyIdAndStatus",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vaccine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/baby/{babyId}/reminders": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get vaccines needing reminder by babyId",
+        "description": "Retrieves vaccines for a specific baby that need reminders",
+        "operationId": "getVaccinesNeedingReminderByBabyId",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vaccine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccines/baby/{babyId}/reminders/upcoming": {
+      "get": {
+        "tags": [
+          "Vaccine"
+        ],
+        "summary": "Get upcoming reminders by babyId",
+        "description": "Retrieves X upcoming vaccine reminders for a specific baby",
+        "operationId": "getUpcomingRemindersByBabyId",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vaccine"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/vaccine-sets": {
+      "get": {
+        "tags": [
+          "VaccineSet"
+        ],
+        "summary": "Get all vaccine sets",
+        "description": "Retrieves all vaccine set templates",
+        "operationId": "getAllVaccineSets",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VaccineSet"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-plans/user/{userId}": {
+      "get": {
+        "tags": [
+          "User Plan"
+        ],
+        "summary": "Get all plans for user",
+        "description": "Retrieves all plans (active and inactive) for a user",
+        "operationId": "getUserPlans",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserPlan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-plans/user/{userId}/service/{serviceName}/availability": {
+      "get": {
+        "tags": [
+          "User Plan"
+        ],
+        "summary": "Check service availability",
+        "description": "Checks if a service is available in user's active plan",
+        "operationId": "checkServiceAvailability",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "serviceName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanServiceAvailability"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/user-plans/user/{userId}/active": {
+      "get": {
+        "tags": [
+          "User Plan"
+        ],
+        "summary": "Get active plan for user",
+        "description": "Retrieves the currently active plan for a user",
+        "operationId": "getActivePlan",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPlan"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sqs/receive": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Receive messages from SQS",
+        "description": "Receives messages from SQS queue",
+        "operationId": "receiveSQSMessages",
+        "parameters": [
+          {
+            "name": "queueUrl",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "maxMessages",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sqs/receive-default": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Receive messages from default SQS queue (team-1013)",
+        "description": "Receives messages from default SQS queue",
+        "operationId": "receiveSQSMessagesFromDefault",
+        "parameters": [
+          {
+            "name": "maxMessages",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/s3/presigned-url": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Generate presigned URL for S3",
+        "description": "Generates a presigned URL for S3 file access",
+        "operationId": "generatePresignedUrl",
+        "parameters": [
+          {
+            "name": "bucketName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "expirationMinutes",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 60
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/s3/exists": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Check if file exists in S3",
+        "description": "Checks if a file exists in S3 bucket",
+        "operationId": "checkFileExists",
+        "parameters": [
+          {
+            "name": "bucketName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/s3/download": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Download file from S3",
+        "description": "Downloads a file from S3 bucket",
+        "operationId": "downloadFileFromS3",
+        "parameters": [
+          {
+            "name": "bucketName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/s3/download-default": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Download file from default S3 bucket (team-1013)",
+        "description": "Downloads a file from default S3 bucket with prefix",
+        "operationId": "downloadFileFromDefaultS3",
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redis/get": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Get value from Redis",
+        "description": "Retrieves a value from Redis by key",
+        "operationId": "getRedisValue",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/user/{userId}": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get profiles by userId",
+        "description": "Retrieves all profiles for a specific user",
+        "operationId": "getProfilesByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Profile"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/user/{userId}/type/{type}": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get profiles by userId and type",
+        "description": "Retrieves profiles for a user filtered by type",
+        "operationId": "getProfilesByUserIdAndType",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Profile"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/type/{type}": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get profiles by type",
+        "description": "Retrieves all profiles of a specific type (mother or baby)",
+        "operationId": "getProfilesByType",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Profile"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/profile-id/{profileId}": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get profile by profileId",
+        "description": "Retrieves a profile by profileId (UUID)",
+        "operationId": "getProfileByProfileId",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Profile"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/guardian/{guardianProfileId}/babies": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get all babies for a guardian",
+        "description": "Retrieves all baby profiles linked to a specific guardian (mother or father)",
+        "operationId": "getBabiesByGuardianProfileId",
+        "parameters": [
+          {
+            "name": "guardianProfileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Profile"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profiles/exists/{profileId}": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Check if profile exists by profileId",
+        "description": "Checks if a profile exists with the given profileId",
+        "operationId": "checkProfileExists",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/plans/search": {
+      "get": {
+        "tags": [
+          "Plan"
+        ],
+        "summary": "Search plans by name",
+        "description": "Searches plans by name (case-insensitive)",
+        "operationId": "searchPlansByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Plan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/plans/plan-id/{planId}": {
+      "get": {
+        "tags": [
+          "Plan"
+        ],
+        "summary": "Get plan by planId",
+        "description": "Retrieves a plan by unique planId",
+        "operationId": "getPlanByPlanId",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plan"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/plans/category/{category}": {
+      "get": {
+        "tags": [
+          "Plan"
+        ],
+        "summary": "Get plans by category",
+        "description": "Retrieves plans filtered by category (child-wellness/mother-wellness/mother-child-combo)",
+        "operationId": "getPlansByCategory",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Plan"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/user/{userId}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get orders by userId",
+        "description": "Retrieves all orders for a specific user",
+        "operationId": "getOrdersByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/user/{userId}/type/{orderType}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get orders by userId and order type",
+        "description": "Retrieves user orders filtered by order type",
+        "operationId": "getOrdersByUserIdAndOrderType",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/user/{userId}/payment-status/{paymentStatus}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get orders by userId and payment status",
+        "description": "Retrieves user orders filtered by payment status",
+        "operationId": "getOrdersByUserIdAndPaymentStatus",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "paymentStatus",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/user/{userId}/order-status/{orderStatus}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get orders by userId and order status",
+        "description": "Retrieves user orders filtered by order status",
+        "operationId": "getOrdersByUserIdAndOrderStatus",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "orderStatus",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/user/{userId}/date-range": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get user orders by date range",
+        "description": "Retrieves user orders within a date range",
+        "operationId": "getUserOrdersByDateRange",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/type/{orderType}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get orders by orderType",
+        "description": "Retrieves orders filtered by order type",
+        "operationId": "getOrdersByOrderType",
+        "parameters": [
+          {
+            "name": "orderType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/plan/{planId}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get orders by planId",
+        "description": "Retrieves all orders for a specific plan",
+        "operationId": "getOrdersByPlanId",
+        "parameters": [
+          {
+            "name": "planId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/payment-status/{paymentStatus}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get orders by payment status",
+        "description": "Retrieves orders filtered by payment status",
+        "operationId": "getOrdersByPaymentStatus",
+        "parameters": [
+          {
+            "name": "paymentStatus",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/order-status/{orderStatus}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get orders by order status",
+        "description": "Retrieves orders filtered by order status",
+        "operationId": "getOrdersByOrderStatus",
+        "parameters": [
+          {
+            "name": "orderStatus",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/exists/{orderId}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Check if order exists by orderId",
+        "description": "Checks if an order exists with the given orderId",
+        "operationId": "checkOrderExists",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/date-range": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get orders by date range",
+        "description": "Retrieves orders within a date range",
+        "operationId": "getOrdersByDateRange",
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/orders/booking/{bookingId}": {
+      "get": {
+        "tags": [
+          "Order"
+        ],
+        "summary": "Get orders by bookingId",
+        "description": "Retrieves all orders for a specific booking",
+        "operationId": "getOrdersByBookingId",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Order"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mongo/find-by-name": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Find document by name",
+        "description": "Finds a document in MongoDB by name",
+        "operationId": "findDocumentByName",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/SampleDocument"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mongo/find-by-description": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Find documents by description",
+        "description": "Finds documents in MongoDB containing the description",
+        "operationId": "findDocumentsByDescription",
+        "parameters": [
+          {
+            "name": "description",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SampleDocument"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mongo/all": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Get all documents",
+        "description": "Retrieves all documents from MongoDB",
+        "operationId": "getAllDocuments",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SampleDocument"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/milestones/milestone-id/{milestoneId}": {
+      "get": {
+        "tags": [
+          "Milestone"
+        ],
+        "summary": "Get milestone by milestoneId",
+        "description": "Retrieves a milestone by unique milestoneId",
+        "operationId": "getMilestoneByMilestoneId",
+        "parameters": [
+          {
+            "name": "milestoneId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Milestone"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/milestones/age/{ageInMonths}": {
+      "get": {
+        "tags": [
+          "Milestone"
+        ],
+        "summary": "Get milestones by age in months",
+        "description": "Retrieves milestones for a specific age in months",
+        "operationId": "getMilestonesByAge",
+        "parameters": [
+          {
+            "name": "ageInMonths",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Milestone"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/milestone-schedules/baby/{babyId}": {
+      "get": {
+        "tags": [
+          "Baby Milestone Schedule"
+        ],
+        "summary": "Get milestone schedules by babyId",
+        "description": "Retrieves all milestone schedules for a baby",
+        "operationId": "getSchedulesByBabyId",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BabyMilestoneSchedule"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/milestone-schedules/baby/{babyId}/status/{status}": {
+      "get": {
+        "tags": [
+          "Baby Milestone Schedule"
+        ],
+        "summary": "Get milestone schedules by babyId and status",
+        "description": "Retrieves milestone schedules filtered by status",
+        "operationId": "getSchedulesByBabyIdAndStatus",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BabyMilestoneSchedule"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/milestone-reports/{reportId}": {
+      "get": {
+        "tags": [
+          "Baby Milestone Report"
+        ],
+        "summary": "Get milestone report by reportId",
+        "description": "Retrieves a specific milestone report by reportId",
+        "operationId": "getMilestoneReportById",
+        "parameters": [
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BabyMilestoneReport"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Baby Milestone Report"
+        ],
+        "summary": "Delete milestone report",
+        "description": "Deletes a milestone report by reportId",
+        "operationId": "deleteMilestoneReport",
+        "parameters": [
+          {
+            "name": "reportId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-records/user/{userId}": {
+      "get": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Get medical records by userId",
+        "description": "Retrieves all medical records for a specific user, grouped by profile with full profile information. Includes profile name, type, DOB, gender, and all medical records for each profile.",
+        "operationId": "getMedicalRecordsByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MedicalRecordGroupedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-records/profile/{profileId}": {
+      "get": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Get medical records by profileId",
+        "description": "Retrieves all medical records for a specific baby profile",
+        "operationId": "getMedicalRecordsByProfileId",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MedicalRecord"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-records/profile/{profileId}/record-type/{recordType}": {
+      "get": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Get medical records by profileId and recordType",
+        "description": "Retrieves medical records for a baby profile filtered by record type",
+        "operationId": "getMedicalRecordsByProfileIdAndRecordType",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recordType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MedicalRecord"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-records/profile/{profileId}/latest": {
+      "get": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Get medical records by profileId ordered by date",
+        "description": "Retrieves medical records for a baby profile ordered by record date (descending)",
+        "operationId": "getLatestMedicalRecordsByProfileId",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MedicalRecord"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-records/profile/{profileId}/date-range": {
+      "get": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Get medical records by profileId with date range",
+        "description": "Retrieves medical records for a baby profile within a date range",
+        "operationId": "getMedicalRecordsByProfileIdAndDateRange",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MedicalRecord"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-records/profile/{profileId}/category/{category}": {
+      "get": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Get medical records by profileId and category",
+        "description": "Retrieves medical records for a baby profile filtered by category (photo, pdf, data)",
+        "operationId": "getMedicalRecordsByProfileIdAndCategory",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MedicalRecord"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/medical-records/exists/{recordId}": {
+      "get": {
+        "tags": [
+          "Medical Records"
+        ],
+        "summary": "Check if medical record exists by recordId",
+        "description": "Checks if a medical record exists with the given recordId",
+        "operationId": "checkMedicalRecordExists",
+        "parameters": [
+          {
+            "name": "recordId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospitals/search": {
+      "get": {
+        "tags": [
+          "Hospital"
+        ],
+        "summary": "Search hospitals",
+        "description": "Searches hospitals using external API with all supported filters",
+        "operationId": "searchHospitals",
+        "parameters": [
+          {
+            "name": "latLng",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "placeId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "cashless",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "hospitalName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "networkHospitalId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "specialityId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tpa",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospitals/landing": {
+      "get": {
+        "tags": [
+          "Hospital"
+        ],
+        "summary": "Get hospital landing page data",
+        "description": "Gets hospital landing page data based on location",
+        "operationId": "getHospitalLanding",
+        "parameters": [
+          {
+            "name": "latLng",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Health check endpoint",
+        "description": "Returns a simple health check response",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/database/stats": {
+      "get": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Get collection statistics",
+        "description": "Returns statistics about all MongoDB collections",
+        "operationId": "getCollectionStats",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/{bookingId}": {
+      "get": {
+        "tags": [
+          "Booking"
+        ],
+        "summary": "Get booking by booking ID",
+        "description": "Retrieves a booking by booking ID",
+        "operationId": "getBookingById",
+        "parameters": [
+          {
+            "name": "bookingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Booking"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/user/{userId}": {
+      "get": {
+        "tags": [
+          "Booking"
+        ],
+        "summary": "Get bookings by user ID",
+        "description": "Retrieves all bookings for a user",
+        "operationId": "getBookingsByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Booking"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/slots/available": {
+      "get": {
+        "tags": [
+          "Booking"
+        ],
+        "summary": "Get available slots 24x7",
+        "description": "Gets all available slots (24/7, 1-hour intervals) for a hospital, excluding booked slots",
+        "operationId": "getAvailableSlots24x7",
+        "parameters": [
+          {
+            "name": "hospitalId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/hospital/{hospitalId}": {
+      "get": {
+        "tags": [
+          "Booking"
+        ],
+        "summary": "Get bookings by hospital ID",
+        "description": "Retrieves all bookings for a hospital",
+        "operationId": "getBookingsByHospitalId",
+        "parameters": [
+          {
+            "name": "hospitalId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Booking"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/bookings/check-service-availability": {
+      "get": {
+        "tags": [
+          "Booking"
+        ],
+        "summary": "Check service/vaccine availability in plan",
+        "description": "Checks if a service or vaccine is available in user's purchased plan. Returns availability status and remaining count.",
+        "operationId": "checkServiceAvailability_1",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "serviceName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/baby-growth/user/{userId}": {
+      "get": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Get baby growth records by userId",
+        "description": "Retrieves all growth records for a specific user, grouped by baby with full profile information. Includes baby name, DOB, gender, and all growth records for each baby.",
+        "operationId": "getBabyGrowthByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BabyGrowthGroupedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/baby-growth/profile/{profileId}": {
+      "get": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Get baby growth records by profileId",
+        "description": "Retrieves all growth records for a specific baby profile",
+        "operationId": "getBabyGrowthByProfileId",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BabyGrowth"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/baby-growth/profile/{profileId}/date-range": {
+      "get": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Get baby growth records by profileId with date range",
+        "description": "Retrieves growth records for a baby profile within a date range",
+        "operationId": "getBabyGrowthByProfileIdAndDateRange",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BabyGrowth"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/baby-growth/profile/{profileId}/chart": {
+      "get": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Get baby growth chart data",
+        "description": "Retrieves formatted chart data for baby growth visualization (height, weight, head circumference, BMI)",
+        "operationId": "getBabyGrowthChart",
+        "parameters": [
+          {
+            "name": "profileId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BabyGrowthChartResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/baby-growth/exists/{growthId}": {
+      "get": {
+        "tags": [
+          "Baby Growth"
+        ],
+        "summary": "Check if baby growth record exists by growthId",
+        "description": "Checks if a growth record exists with the given growthId",
+        "operationId": "checkBabyGrowthExists",
+        "parameters": [
+          {
+            "name": "growthId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/babies/{babyId}/milestone-profile": {
+      "get": {
+        "tags": [
+          "Baby Milestone Report"
+        ],
+        "summary": "Get milestone profile",
+        "description": "Computes and returns the milestone profile (EARLY_EXPLORER, STEADY_PROGRESSOR, THOUGHTFUL_OBSERVER) with recommendations and action items",
+        "operationId": "getMilestoneProfile",
+        "parameters": [
+          {
+            "name": "babyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MilestoneProfileResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/s3/delete": {
+      "delete": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Delete file from S3",
+        "description": "Deletes a file from S3 bucket",
+        "operationId": "deleteFileFromS3",
+        "parameters": [
+          {
+            "name": "bucketName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/redis/delete": {
+      "delete": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Delete value from Redis",
+        "description": "Deletes a key-value pair from Redis",
+        "operationId": "deleteRedisValue",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/openai/chat/session/{sessionId}": {
+      "delete": {
+        "tags": [
+          "OpenAI Chatbot"
+        ],
+        "summary": "Clear conversation history",
+        "description": "Clears the conversation history for a specific session",
+        "operationId": "clearSession",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/database/clear/{collectionName}": {
+      "delete": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Clear specific collection",
+        "description": "WARNING: This will delete all data from the specified collection. Use with caution!",
+        "operationId": "clearCollection",
+        "parameters": [
+          {
+            "name": "collectionName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/database/clear-all": {
+      "delete": {
+        "tags": [
+          "Template"
+        ],
+        "summary": "Clear all collections",
+        "description": "WARNING: This will delete all data from all MongoDB collections. Use with caution!",
+        "operationId": "clearAllCollections",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Vaccine": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "babyId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ageGroup": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": "string"
+          },
+          "reminderDate": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "completedDate": {
+            "type": "string"
+          },
+          "proofUrl": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "type": "string"
+          }
+        }
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "profileId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "dob": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "onboardingType": {
+            "type": "string"
+          },
+          "guardianProfileId": {
+            "type": "string"
+          },
+          "pincode": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "milestoneProfileType": {
+            "type": "string"
+          },
+          "milestoneScoreRatio": {
+            "type": "number",
+            "format": "double"
+          },
+          "milestoneCategoryRatios": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "milestoneScoreUpdatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Plan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "planId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlanService"
+            }
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "durationMonths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PlanService": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "orderType": {
+            "type": "string"
+          },
+          "planId": {
+            "type": "string"
+          },
+          "bookingId": {
+            "type": "string"
+          },
+          "contextId": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "finalAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "discountCode": {
+            "type": "string"
+          },
+          "paymentStatus": {
+            "type": "string"
+          },
+          "paymentMethod": {
+            "type": "string"
+          },
+          "paymentGateway": {
+            "type": "string"
+          },
+          "paymentTransactionId": {
+            "type": "string"
+          },
+          "paymentInitiatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "paymentCompletedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "paymentFailureReason": {
+            "type": "string"
+          },
+          "orderStatus": {
+            "type": "string"
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "orderCompletedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "orderCancelledAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isRefunded": {
+            "type": "boolean"
+          },
+          "refundAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "refundedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "refundReason": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SampleDocument": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Milestone": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "milestoneId": {
+            "type": "string"
+          },
+          "ageRangeLabel": {
+            "type": "string"
+          },
+          "ageMinMonths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ageMaxMonths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MilestoneItem"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MilestoneItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "ageMinMonths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ageMaxMonths": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "MedicalRecordUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "recordType": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "recordDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "doctorName": {
+            "type": "string"
+          },
+          "hospitalName": {
+            "type": "string"
+          },
+          "diagnosis": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "BabyGrowthUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "measurementDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "height": {
+            "type": "number",
+            "format": "double"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "headCircumference": {
+            "type": "number",
+            "format": "double"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "OnboardingRequest": {
+        "type": "object",
+        "properties": {
+          "parentName": {
+            "type": "string"
+          },
+          "parentType": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "parentPincode": {
+            "type": "string"
+          },
+          "babyName": {
+            "type": "string"
+          },
+          "babyDob": {
+            "type": "string"
+          },
+          "babyGender": {
+            "type": "string"
+          },
+          "babyPincode": {
+            "type": "string"
+          },
+          "hospitalName": {
+            "type": "string"
+          }
+        }
+      },
+      "DummyRegistrationRequest": {
+        "type": "object",
+        "properties": {
+          "specialCode": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "guardianProfileId": {
+            "type": "string"
+          },
+          "pincode": {
+            "type": "string"
+          },
+          "babyGender": {
+            "type": "string"
+          }
+        }
+      },
+      "MedicalRecordCreateRequest": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "recordType": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "recordDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "doctorName": {
+            "type": "string"
+          },
+          "hospitalName": {
+            "type": "string"
+          },
+          "diagnosis": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "LocalTime": {
+        "type": "object",
+        "properties": {
+          "hour": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "minute": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "second": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nano": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "UnifiedBookingRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "hospitalId": {
+            "type": "string"
+          },
+          "serviceName": {
+            "type": "string"
+          },
+          "profileId": {
+            "type": "string"
+          },
+          "slotDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "slotStartTime": {
+            "$ref": "#/components/schemas/LocalTime"
+          },
+          "slotEndTime": {
+            "$ref": "#/components/schemas/LocalTime"
+          },
+          "slotType": {
+            "type": "string"
+          },
+          "patientName": {
+            "type": "string"
+          },
+          "patientPhone": {
+            "type": "string"
+          },
+          "patientEmail": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "specialityId": {
+            "type": "string"
+          },
+          "bookingAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "forcePayment": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BabyGrowthCreateRequest": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "measurementDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "height": {
+            "type": "number",
+            "format": "double"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "headCircumference": {
+            "type": "number",
+            "format": "double"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "MilestoneReport": {
+        "type": "object",
+        "properties": {
+          "milestoneId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "VaccineSet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "ageGroup": {
+            "type": "string"
+          },
+          "ageInDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vaccineName": {
+            "type": "string"
+          },
+          "sequence": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reminderOffsetDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "type": "string"
+          }
+        }
+      },
+      "UserPlan": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userPlanId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "planId": {
+            "type": "string"
+          },
+          "planName": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "purchasedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "purchasePrice": {
+            "type": "number",
+            "format": "double"
+          },
+          "purchaseCurrency": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PlanServiceAvailability": {
+        "type": "object",
+        "properties": {
+          "available": {
+            "type": "boolean"
+          },
+          "userPlanId": {
+            "type": "string"
+          },
+          "planName": {
+            "type": "string"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "remainingCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "BabyMilestoneSchedule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "babyId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "milestoneId": {
+            "type": "string"
+          },
+          "milestoneItemId": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "ageRangeLabel": {
+            "type": "string"
+          },
+          "ageMinMonths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ageMaxMonths": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "expectedDate": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "achievedDate": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "BabyMilestoneReport": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "reportId": {
+            "type": "string"
+          },
+          "babyId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "milestoneId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "reportedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FileAttachment": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string"
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "fileType": {
+            "type": "string"
+          },
+          "fileExtension": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uploadDate": {
+            "type": "string"
+          }
+        }
+      },
+      "MedicalRecord": {
+        "type": "object",
+        "properties": {
+          "recordId": {
+            "type": "string"
+          },
+          "profileId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "recordType": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "recordDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "fileUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fileAttachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileAttachment"
+            }
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "doctorName": {
+            "type": "string"
+          },
+          "hospitalName": {
+            "type": "string"
+          },
+          "diagnosis": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MedicalRecordData": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string"
+          },
+          "profileName": {
+            "type": "string"
+          },
+          "profileType": {
+            "type": "string"
+          },
+          "dob": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/Profile"
+          },
+          "medicalRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MedicalRecord"
+            }
+          },
+          "totalRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "latestRecord": {
+            "$ref": "#/components/schemas/MedicalRecord"
+          },
+          "oldestRecord": {
+            "$ref": "#/components/schemas/MedicalRecord"
+          }
+        }
+      },
+      "MedicalRecordGroupedResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "profiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MedicalRecordData"
+            }
+          }
+        }
+      },
+      "Booking": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "hospitalId": {
+            "type": "string"
+          },
+          "hospitalName": {
+            "type": "string"
+          },
+          "hospitalAddress": {
+            "type": "string"
+          },
+          "slotDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "slotStartTime": {
+            "$ref": "#/components/schemas/LocalTime"
+          },
+          "slotEndTime": {
+            "$ref": "#/components/schemas/LocalTime"
+          },
+          "slotType": {
+            "type": "string"
+          },
+          "patientName": {
+            "type": "string"
+          },
+          "patientPhone": {
+            "type": "string"
+          },
+          "patientEmail": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "specialityId": {
+            "type": "string"
+          },
+          "vaccineId": {
+            "type": "string"
+          },
+          "vaccineName": {
+            "type": "string"
+          },
+          "isVaccineBooking": {
+            "type": "boolean"
+          },
+          "coveredByPlan": {
+            "type": "boolean"
+          },
+          "bookingAmount": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "paymentStatus": {
+            "type": "string"
+          },
+          "orderId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "confirmedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "cancelledAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "BabyGrowth": {
+        "type": "object",
+        "properties": {
+          "growthId": {
+            "type": "string"
+          },
+          "profileId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "measurementDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "height": {
+            "type": "number",
+            "format": "double"
+          },
+          "weight": {
+            "type": "number",
+            "format": "double"
+          },
+          "headCircumference": {
+            "type": "number",
+            "format": "double"
+          },
+          "bmi": {
+            "type": "number",
+            "format": "double"
+          },
+          "ageInDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "documentUrls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "documentAttachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DocumentAttachment"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "DocumentAttachment": {
+        "type": "object",
+        "properties": {
+          "fileName": {
+            "type": "string"
+          },
+          "documentUrl": {
+            "type": "string"
+          },
+          "fileType": {
+            "type": "string"
+          },
+          "fileExtension": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "uploadDate": {
+            "type": "string"
+          }
+        }
+      },
+      "BabyGrowthData": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string"
+          },
+          "babyName": {
+            "type": "string"
+          },
+          "dob": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "imageUrl": {
+            "type": "string"
+          },
+          "babyProfile": {
+            "$ref": "#/components/schemas/Profile"
+          },
+          "growthRecords": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BabyGrowth"
+            }
+          },
+          "totalRecords": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "latestRecord": {
+            "$ref": "#/components/schemas/BabyGrowth"
+          },
+          "oldestRecord": {
+            "$ref": "#/components/schemas/BabyGrowth"
+          }
+        }
+      },
+      "BabyGrowthGroupedResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "babies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BabyGrowthData"
+            }
+          }
+        }
+      },
+      "BabyGrowthChartResponse": {
+        "type": "object",
+        "properties": {
+          "profileId": {
+            "type": "string"
+          },
+          "babyName": {
+            "type": "string"
+          },
+          "heightChart": {
+            "$ref": "#/components/schemas/ChartData"
+          },
+          "weightChart": {
+            "$ref": "#/components/schemas/ChartData"
+          },
+          "headCircumferenceChart": {
+            "$ref": "#/components/schemas/ChartData"
+          },
+          "bmiChart": {
+            "$ref": "#/components/schemas/ChartData"
+          }
+        }
+      },
+      "ChartData": {
+        "type": "object",
+        "properties": {
+          "metric": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "dataPoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataPoint"
+            }
+          }
+        }
+      },
+      "DataPoint": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string"
+          },
+          "ageInDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "MilestoneProfileResult": {
+        "type": "object",
+        "properties": {
+          "profileType": {
+            "type": "string"
+          },
+          "ratio": {
+            "type": "number",
+            "format": "double"
+          },
+          "categoryRatios": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "recommendedActivities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "actionItems": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

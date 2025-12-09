@@ -136,6 +136,19 @@ const INITIAL_COMMUNITY_MESSAGES: CommunityMessage[] = [
   }
 ];
 
+interface UpcomingConsultation {
+  mentorName: string;
+  mentorInitials: string;
+  dateTime: string;
+  topic: string;
+}
+
+interface ActiveChat {
+  lastMessage: string;
+  unreadCount: number;
+  lastActivity: string;
+}
+
 export default function ParentCommunity() {
   const params = useParams();
   const [, navigate] = useLocation();
@@ -149,6 +162,20 @@ export default function ParentCommunity() {
   const [communityMessages, setCommunityMessages] = useState<CommunityMessage[]>(INITIAL_COMMUNITY_MESSAGES);
   const [newMessage, setNewMessage] = useState("");
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
+  // Mock data for upcoming consultation and active chat (set to null to hide)
+  const [upcomingConsultation] = useState<UpcomingConsultation | null>({
+    mentorName: "Priya Sharma",
+    mentorInitials: "PS",
+    dateTime: "Today 4:00 PM",
+    topic: "Developmental milestones"
+  });
+  
+  const [activeChat] = useState<ActiveChat | null>({
+    lastMessage: "I totally understand how you feel! My little one was the same...",
+    unreadCount: 3,
+    lastActivity: "2 min ago"
+  });
 
   const handleDescribeNext = () => {
     if (concern.trim().length < 10) {
@@ -237,7 +264,7 @@ export default function ParentCommunity() {
         setStep("choose");
         break;
       default:
-        navigate(`/babycare/milestones/${babyId}`);
+        window.history.back();
     }
   };
 
@@ -327,6 +354,79 @@ export default function ParentCommunity() {
                 Continue
                 <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
+
+              {/* Upcoming Consultation & Active Chat Section - Below Continue CTA */}
+              {(upcomingConsultation || activeChat) && (
+                <div className="mt-6 space-y-3">
+                  {upcomingConsultation && (
+                    <Card className="border-purple-200 bg-gradient-to-r from-purple-50 to-pink-50">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <Video className="w-6 h-6 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-[13px] font-semibold text-zinc-900">Upcoming Call</h3>
+                              <Badge variant="secondary" className="text-[9px] bg-purple-100 text-purple-700">Scheduled</Badge>
+                            </div>
+                            <p className="text-[12px] text-zinc-600 mt-0.5">
+                              with {upcomingConsultation.mentorName}
+                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Clock className="w-3 h-3 text-purple-500" />
+                              <span className="text-[11px] font-medium text-purple-600">{upcomingConsultation.dateTime}</span>
+                            </div>
+                          </div>
+                          <Button 
+                            size="sm" 
+                            className="bg-purple-600 hover:bg-purple-700 text-[12px]"
+                            data-testid="button-join-call"
+                          >
+                            Join
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {activeChat && (
+                    <Card className="border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 relative">
+                            <MessageCircle className="w-6 h-6 text-white" />
+                            {activeChat.unreadCount > 0 && (
+                              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                                {activeChat.unreadCount}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-[13px] font-semibold text-zinc-900">Community Chat</h3>
+                              <Badge variant="secondary" className="text-[9px] bg-emerald-100 text-emerald-700">Active</Badge>
+                            </div>
+                            <p className="text-[11px] text-zinc-500 truncate mt-0.5">
+                              {activeChat.lastMessage}
+                            </p>
+                            <span className="text-[10px] text-zinc-400">{activeChat.lastActivity}</span>
+                          </div>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className="border-emerald-300 text-emerald-700 hover:bg-emerald-50 text-[12px]"
+                            onClick={() => setStep("community")}
+                            data-testid="button-continue-chat"
+                          >
+                            Continue
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
+              )}
             </motion.div>
           )}
 

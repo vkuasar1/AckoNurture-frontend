@@ -14,6 +14,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import type { BabyProfile } from "@shared/schema";
 import { saveCaregiverProfile } from "@/lib/caregiverStore";
+import { createProfile, type Profile } from "@/lib/profileApi";
+import { getUserId } from "@/lib/userId";
 
 const caregiverFormSchema = z.object({
   caregiverName: z.string().min(1, "Your name is required").max(50, "Name too long"),
@@ -142,25 +144,25 @@ export default function BabyCareProfileSetup() {
     }
   }, [isHospitalOnboarding, prefillCaregiverName, prefillRelationship, prefillBabyName, prefillDob, prefillGender, caregiverForm, babyForm]);
 
-  const createProfile = useMutation({
+  const createBabyProfile = useMutation({
     mutationFn: async (babyData: BabyFormValues) => {
-      const response = await apiRequest("POST", "/api/baby-profiles", {
+      return await createProfile({
+        type: "baby",
         name: babyData.babyName,
         dob: babyData.dob,
-        gender: babyData.gender,
-        photoUrl: photoPreview,
+        gender: babyData.gender, // createProfile accepts "boy" | "girl"
+        imageUrl: photoPreview || undefined,
         onboardingType: onboardingType,
-        hospitalName: isHospitalOnboarding ? hospitalName : null,
+        pincode: undefined,
+        metadata: isHospitalOnboarding && hospitalName ? { hospitalName } : undefined,
       });
-      return response.json() as Promise<BabyProfile>;
     },
-    onSuccess: (profile) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/baby-profiles"] });
+    onSuccess: (profile: Profile) => {
       toast({
         title: "Welcome to Nurture!",
         description: `You're all set!`,
       });
-      setLocation(`/babycare/home/${profile.id}`);
+      setLocation(`/babycare/home/${profile.profileId}`);
     },
     onError: () => {
       toast({
@@ -198,7 +200,7 @@ export default function BabyCareProfileSetup() {
   const handleBabySubmit = (data: BabyFormValues) => {
     if (babyOnlyMode) {
       // Baby-only flow: skip confirmation, create profile directly
-      createProfile.mutate(data);
+      createBabyProfile.mutate(data);
     } else {
       setStep(3);
     }
@@ -206,7 +208,7 @@ export default function BabyCareProfileSetup() {
 
   const handleComplete = () => {
     const babyData = babyForm.getValues();
-    createProfile.mutate(babyData);
+    createBabyProfile.mutate(babyData);
   };
 
   const handleSkip = () => {
@@ -220,7 +222,7 @@ export default function BabyCareProfileSetup() {
     babyForm.setValue("babyName", demoBaby.babyName);
     babyForm.setValue("dob", demoBaby.dob);
     babyForm.setValue("gender", demoBaby.gender);
-    createProfile.mutate(demoBaby);
+    createBabyProfile.mutate(demoBaby);
   };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -557,11 +559,11 @@ export default function BabyCareProfileSetup() {
               {/* Skip Option */}
               <button
                 onClick={handleSkip}
-                disabled={createProfile.isPending}
+                disabled={createBabyProfile.isPending}
                 className="w-full mt-2 text-[14px] text-zinc-400 hover:text-zinc-600 transition-colors py-2"
                 data-testid="button-skip"
               >
-                {createProfile.isPending ? "Setting up..." : "Explore with sample data"}
+                {createBabyProfile.isPending ? "Setting up..." : "Explore with sample data"}
               </button>
             </motion.div>
           )}
@@ -866,7 +868,7 @@ export default function BabyCareProfileSetup() {
               {/* Complete Button */}
               <Button
                 onClick={handleComplete}
-                disabled={createProfile.isPending}
+                disabled={createBabyProfile.isPending}
                 className={`w-full text-white rounded-2xl h-14 text-[16px] font-semibold shadow-lg gap-2 ${
                   isHospitalOnboarding 
                     ? "bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-emerald-200/50" 
@@ -874,7 +876,7 @@ export default function BabyCareProfileSetup() {
                 }`}
                 data-testid="button-complete"
               >
-                {createProfile.isPending ? (
+                {createBabyProfile.isPending ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
                     Setting up...

@@ -47,6 +47,8 @@ import { getVaccineInfo, VACCINE_MESSAGES, MOCK_HOSPITALS, type PartnerHospital 
 import { getReminderSettings, setReminderSettings, isVaccineReminderEnabled, toggleVaccineReminder } from "@/lib/reminderStore";
 import { getActivePlans, hasChildPlan } from "@/lib/planStore";
 import { MiraFab } from "@/components/MiraFab";
+import { getProfiles, type Profile } from "@/lib/profileApi";
+import { getUserId } from "@/lib/userId";
 
 function getVaccineStatus(vaccine: Vaccine): { label: string; variant: "done" | "upcoming" | "overdue" | "due-soon" } {
   if (vaccine.status === "completed") {
@@ -133,15 +135,42 @@ export default function BabyCareVaccines() {
   const hasVaccinePack = plans.childPlan === "vaccination" || plans.childPlan === "premium" || 
                          plans.comboPlan === "essential" || plans.comboPlan === "premium";
 
-  const { data: profiles = [] } = useQuery<BabyProfile[]>({
-    queryKey: ["/api/baby-profiles"],
+  // Fetch profiles from API
+  const userId = getUserId();
+  const { data: profiles = [] } = useQuery<Profile[]>({
+    queryKey: [`/api/v1/profiles/user/${userId}`],
+    queryFn: () => getProfiles(),
   });
 
-  const baby = profiles.find(p => p.id === babyId);
+  // Find baby profile - route param babyId is actually profileId
+  const baby = profiles.find(p => p.type === "baby" && p.profileId === babyId);
+  const babyProfileId = baby?.profileId || babyId; // Use profileId as babyId for API calls
 
+  // Fetch vaccines from API using profileId as babyId
   const { data: vaccines = [], isLoading } = useQuery<Vaccine[]>({
-    queryKey: ["/api/baby-profiles", babyId, "vaccines"],
-    enabled: !!babyId,
+    queryKey: [`/api/v1/vaccines/baby/${babyProfileId}`],
+    enabled: !!babyProfileId,
+    queryFn: async () => {
+      const response = await apiRequest("GET", `/api/v1/vaccines/baby/${babyProfileId}`);
+      const vaccines = await response.json();
+      
+      // If no vaccines found and baby has DOB, try to generate schedule
+      if (vaccines.length === 0 && baby?.dob) {
+        try {
+          const generateResponse = await apiRequest("POST", `/api/v1/vaccines/generate/${babyProfileId}`);
+          if (generateResponse.ok) {
+            // Refetch vaccines after generation
+            const newResponse = await apiRequest("GET", `/api/v1/vaccines/baby/${babyProfileId}`);
+            return newResponse.json();
+          }
+        } catch (error) {
+          // If generation fails, just return empty array
+          console.error("Failed to generate vaccine schedule:", error);
+        }
+      }
+      
+      return vaccines;
+    },
   });
 
   // Handle openHospital query param from home page
@@ -160,22 +189,50 @@ export default function BabyCareVaccines() {
   }, [vaccines]);
 
   const markComplete = useMutation({
-    mutationFn: async ({ id, date, place, vaccineName, ageGroup }: { 
+    mutationFn: async ({ id, date, place, vaccineName, ageGroup, file }: { 
       id: string; 
       date: string; 
       place?: string;
       vaccineName: string;
       ageGroup: string;
+      file?: File | null;
     }) => {
-      const response = await apiRequest("PATCH", `/api/vaccines/${id}`, {
-        status: "completed",
-        completedDate: date,
-        place: place || undefined,
-      });
-      return { vaccineName, ageGroup, date };
+      // Build URL with completedDate query parameter
+      const url = `/api/v1/vaccines/${id}/complete?completedDate=${date}`;
+      
+      // Use multipart/form-data if file is provided, otherwise use JSON
+      if (file) {
+        const formData = new FormData();
+        formData.append("proofFile", file);
+        
+        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+        const IS_DEV = import.meta.env.DEV;
+        const fullUrl = IS_DEV 
+          ? url.startsWith("/") ? url : `/${url}`
+          : API_BASE_URL 
+            ? `${API_BASE_URL}${url.startsWith("/") ? url : `/${url}`}`
+            : url;
+        
+        const response = await fetch(fullUrl, {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
+        
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(`${response.status}: ${text}`);
+        }
+        
+        return { vaccineName, ageGroup, date };
+      } else {
+        // JSON request with empty body (completedDate is in query param)
+        const response = await apiRequest("POST", url, {});
+        return { vaccineName, ageGroup, date };
+      }
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/baby-profiles", babyId, "vaccines"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/v1/vaccines/baby/${babyProfileId}`] });
       setCelebrationData({
         vaccineName: data.vaccineName,
         ageGroup: data.ageGroup,
@@ -212,13 +269,14 @@ export default function BabyCareVaccines() {
         place,
         vaccineName: selectedVaccine.name,
         ageGroup: selectedVaccine.ageGroup,
+        file: selectedFile,
       });
     }
   };
 
   const handleCloseCelebration = () => {
     setCelebrationData(null);
-    setLocation(`/babycare/home/${babyId}`);
+    setLocation(`/babycare/home/${babyProfileId}`);
   };
 
   const handleViewSchedule = () => {
@@ -317,7 +375,7 @@ export default function BabyCareVaccines() {
       <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 text-white px-4 pt-4 pb-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <Link href={`/babycare/home/${babyId}`}>
+            <Link href={`/babycare/home/${babyProfileId}`}>
               <Button 
                 variant="ghost" 
                 size="icon"
@@ -1175,7 +1233,7 @@ export default function BabyCareVaccines() {
       )}
 
       {/* Floating Mira Button */}
-      <MiraFab babyId={babyId} />
+      <MiraFab babyId={babyProfileId} />
     </div>
   );
 }

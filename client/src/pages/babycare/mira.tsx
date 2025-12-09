@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import type { BabyProfile } from "@shared/schema";
+import { getProfiles, type Profile } from "@/lib/profileApi";
+import { getUserId } from "@/lib/userId";
 
 const STARTER_PROMPTS = [
   "When should my baby start solid foods?",
@@ -61,11 +63,16 @@ export default function MiraChat() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { data: profiles = [] } = useQuery<BabyProfile[]>({
-    queryKey: ["/api/baby-profiles"],
+  // Fetch profiles from API
+  const userId = getUserId();
+  const { data: profiles = [] } = useQuery<Profile[]>({
+    queryKey: [`/api/v1/profiles/user/${userId}`],
+    queryFn: () => getProfiles(),
   });
 
-  const baby = profiles.find(p => p.id === babyId);
+  // Find baby profile - route param babyId is actually profileId
+  const baby = profiles.find(p => p.type === "baby" && p.profileId === babyId);
+  const babyProfileId = baby?.profileId || babyId; // Use profileId for navigation
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -120,7 +127,7 @@ export default function MiraChat() {
       {/* Warm Gradient Header */}
       <div className="bg-gradient-to-br from-rose-500 via-pink-500 to-violet-500 text-white px-4 pt-4 pb-5">
         <div className="flex items-center gap-3">
-          <Link href={`/babycare/home/${babyId}`} data-testid="link-back">
+          <Link href={`/babycare/home/${babyProfileId}`} data-testid="link-back">
             <Button 
               variant="ghost" 
               size="icon"

@@ -62,6 +62,43 @@ app.use((req, res, next) => {
   next();
 });
 
+// API Proxy middleware - must be before Vite setup
+const VITE_API_BASE_URL = process.env.VITE_API_BASE_URL;
+
+app.use("/api/v1", async (req, res, next) => {
+  try {
+    const targetUrl = `${VITE_API_BASE_URL}${req.originalUrl}`;
+    
+    const fetchOptions: RequestInit = {
+      method: req.method,
+      headers: {
+        "Content-Type": "application/json",
+        ...(req.headers.authorization && { Authorization: req.headers.authorization }),
+      },
+      body: req.method !== "GET" && req.method !== "HEAD" ? JSON.stringify(req.body) : undefined,
+    };
+
+    const response = await fetch(targetUrl, fetchOptions);
+    const data = await response.text();
+    
+    // Forward status and headers
+    res.status(response.status);
+    response.headers.forEach((value, key) => {
+      res.setHeader(key, value);
+    });
+    
+    // Try to parse as JSON, otherwise send as text
+    try {
+      const jsonData = JSON.parse(data);
+      res.json(jsonData);
+    } catch {
+      res.send(data);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 (async () => {
   await registerRoutes(httpServer, app);
 

@@ -7,12 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { 
-  Baby, ArrowRight, ArrowLeft, Check, Loader2, 
-  Sparkles, Syringe, TrendingUp, 
-  Star, Moon, Utensils, Briefcase, Users, Frown,
-  User, HandHeart, Leaf, Building2, Calendar
+  Baby, ArrowRight, ArrowLeft, Loader2, 
+  Sparkles, Star, Frown,
+  User, HandHeart, Leaf, Building2, Calendar, Heart
 } from "lucide-react";
-import type { BabyProfile } from "@shared/schema";
+import { Switch } from "@/components/ui/switch";
+import { onboardParentAndBaby, createProfile, type Profile } from "@/lib/profileApi";
+import { getUserId } from "@/lib/userId";
 
 const formatDateToDisplay = (isoDate: string): string => {
   if (!isoDate) return "";
@@ -52,17 +53,9 @@ interface OnboardingData {
   currentMood: "good" | "okay" | "not_good" | "";
   helpPreferences: string[];
   hospitalName: string;
+  communityOptIn: boolean;
 }
 
-const HELP_OPTIONS = [
-  { id: "vaccination", label: "Vaccination", icon: Syringe },
-  { id: "growth", label: "Growth Tracking", icon: TrendingUp },
-  { id: "milestones", label: "Milestones", icon: Star },
-  { id: "sleep", label: "Sleep Support", icon: Moon },
-  { id: "feeding", label: "Feeding Help", icon: Utensils },
-  { id: "return_to_work", label: "Return to Work", icon: Briefcase },
-  { id: "nanny", label: "Find a Nanny", icon: Users },
-];
 
 
 export default function BabyCareOnboarding() {
@@ -84,6 +77,7 @@ export default function BabyCareOnboarding() {
     currentMood: "",
     helpPreferences: [],
     hospitalName: "",
+    communityOptIn: false,
   });
 
   useEffect(() => {
@@ -118,13 +112,29 @@ export default function BabyCareOnboarding() {
     }
   }, [searchString]);
 
-  const createBabyProfile = useMutation({
-    mutationFn: async (profileData: { name: string; dob: string; gender: string }) => {
-      const res = await apiRequest("POST", "/api/baby-profiles", profileData);
-      return res.json();
+  const userId = getUserId();
+  
+  const onboardParentAndBabyMutation = useMutation({
+    mutationFn: async (onboardingData: {
+      parentName: string;
+      parentType: "mother" | "father";
+      babyName: string;
+      babyDob: string;
+      babyGender: "M" | "F";
+      hospitalName?: string;
+    }) => {
+      // Use onboardParentAndBaby to create both parent and baby profiles
+      return await onboardParentAndBaby({
+        parentName: onboardingData.parentName,
+        parentType: onboardingData.parentType,
+        babyName: onboardingData.babyName,
+        babyDob: onboardingData.babyDob,
+        babyGender: onboardingData.babyGender,
+        hospitalName: onboardingData.hospitalName,
+      });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/baby-profiles"] });
+      queryClient.invalidateQueries({ queryKey: [`/api/v1/profiles/user/${userId}`] });
     },
   });
 
@@ -169,23 +179,29 @@ export default function BabyCareOnboarding() {
       if (!data.babyName.trim() || !data.babyDob || !data.babyGender) {
         throw new Error("Please complete baby information");
       }
-      if (data.helpPreferences.length === 0) {
-        throw new Error("Please select at least one help preference");
-      }
 
-      const babyProfile: BabyProfile = await createBabyProfile.mutateAsync({
-        name: data.babyName.trim(),
-        dob: data.babyDob,
-        gender: data.babyGender,
+      // Map gender from "boy"/"girl" to "M"/"F" for API
+      const babyGender = data.babyGender === "boy" ? "M" : "F";
+      
+      // Use onboardParentAndBaby to create both parent and baby profiles
+      const result = await onboardParentAndBabyMutation.mutateAsync({
+        parentName: data.caregiverName.trim(),
+        parentType: data.caregiverRole as "mother" | "father",
+        babyName: data.babyName.trim(),
+        babyDob: data.babyDob,
+        babyGender: babyGender,
+        hospitalName: data.hospitalName || undefined,
       });
 
+      const babyId = result.baby.profileId || result.baby.id;
+      
       await createUserPreferences.mutateAsync({
-        babyId: babyProfile.id,
-        helpPreferences: data.helpPreferences,
+        babyId: babyId,
+        helpPreferences: [],
       });
 
       setTimeout(() => {
-        setLocation(`/babycare/home/${babyProfile.id}`);
+        setLocation(`/babycare/home/${babyId}`);
       }, 2000);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Something went wrong. Please try again.";
@@ -194,14 +210,6 @@ export default function BabyCareOnboarding() {
     }
   };
 
-  const toggleHelpPreference = (id: string) => {
-    setData(prev => ({
-      ...prev,
-      helpPreferences: prev.helpPreferences.includes(id)
-        ? prev.helpPreferences.filter(p => p !== id)
-        : [...prev.helpPreferences, id],
-    }));
-  };
 
   const canProceed = () => {
     switch (currentStep) {
@@ -210,7 +218,7 @@ export default function BabyCareOnboarding() {
       case 2:
         return data.babyName.trim() && data.babyDob && data.babyGender;
       case 3:
-        return data.helpPreferences.length > 0;
+        return true;
       default:
         return false;
     }
@@ -526,54 +534,40 @@ export default function BabyCareOnboarding() {
               transition={{ duration: 0.3 }}
               className="space-y-6"
             >
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-amber-100/50">
-                  <Sparkles className="w-8 h-8 text-amber-500" />
+              <div className="text-center mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-pink-100 to-violet-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-pink-100/50">
+                  <Heart className="w-8 h-8 text-pink-500" />
                 </div>
                 <h1 className="text-[24px] font-bold text-zinc-900 mb-2">
-                  How can we help you{caregiverGreeting}?
+                  Help other parents like you{caregiverGreeting}
                 </h1>
-                <p className="text-[14px] text-zinc-500">
-                  Select all that apply — we'll prioritize these for you
+                <p className="text-[14px] text-zinc-500 leading-relaxed max-w-[280px] mx-auto">
+                  You can guide them well if they need help
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                {HELP_OPTIONS.map((option) => {
-                  const Icon = option.icon;
-                  const isSelected = data.helpPreferences.includes(option.id);
-                  return (
-                    <button
-                      key={option.id}
-                      onClick={() => toggleHelpPreference(option.id)}
-                      className={`relative p-4 rounded-xl border-2 transition-all text-left ${
-                        isSelected
-                          ? "border-violet-400 bg-violet-50"
-                          : "border-zinc-200 bg-white hover:border-violet-200"
-                      }`}
-                      data-testid={`button-help-${option.id}`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                          isSelected ? "bg-violet-100" : "bg-zinc-100"
-                        }`}>
-                          <Icon className={`w-5 h-5 ${isSelected ? "text-violet-600" : "text-zinc-500"}`} />
-                        </div>
-                        <span className={`text-[13px] font-medium flex-1 ${
-                          isSelected ? "text-violet-700" : "text-zinc-700"
-                        }`}>
-                          {option.label}
-                        </span>
-                      </div>
-                      {isSelected && (
-                        <div className="absolute top-2 right-2 w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center">
-                          <Check className="w-3 h-3 text-white" />
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
+              <motion.div 
+                className="p-5 bg-gradient-to-r from-pink-50 to-violet-50 rounded-xl border border-pink-100/50"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex-1">
+                    <span className="text-[14px] font-medium text-zinc-800 block mb-1">
+                      Join the parent community
+                    </span>
+                    <p className="text-[12px] text-zinc-500 leading-relaxed">
+                      Share your journey to support parents facing similar challenges. Your privacy is protected.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={data.communityOptIn}
+                    onCheckedChange={(checked) => setData(prev => ({ ...prev, communityOptIn: checked }))}
+                    data-testid="switch-community-optin"
+                  />
+                </div>
+              </motion.div>
             </motion.div>
           )}
 

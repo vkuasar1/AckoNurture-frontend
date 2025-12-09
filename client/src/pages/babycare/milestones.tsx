@@ -34,6 +34,8 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { BabyProfile, MilestoneProgress, MilestoneMemory } from "@shared/schema";
 import { motion, AnimatePresence } from "framer-motion";
+import { getProfiles, type Profile } from "@/lib/profileApi";
+import { getUserId } from "@/lib/userId";
 import {
   Dialog,
   DialogContent,
@@ -68,11 +70,16 @@ export default function BabyCareMilestones() {
   const [photoUrl, setPhotoUrl] = useState("");
   const [celebrationData, setCelebrationData] = useState<{ name: string; badge?: string; badgeCopy?: string; isEarly?: boolean } | null>(null);
 
-  const { data: profiles = [] } = useQuery<BabyProfile[]>({
-    queryKey: ["/api/baby-profiles"],
+  // Fetch profiles from API
+  const userId = getUserId();
+  const { data: profiles = [] } = useQuery<Profile[]>({
+    queryKey: [`/api/v1/profiles/user/${userId}`],
+    queryFn: () => getProfiles(),
   });
 
-  const baby = profiles.find(p => p.id === babyId);
+  // Find baby profile - route param babyId is actually profileId
+  const baby = profiles.find(p => p.type === "baby" && p.profileId === babyId);
+  const babyProfileId = baby?.profileId || babyId; // Use profileId for navigation
 
   const { data: progressData = [] } = useQuery<MilestoneProgress[]>({
     queryKey: ["/api/baby-profiles", babyId, "milestone-progress"],
@@ -84,7 +91,7 @@ export default function BabyCareMilestones() {
     enabled: !!babyId,
   });
 
-  const babyAgeWeeks = baby ? differenceInWeeks(new Date(), new Date(baby.dob)) : 0;
+  const babyAgeWeeks = baby && baby.dob ? differenceInWeeks(new Date(), new Date(baby.dob)) : 0;
   const progressMap = new Map(progressData.map(p => [p.milestoneDefId, p]));
 
   const allMilestones = [...MILESTONE_DEFINITIONS].sort((a, b) => a.typicalWeek - b.typicalWeek);
@@ -350,7 +357,7 @@ export default function BabyCareMilestones() {
       {/* Combined Header with Baby Profile */}
       <div className="bg-gradient-to-br from-purple-600 to-purple-700 text-white px-4 pt-4 pb-5">
         <div className="flex items-start gap-3">
-          <Link href={`/babycare/home/${babyId}`}>
+          <Link href={`/babycare/home/${babyProfileId}`}>
             <Button variant="ghost" size="icon" className="text-white hover:bg-white/10 rounded-full mt-1" data-testid="button-back">
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -394,17 +401,12 @@ export default function BabyCareMilestones() {
         <div className="px-4 pt-4 pb-2">
           <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-4 border border-purple-100">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-pink-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-[14px] font-bold text-zinc-800 mb-1">
-                  Every moment matters
-                </h3>
-                <p className="text-[12px] text-zinc-600 leading-relaxed">
-                  Track all the amazing things {baby.name} does at each stage of their growth. Cherish these precious firsts, and know that we're here to support you every step of the way!
-                </p>
-              </div>
+              <p className="text-[12px] text-zinc-600 leading-relaxed flex items-center gap-2 flex-wrap">
+                <span>Your baby's weekly journey—</span>
+                <span className="inline-flex items-center gap-1"><TrendingUp className="w-3 h-3 text-purple-500" />track progress,</span>
+                <span className="inline-flex items-center gap-1"><Camera className="w-3 h-3 text-pink-500" />log moments,</span>
+                <span className="inline-flex items-center gap-1"><Star className="w-3 h-3 text-amber-500" />enjoy each milestone</span>
+              </p>
             </div>
           </div>
         </div>
@@ -433,40 +435,9 @@ export default function BabyCareMilestones() {
           </div>
         )}
 
-        {lateMilestones.length > 0 && (
-          <div className="p-4 pb-2">
-            <Card className="border-amber-200 bg-amber-50">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <AlertCircle className="w-4 h-4 text-amber-600" />
-                  <p className="text-[13px] font-semibold text-amber-800">
-                    Needs attention ({lateMilestones.length})
-                  </p>
-                </div>
-                
-                <div className="flex flex-wrap gap-2">
-                  {displayedLateMilestones.map((milestone) => (
-                    <MilestoneChip key={milestone.id} milestone={milestone} isLate />
-                  ))}
-                </div>
-
-                {hasMoreLate && (
-                  <button
-                    onClick={() => setLateExpanded(!lateExpanded)}
-                    className="flex items-center gap-1 mt-3 text-[11px] text-amber-700 font-medium"
-                    data-testid="toggle-late-expand"
-                  >
-                    {lateExpanded ? (
-                      <>Show less <ChevronUp className="w-3 h-3" /></>
-                    ) : (
-                      <>+{lateMilestones.length - 4} more <ChevronDown className="w-3 h-3" /></>
-                    )}
-                  </button>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        )}
+        <div className="px-4 pt-2 pb-1">
+          <p className="text-[13px] font-semibold text-zinc-700">Celebrate Today's Moments</p>
+        </div>
 
         <div className="bg-white border-b border-zinc-100 px-4 py-2 sticky top-0 z-10">
           <div className="flex gap-1">
@@ -525,11 +496,47 @@ export default function BabyCareMilestones() {
           </Card>
         </div>
 
+        {lateMilestones.length > 0 && (
+          <div className="px-4 pb-4">
+            <p className="text-[13px] font-semibold text-zinc-700 mb-3">Taking a Little Longer</p>
+            <Card className="border-amber-200 bg-amber-50">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertCircle className="w-4 h-4 text-amber-600" />
+                  <p className="text-[13px] font-semibold text-amber-800">
+                    Yet to show up ({lateMilestones.length})
+                  </p>
+                </div>
+                
+                <div className="flex flex-wrap gap-2">
+                  {displayedLateMilestones.map((milestone) => (
+                    <MilestoneChip key={milestone.id} milestone={milestone} isLate />
+                  ))}
+                </div>
+
+                {hasMoreLate && (
+                  <button
+                    onClick={() => setLateExpanded(!lateExpanded)}
+                    className="flex items-center gap-1 mt-3 text-[11px] text-amber-700 font-medium"
+                    data-testid="toggle-late-expand"
+                  >
+                    {lateExpanded ? (
+                      <>Show less <ChevronUp className="w-3 h-3" /></>
+                    ) : (
+                      <>+{lateMilestones.length - 4} more <ChevronDown className="w-3 h-3" /></>
+                    )}
+                  </button>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         {/* Quick Actions */}
         <div className="px-4 pb-4">
           <p className="text-[13px] font-semibold text-zinc-700 mb-3">Quick Actions</p>
           <div className="grid grid-cols-3 gap-3">
-            <Link href={`/babycare/growth/${babyId}`}>
+            <Link href={`/babycare/growth/${babyProfileId}`}>
               <Card className="border-emerald-200 bg-emerald-50 hover:bg-emerald-100 transition-all cursor-pointer">
                 <CardContent className="p-3 flex flex-col items-center gap-2">
                   <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center">
@@ -540,7 +547,7 @@ export default function BabyCareMilestones() {
               </Card>
             </Link>
             
-            <Link href={`/babycare/vaccines/${babyId}`}>
+            <Link href={`/babycare/vaccines/${babyProfileId}`}>
               <Card className="border-blue-200 bg-blue-50 hover:bg-blue-100 transition-all cursor-pointer">
                 <CardContent className="p-3 flex flex-col items-center gap-2">
                   <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
@@ -658,21 +665,21 @@ export default function BabyCareMilestones() {
                   <ArrowLeft className="w-4 h-4 text-zinc-500" />
                 </button>
 
-                <div className="text-center mb-6 pt-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Calendar className="w-7 h-7 text-emerald-500" />
+                <div className="text-center mb-4 pt-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Star className="w-6 h-6 text-purple-500" />
                   </div>
-                  <h2 className="text-[18px] font-bold text-zinc-900 mb-2">
-                    When did you notice?
+                  <h2 className="text-[17px] font-bold text-zinc-900 mb-1">
+                    Record this milestone
                   </h2>
-                  <p className="text-[13px] text-zinc-500">
+                  <p className="text-[12px] text-zinc-500">
                     {selectedMilestone.name}
                   </p>
                 </div>
 
-                <div className="mb-6">
-                  <Label htmlFor="observedDate" className="text-[12px] text-zinc-500 mb-2 block">
-                    Date observed
+                <div className="mb-4">
+                  <Label htmlFor="observedDate" className="text-[11px] text-zinc-500 mb-1.5 block">
+                    When did you notice?
                   </Label>
                   <Input
                     id="observedDate"
@@ -680,47 +687,9 @@ export default function BabyCareMilestones() {
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
                     max={new Date().toISOString().split('T')[0]}
-                    className="h-12 rounded-xl text-center text-[15px]"
+                    className="h-11 rounded-xl text-center text-[14px]"
                     data-testid="input-observed-date"
                   />
-                </div>
-
-                <Button 
-                  onClick={handleConfirmDate}
-                  className="w-full rounded-xl h-12 bg-purple-600 hover:bg-purple-700 text-white font-medium"
-                  data-testid="button-confirm-date"
-                >
-                  Continue
-                </Button>
-              </motion.div>
-            )}
-
-            {modalStep === "noticed_photo" && selectedMilestone && (
-              <motion.div
-                key="noticed_photo"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="p-6"
-              >
-                <button 
-                  onClick={() => setModalStep("noticed_date")}
-                  className="absolute top-4 left-4 w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center"
-                  data-testid="button-back-to-date"
-                >
-                  <ArrowLeft className="w-4 h-4 text-zinc-500" />
-                </button>
-
-                <div className="text-center mb-6 pt-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-pink-100 to-rose-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Camera className="w-7 h-7 text-pink-500" />
-                  </div>
-                  <h2 className="text-[18px] font-bold text-zinc-900 mb-2">
-                    Capture the moment
-                  </h2>
-                  <p className="text-[13px] text-zinc-500">
-                    Add a photo to remember this milestone
-                  </p>
                 </div>
 
                 <input
@@ -733,69 +702,45 @@ export default function BabyCareMilestones() {
                   data-testid="input-photo-file"
                 />
 
-                {photoUrl ? (
-                  <div className="relative mb-4">
-                    <img 
-                      src={photoUrl} 
-                      alt="Preview" 
-                      className="w-full h-40 object-cover rounded-xl"
-                    />
-                    <button
-                      onClick={() => setPhotoUrl("")}
-                      className="absolute top-2 right-2 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center"
-                      data-testid="button-remove-photo"
-                    >
-                      <X className="w-4 h-4 text-white" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <button
-                      onClick={() => fileInputRef.current?.click()}
-                      className="flex flex-col items-center justify-center gap-2 p-4 border-2 border-dashed border-zinc-200 rounded-xl hover:border-purple-300 hover:bg-purple-50/50 transition-all"
-                      data-testid="button-take-photo"
-                    >
-                      <Camera className="w-6 h-6 text-zinc-400" />
-                      <span className="text-[12px] text-zinc-500">Take Photo</span>
-                    </button>
+                <div className="mb-4">
+                  <Label className="text-[11px] text-zinc-500 mb-1.5 block">
+                    Add a photo (optional)
+                  </Label>
+                  {photoUrl ? (
+                    <div className="relative">
+                      <img 
+                        src={photoUrl} 
+                        alt="Preview" 
+                        className="w-full h-32 object-cover rounded-xl"
+                      />
+                      <button
+                        onClick={() => setPhotoUrl("")}
+                        className="absolute top-2 right-2 w-7 h-7 bg-black/50 rounded-full flex items-center justify-center"
+                        data-testid="button-remove-photo"
+                      >
+                        <X className="w-3.5 h-3.5 text-white" />
+                      </button>
+                    </div>
+                  ) : (
                     <button
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex flex-col items-center justify-center gap-2 p-4 border-2 border-dashed border-zinc-200 rounded-xl hover:border-purple-300 hover:bg-purple-50/50 transition-all"
-                      data-testid="button-upload-photo"
+                      className="w-full flex items-center justify-center gap-2 p-4 border-2 border-dashed border-zinc-200 rounded-xl hover:border-purple-300 hover:bg-purple-50/50 transition-all"
+                      data-testid="button-add-photo"
                     >
-                      <ImageIcon className="w-6 h-6 text-zinc-400" />
-                      <span className="text-[12px] text-zinc-500">Upload</span>
-                    </button>
-                  </div>
-                )}
-
-                <div className="space-y-2">
-                  <Button 
-                    onClick={() => handleSaveMilestone(false)}
-                    disabled={saveMilestoneProgress.isPending}
-                    className="w-full rounded-xl h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium"
-                    data-testid="button-save-with-photo"
-                  >
-                    {photoUrl ? (
-                      <>
-                        <Upload className="w-4 h-4 mr-2" />
-                        Save with photo
-                      </>
-                    ) : (
-                      "Save without photo"
-                    )}
-                  </Button>
-                  
-                  {photoUrl && (
-                    <button
-                      onClick={() => handleSaveMilestone(true)}
-                      className="w-full text-[13px] text-zinc-400 py-2"
-                      data-testid="button-skip-photo"
-                    >
-                      Skip photo
+                      <Camera className="w-5 h-5 text-zinc-400" />
+                      <span className="text-[12px] text-zinc-500">Take or upload photo</span>
                     </button>
                   )}
                 </div>
+
+                <Button 
+                  onClick={() => handleSaveMilestone(false)}
+                  disabled={saveMilestoneProgress.isPending}
+                  className="w-full rounded-xl h-12 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium"
+                  data-testid="button-save-milestone"
+                >
+                  {saveMilestoneProgress.isPending ? "Saving..." : "Save Milestone"}
+                </Button>
               </motion.div>
             )}
 
@@ -855,7 +800,7 @@ export default function BabyCareMilestones() {
                           </Link>
                         )}
                         
-                        <Link href={`/babycare/community/${babyId}`}>
+                        <Link href={`/babycare/community/${babyProfileId}`}>
                           <Button 
                             variant="outline"
                             className="w-full rounded-xl h-12 border-orange-200 text-orange-600 font-medium"
@@ -1000,7 +945,7 @@ export default function BabyCareMilestones() {
         </DialogContent>
       </Dialog>
 
-      <MiraFab babyId={babyId} />
+      <MiraFab babyId={babyProfileId} />
     </div>
   );
 }

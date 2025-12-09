@@ -30,6 +30,8 @@ import {
   comboPlanDetails,
   type ActivePlans
 } from "@/lib/planStore";
+import { getUserId } from "@/lib/userId";
+import { getProfiles, Profile } from "@/lib/profileApi";
 
 function calculateAge(dob: string): { display: string; months: number; days: number } {
   const birthDate = new Date(dob);
@@ -83,13 +85,18 @@ export default function BabyDashboard() {
   
   const userHasChildPlan = checkChildPlan(activePlans);
 
-  const { data: profiles = [] } = useQuery<BabyProfile[]>({
-    queryKey: ["/api/baby-profiles"],
+  // Fetch profiles from API
+  const userId = getUserId();
+  const { data: profiles = [] } = useQuery<Profile[]>({
+    queryKey: [`/api/v1/profiles/user/${userId}`],
+    queryFn: () => getProfiles(),
   });
 
+  // Find baby profile - use profileId for matching (route param is profileId)
   const baby = babyId 
-    ? profiles.find(p => p.id === babyId) 
-    : profiles[0];
+    ? profiles.find(p => p.type === "baby" && p.profileId === babyId)
+    : profiles.find(p => p.type === "baby");
+  const babyProfileId = baby?.profileId || baby?.id; // Use profileId as babyId for API calls
 
   const { data: vaccines = [] } = useQuery<Vaccine[]>({
     queryKey: ["/api/baby-profiles", baby?.id, "vaccines"],
@@ -114,7 +121,7 @@ export default function BabyDashboard() {
   const completedMilestones = milestones.filter(m => m.completed).length;
   const totalMilestones = milestones.length;
 
-  const babyAge = baby ? calculateAge(baby.dob) : { display: "", months: 0, days: 0 };
+  const babyAge = baby ? calculateAge(baby.dob as string) : { display: "", months: 0, days: 0 };
 
   if (!baby) {
     return (
@@ -157,8 +164,8 @@ export default function BabyDashboard() {
             {/* Large Baby Avatar */}
             <div className="relative">
               <div className="w-16 h-16 rounded-full bg-white/20 border-3 border-white/40 flex items-center justify-center overflow-hidden shadow-lg">
-                {baby.photoUrl ? (
-                  <img src={baby.photoUrl} alt={baby.name} className="w-full h-full object-cover" data-testid="img-baby-photo" />
+                {baby.imageUrl ? (
+                  <img src={baby.imageUrl} alt={baby.name} className="w-full h-full object-cover" data-testid="img-baby-photo" />
                 ) : (
                   <Smile className="w-9 h-9 text-white" />
                 )}
@@ -180,7 +187,7 @@ export default function BabyDashboard() {
                   </span>
                 </div>
                 {baby.gender && (
-                  <div className={`px-2.5 py-1 rounded-full ${baby.gender === 'boy' ? 'bg-blue-400/40' : 'bg-pink-400/40'}`}>
+                  <div className={`px-2.5 py-1 rounded-full ${baby.gender === 'M' ? 'bg-blue-400/40' : 'bg-pink-400/40'}`}>
                     <span className="text-[11px] font-semibold text-white capitalize">{baby.gender}</span>
                   </div>
                 )}
@@ -244,7 +251,7 @@ export default function BabyDashboard() {
                   </p>
                 </div>
               </div>
-              <Link href={`/babycare/milestones/${baby.id}`} data-testid="link-milestones-view-all">
+              <Link href={`/babycare/milestones/${babyProfileId}`} data-testid="link-milestones-view-all">
                 <Button size="sm" variant="secondary" className="bg-white/25 hover:bg-white/35 text-white border-0 text-[11px] h-8 font-semibold">
                   View All <ChevronRight className="w-3 h-3 ml-1" />
                 </Button>
@@ -292,7 +299,7 @@ export default function BabyDashboard() {
         {/* Feature Grid - 2x3 */}
         <div className="grid grid-cols-2 gap-3 mb-3">
           {/* Vaccines Card - Now smaller */}
-          <Link href={`/babycare/vaccines/${baby.id}`}>
+          <Link href={`/babycare/vaccines/${babyProfileId}`}>
             <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-vaccines">
               <CardContent className="p-4 relative">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-3">
@@ -310,7 +317,7 @@ export default function BabyDashboard() {
           </Link>
 
           {/* Growth Card */}
-          <Link href={`/babycare/growth/${baby.id}`}>
+          <Link href={`/babycare/growth/${babyProfileId}`}>
             <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-growth">
               <CardContent className="p-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mb-3">
@@ -323,7 +330,7 @@ export default function BabyDashboard() {
           </Link>
 
           {/* Talk to Parents Card */}
-          <Link href={`/babycare/community/${baby.id}`}>
+          <Link href={`/babycare/community/${babyProfileId}`}>
             <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-talk-to-parents">
               <CardContent className="p-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center mb-3">
@@ -353,7 +360,7 @@ export default function BabyDashboard() {
           </button>
 
           {/* Records Card */}
-          <Link href={`/babycare/records/${baby.id}`}>
+          <Link href={`/babycare/records/${babyProfileId}`}>
             <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-records">
               <CardContent className="p-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-400 to-zinc-500 flex items-center justify-center mb-3">
@@ -387,7 +394,7 @@ export default function BabyDashboard() {
       </div>
 
       {/* Floating Mira Button */}
-      <Link href={`/babycare/mira/${baby.id}`}>
+      <Link href={`/babycare/mira/${babyProfileId}`}>
         <button 
           className="fixed bottom-6 right-4 bg-gradient-to-r from-rose-500 to-pink-500 text-white px-5 py-3 rounded-full shadow-lg flex items-center gap-2 hover:opacity-90 transition-opacity"
           data-testid="button-mira"

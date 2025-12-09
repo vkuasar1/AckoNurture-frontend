@@ -45,6 +45,8 @@ import type { BabyProfile, Vaccine, GrowthEntry, Milestone, DoctorVisit, Medical
 import { format, parseISO, differenceInDays, differenceInMonths } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { MiraFab } from "@/components/MiraFab";
+import { getProfiles, type Profile } from "@/lib/profileApi";
+import { getUserId } from "@/lib/userId";
 
 type RecordType = "vaccine" | "growth" | "milestone" | "visit" | "report";
 type FilterType = "all" | RecordType;
@@ -144,11 +146,16 @@ export default function BabyCareMedicalRecords() {
     fileUrl: "",
   });
 
-  const { data: profiles = [] } = useQuery<BabyProfile[]>({
-    queryKey: ["/api/baby-profiles"],
+  // Fetch profiles from API
+  const userId = getUserId();
+  const { data: profiles = [] } = useQuery<Profile[]>({
+    queryKey: [`/api/v1/profiles/user/${userId}`],
+    queryFn: () => getProfiles(),
   });
 
-  const baby = profiles.find(p => p.id === babyId);
+  // Find baby profile - route param babyId is actually profileId
+  const baby = profiles.find(p => p.type === "baby" && p.profileId === babyId);
+  const babyProfileId = baby?.profileId || babyId; // Use profileId for navigation
 
   const { data: vaccines = [] } = useQuery<Vaccine[]>({
     queryKey: ["/api/baby-profiles", babyId, "vaccines"],
@@ -321,7 +328,7 @@ export default function BabyCareMedicalRecords() {
       {/* Rich Gradient Header */}
       <div className="bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-700 text-white px-4 pt-4 pb-6">
         <div className="flex items-center gap-3 mb-4">
-          <Link href={`/babycare/home/${babyId}`} data-testid="link-back">
+          <Link href={`/babycare/home/${babyProfileId}`} data-testid="link-back">
             <Button 
               variant="ghost" 
               size="icon"
@@ -338,10 +345,52 @@ export default function BabyCareMedicalRecords() {
             </h1>
             <p className="text-[12px] text-white/80">{baby.name}'s complete medical history</p>
           </div>
-          <div className="flex gap-2">
-            <div className="w-9 h-9 bg-white/15 rounded-full flex items-center justify-center">
-              <FileText className="w-4 h-4 text-white" />
-            </div>
+          <div className="relative">
+            <Button
+              onClick={() => setShowAddMenu(!showAddMenu)}
+              size="icon"
+              className={`w-9 h-9 rounded-full transition-all ${
+                showAddMenu 
+                  ? "bg-white/30 rotate-45" 
+                  : "bg-white/15 hover:bg-white/25"
+              }`}
+              data-testid="button-header-add"
+            >
+              <Plus className="w-5 h-5 text-white" />
+            </Button>
+            
+            {/* Dropdown Menu - positioned right below the button */}
+            <AnimatePresence>
+              {showAddMenu && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -5, scale: 0.95 }}
+                  className="absolute top-11 right-0 z-50 bg-white rounded-xl shadow-xl border border-zinc-200 overflow-hidden min-w-[180px]"
+                >
+                  <button
+                    onClick={() => { setShowVisitDialog(true); setShowAddMenu(false); }}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-violet-50 transition-colors border-b border-zinc-100"
+                    data-testid="button-add-visit"
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center">
+                      <Stethoscope className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-[13px] font-medium text-zinc-800">Log Doctor Visit</span>
+                  </button>
+                  <button
+                    onClick={() => { setShowReportDialog(true); setShowAddMenu(false); }}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-rose-50 transition-colors"
+                    data-testid="button-add-report"
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center">
+                      <Upload className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-[13px] font-medium text-zinc-800">Upload Report</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
@@ -626,7 +675,7 @@ export default function BabyCareMedicalRecords() {
               </div>
             </div>
 
-            <Link href={`/babycare/mira/${babyId}`}>
+            <Link href={`/babycare/mira/${babyProfileId}`}>
               <Button 
                 className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:opacity-90 text-white rounded-xl shadow-md h-11 font-semibold gap-2"
                 data-testid="button-ask-mira-medical"
@@ -639,48 +688,13 @@ export default function BabyCareMedicalRecords() {
         </Card>
       </div>
 
-      {/* Floating Action Button */}
-      <div className="absolute bottom-6 right-4 flex flex-col items-end gap-2 z-50">
-        <AnimatePresence>
-          {showAddMenu && (
-            <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.9 }}
-              className="flex flex-col gap-2 mb-2"
-            >
-              <Button
-                onClick={() => { setShowVisitDialog(true); setShowAddMenu(false); }}
-                className="bg-gradient-to-r from-violet-500 to-purple-600 hover:opacity-90 text-white rounded-full px-5 py-2.5 shadow-xl flex items-center gap-2 font-semibold"
-                data-testid="button-add-visit"
-              >
-                <Stethoscope className="w-4 h-4" />
-                Log Doctor Visit
-              </Button>
-              <Button
-                onClick={() => { setShowReportDialog(true); setShowAddMenu(false); }}
-                className="bg-gradient-to-r from-rose-500 to-pink-600 hover:opacity-90 text-white rounded-full px-5 py-2.5 shadow-xl flex items-center gap-2 font-semibold"
-                data-testid="button-add-report"
-              >
-                <Upload className="w-4 h-4" />
-                Upload Report
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <Button
-          onClick={() => setShowAddMenu(!showAddMenu)}
-          className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all ${
-            showAddMenu 
-              ? "bg-zinc-700 rotate-45" 
-              : "bg-gradient-to-r from-violet-500 to-purple-600 hover:opacity-90"
-          }`}
-          size="icon"
-          data-testid="button-fab-add"
-        >
-          <Plus className="w-6 h-6 text-white" />
-        </Button>
-      </div>
+      {/* Click outside to close menu */}
+      {showAddMenu && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setShowAddMenu(false)}
+        />
+      )}
 
       {/* Add Visit Dialog - Enhanced */}
       <Dialog open={showVisitDialog} onOpenChange={setShowVisitDialog}>
@@ -917,7 +931,7 @@ export default function BabyCareMedicalRecords() {
       </Dialog>
 
       {/* Floating Mira Button */}
-      <MiraFab babyId={babyId} />
+      <MiraFab babyId={babyProfileId} />
     </div>
   );
 }

@@ -44,6 +44,9 @@ import {
 import { Crown } from "lucide-react";
 import { getCaregiverProfile, type CaregiverProfile } from "@/lib/caregiverStore";
 import { MiraFab } from "@/components/MiraFab";
+import { getProfiles, type Profile } from "@/lib/profileApi";
+import { getUserId } from "@/lib/userId";
+import { apiRequest } from "@/lib/queryClient";
 
 function calculateAge(dob: string): { display: string; months: number } {
   const birthDate = new Date(dob);
@@ -128,17 +131,27 @@ export default function BabyCareHome() {
   const childPlanInfo = getCurrentChildPlanInfo();
   const motherPlanInfo = getCurrentMotherPlanInfo();
 
-  const { data: profiles = [] } = useQuery<BabyProfile[]>({
-    queryKey: ["/api/baby-profiles"],
+  // Fetch profiles from API
+  const userId = getUserId();
+  const { data: profiles = [] } = useQuery<Profile[]>({
+    queryKey: [`/api/v1/profiles/user/${userId}`],
+    queryFn: () => getProfiles(),
   });
 
+  // Find baby profile - route param babyId is actually profileId
   const baby = babyId 
-    ? profiles.find(p => p.id === babyId) 
-    : profiles[0];
+    ? profiles.find(p => p.type === "baby" && p.profileId === babyId)
+    : profiles.find(p => p.type === "baby");
+  const babyProfileId = baby?.profileId || babyId; // Use profileId as babyId for API calls
 
+  // Fetch upcoming vaccines from API using profileId as babyId
   const { data: vaccines = [] } = useQuery<Vaccine[]>({
-    queryKey: ["/api/baby-profiles", baby?.id, "vaccines"],
-    enabled: !!baby?.id,
+    queryKey: [`/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming`],
+    enabled: !!babyProfileId,
+    queryFn: async () => {
+      const response = await apiRequest("GET", `/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming?limit=10`);
+      return response.json();
+    },
   });
 
   const { data: growthEntries = [] } = useQuery<GrowthEntry[]>({
@@ -146,12 +159,10 @@ export default function BabyCareHome() {
     enabled: !!baby?.id,
   });
 
-  const upcomingVaccines = vaccines
-    .filter(v => v.status === "pending" && v.dueDate)
-    .sort((a, b) => new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime())
-    .slice(0, 2);
+  // Vaccines are already sorted and limited by the API, just take first 2
+  const upcomingVaccines = vaccines.slice(0, 2);
 
-  const babyAge = baby ? calculateAge(baby.dob) : { display: "", months: 0 };
+  const babyAge = baby && baby.dob ? calculateAge(baby.dob) : { display: "", months: 0 };
   
   const latestWeight = growthEntries
     .filter(e => e.type === "weight")
@@ -186,7 +197,7 @@ export default function BabyCareHome() {
     }, 1000);
   };
 
-  const mockPhotos = baby?.photoUrl ? [baby.photoUrl] : [];
+  const mockPhotos = baby?.imageUrl ? [baby.imageUrl] : [];
 
   return (
     <div className="app-container bg-zinc-50 min-h-screen flex flex-col relative">
@@ -206,7 +217,7 @@ export default function BabyCareHome() {
               <h1 className="text-[15px] font-bold text-white" data-testid="text-header-title">
                 {baby ? baby.name : "Nurture"}
               </h1>
-              {baby && (
+              {baby && baby.dob && (
                 <p className="text-[11px] text-zinc-400" data-testid="text-baby-age">
                   {babyAge.display} old
                 </p>
@@ -297,42 +308,44 @@ export default function BabyCareHome() {
           )}
         </div>
 
+        {/* Celebrate Growth Section */}
+        <div className="px-4 pb-3">
+          <h2 className="text-[14px] font-semibold text-zinc-800 mb-3">Celebrate Every Step</h2>
+        </div>
+
         {/* Milestones Hero Card */}
         {baby && (
-          <div className="px-4 pb-3">
-            <Card className="bg-white border border-zinc-100 shadow-md rounded-2xl overflow-hidden" data-testid="card-milestones-hero">
-              <CardContent className="p-0">
-                <div className="bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400 px-4 py-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-white/25 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                      <Star className="w-6 h-6 text-white" />
+          <div className="px-4 pb-3 -mt-1">
+            <Link href={`/babycare/milestones/${babyProfileId}`}>
+              <Card className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border border-amber-200/50 shadow-md rounded-2xl overflow-hidden hover-elevate" data-testid="card-milestones-hero">
+                <CardContent className="p-5">
+                  <div className="flex items-start gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-400 to-yellow-400 flex items-center justify-center flex-shrink-0 shadow-lg shadow-amber-200/50">
+                      <Star className="w-7 h-7 text-white" />
                     </div>
-                    <div>
-                      <h3 className="text-[17px] font-bold text-white">Milestones</h3>
-                      <p className="text-[12px] text-white/90">Celebrate every little win</p>
-                    </div>
-                  </div>
-                  <Link href={`/babycare/milestones/${baby.id}`}>
-                    <Button size="sm" variant="secondary" className="bg-white/25 hover:bg-white/35 text-white border-0 text-[11px] h-8 font-semibold">
-                      View All <ChevronRight className="w-3 h-3 ml-1" />
-                    </Button>
-                  </Link>
-                </div>
-                <div className="p-4">
-                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-200 to-orange-200 flex items-center justify-center flex-shrink-0">
-                        <Heart className="w-7 h-7 text-amber-600" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-[17px] font-bold text-zinc-800">Milestones</h3>
+                        <ChevronRight className="w-4 h-4 text-amber-500" />
                       </div>
-                      <div className="flex-1">
-                        <p className="text-[14px] font-semibold text-zinc-800">Start tracking your baby's firsts</p>
-                        <p className="text-[12px] text-zinc-500 mt-0.5">Every smile, every step matters</p>
+                      <p className="text-[13px] text-zinc-600 leading-relaxed">
+                        Share and rejoice your child's growth, every week, every day
+                      </p>
+                      <div className="flex items-center gap-3 mt-3">
+                        <div className="flex items-center gap-1.5 bg-white/80 px-2.5 py-1 rounded-full border border-amber-200/50">
+                          <Camera className="w-3.5 h-3.5 text-amber-500" />
+                          <span className="text-[11px] font-medium text-amber-700">Capture firsts</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 bg-white/80 px-2.5 py-1 rounded-full border border-amber-200/50">
+                          <Heart className="w-3.5 h-3.5 text-amber-500" />
+                          <span className="text-[11px] font-medium text-amber-700">Track progress</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
         )}
 
@@ -341,8 +354,8 @@ export default function BabyCareHome() {
           <h2 className="text-[14px] font-semibold text-zinc-800 mb-3">Care Essentials</h2>
           <div className="grid grid-cols-2 gap-3">
             {/* Vaccines Card */}
-            {baby && (
-              <Link href={`/babycare/vaccines/${baby.id}`}>
+            {baby && babyProfileId && (
+              <Link href={`/babycare/vaccines/${babyProfileId}`}>
                 <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-vaccines">
                   <CardContent className="p-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-3">
@@ -358,8 +371,8 @@ export default function BabyCareHome() {
             )}
 
             {/* Growth Card */}
-            {baby && (
-              <Link href={`/babycare/growth/${baby.id}`}>
+            {baby && babyProfileId && (
+              <Link href={`/babycare/growth/${babyProfileId}`}>
                 <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-growth">
                   <CardContent className="p-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mb-3">
@@ -378,8 +391,8 @@ export default function BabyCareHome() {
             )}
 
             {/* Records Card */}
-            {baby && (
-              <Link href={`/babycare/records/${baby.id}`}>
+            {baby && babyProfileId && (
+              <Link href={`/babycare/records/${babyProfileId}`}>
                 <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-records">
                   <CardContent className="p-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-400 to-zinc-500 flex items-center justify-center mb-3">
@@ -393,8 +406,8 @@ export default function BabyCareHome() {
             )}
 
             {/* Talk to Parents Card */}
-            {baby && (
-              <Link href={`/babycare/community/${baby.id}`}>
+            {baby && babyProfileId && (
+              <Link href={`/babycare/community/${babyProfileId}`}>
                 <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-talk-to-parents">
                   <CardContent className="p-4">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mb-3">
@@ -431,52 +444,10 @@ export default function BabyCareHome() {
             )}
           </div>
         </div>
-
-        {/* Support Card */}
-        <div className="px-4 pb-3">
-          <Link href="/babycare/resources">
-            <Card className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate" data-testid="card-support">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center">
-                    <Phone className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-[14px] font-bold text-zinc-800">Support</h3>
-                    <p className="text-[11px] text-zinc-500 mt-0.5">Book specialists & get help</p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-zinc-300" />
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        </div>
-
-        {/* Explore Plans Promo - Show when no plan */}
-        {!userHasChildPlan && (
-          <div className="px-4 pb-3">
-            <Link href="/babycare/plans" data-testid="card-explore-plans-promo">
-              <Card className="bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-600 border-0 shadow-lg rounded-2xl overflow-hidden">
-                <CardContent className="p-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                      <Crown className="w-7 h-7 text-amber-300" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-[16px] font-bold text-white mb-1">Unlock Premium Benefits</h3>
-                      <p className="text-[12px] text-white/80">Get AaI, expert consultations & more</p>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-white/60" />
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          </div>
-        )}
       </div>
 
       {/* Floating Mira Button */}
-      <MiraFab babyId={baby?.id} />
+      <MiraFab babyId={babyProfileId} />
 
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-zinc-100 px-6 py-2 z-50">

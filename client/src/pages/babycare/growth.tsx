@@ -26,6 +26,8 @@ import { useToast } from "@/hooks/use-toast";
 import type { BabyProfile, GrowthEntry } from "@shared/schema";
 import { format, differenceInMonths } from "date-fns";
 import { MiraFab } from "@/components/MiraFab";
+import { getProfiles, type Profile } from "@/lib/profileApi";
+import { getUserId } from "@/lib/userId";
 
 type GrowthType = "weight" | "height" | "head";
 
@@ -85,11 +87,16 @@ export default function BabyCareGrowth() {
   const [newValue, setNewValue] = useState("");
   const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
 
-  const { data: profiles = [] } = useQuery<BabyProfile[]>({
-    queryKey: ["/api/baby-profiles"],
+  // Fetch profiles from API
+  const userId = getUserId();
+  const { data: profiles = [] } = useQuery<Profile[]>({
+    queryKey: [`/api/v1/profiles/user/${userId}`],
+    queryFn: () => getProfiles(),
   });
 
-  const baby = profiles.find(p => p.id === babyId);
+  // Find baby profile - use profileId for matching (route param is profileId)
+  const baby = profiles.find(p => p.type === "baby" && p.profileId === babyId);
+  const babyProfileId = baby?.profileId || babyId; // Use profileId as babyId for API calls
 
   const { data: growthEntries = [], isLoading } = useQuery<GrowthEntry[]>({
     queryKey: ["/api/baby-profiles", babyId, "growth"],
@@ -139,7 +146,7 @@ export default function BabyCareGrowth() {
   const randomQuote = inspirationalQuotes[Math.floor(Date.now() / 86400000) % inspirationalQuotes.length];
 
   // Calculate baby age in months
-  const babyAgeMonths = baby ? differenceInMonths(new Date(), new Date(baby.dob)) : 0;
+  const babyAgeMonths = baby ? differenceInMonths(new Date(), new Date(baby.dob as string)) : 0;
 
   if (!baby) {
     return (
@@ -154,7 +161,7 @@ export default function BabyCareGrowth() {
       {/* Rich Gradient Header */}
       <div className="bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600 text-white px-4 pt-4 pb-6">
         <div className="flex items-center gap-3 mb-4">
-          <Link href={`/babycare/home/${babyId}`}>
+          <Link href={`/babycare/home/${babyProfileId}`}>
             <Button 
               variant="ghost" 
               size="icon"
