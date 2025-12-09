@@ -100,10 +100,10 @@ export default function BabyCareHome() {
   const [showResetConfirmDialog, setShowResetConfirmDialog] = useState(false);
   const [reminderVaccine, setReminderVaccine] = useState<Vaccine | null>(null);
   const [reminderType, setReminderType] = useState<"call" | "sms" | "push">(
-    "call"
+    "call",
   );
   const [reminderTime, setReminderTime] = useState<"1day" | "3days" | "1week">(
-    "1day"
+    "1day",
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const babyId = params.babyId;
@@ -188,7 +188,7 @@ export default function BabyCareHome() {
     queryFn: async () => {
       const response = await apiRequest(
         "GET",
-        `/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming?limit=10`
+        `/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming?limit=10`,
       );
       return response.json();
     },
@@ -209,13 +209,13 @@ export default function BabyCareHome() {
     .filter((e) => e.type === "weight")
     .sort(
       (a, b) =>
-        new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime()
+        new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime(),
     )[0];
   const latestHeight = growthEntries
     .filter((e) => e.type === "height")
     .sort(
       (a, b) =>
-        new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime()
+        new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime(),
     )[0];
 
   const handleAddCaregiverProfile = () => {
@@ -887,8 +887,8 @@ export default function BabyCareHome() {
                 {reminderType === "call"
                   ? "You'll receive an automated call reminder at 10:00 AM on the scheduled day."
                   : reminderType === "sms"
-                  ? "You'll receive an SMS reminder with vaccine details and booking link."
-                  : "You'll receive a push notification on your device."}
+                    ? "You'll receive an SMS reminder with vaccine details and booking link."
+                    : "You'll receive a push notification on your device."}
               </p>
             </div>
           </div>
@@ -910,14 +910,14 @@ export default function BabyCareHome() {
                     reminderType === "call"
                       ? "call"
                       : reminderType === "sms"
-                      ? "SMS"
-                      : "notification"
+                        ? "SMS"
+                        : "notification"
                   } ${
                     reminderTime === "1day"
                       ? "1 day"
                       : reminderTime === "3days"
-                      ? "3 days"
-                      : "1 week"
+                        ? "3 days"
+                        : "1 week"
                   } before the vaccine is due.`,
                 });
                 setShowReminderDialog(false);
@@ -949,15 +949,15 @@ export default function BabyCareHome() {
               {showPlanDetailsModal === "child" && childPlanInfo
                 ? childPlanInfo.name
                 : showPlanDetailsModal === "mother" && motherPlanInfo
-                ? motherPlanInfo.name
-                : "Your Plan"}
+                  ? motherPlanInfo.name
+                  : "Your Plan"}
             </DialogTitle>
             <DialogDescription className="text-[13px] text-zinc-500 text-center">
               {showPlanDetailsModal === "child" && childPlanInfo
                 ? childPlanInfo.description
                 : showPlanDetailsModal === "mother" && motherPlanInfo
-                ? motherPlanInfo.description
-                : "Premium care benefits active"}
+                  ? motherPlanInfo.description
+                  : "Premium care benefits active"}
             </DialogDescription>
           </DialogHeader>
 

@@ -171,9 +171,7 @@ export default function BabyCareVaccines() {
   });
 
   // Find baby profile - route param babyId is actually profileId
-  const baby = profiles.find(
-    (p) => p.type === "baby" && p.profileId === babyId,
-  );
+  const baby = profiles.find((p) => p.profileId === babyId);
   const babyProfileId = baby?.profileId || babyId; // Use profileId as babyId for API calls
 
   // Fetch vaccines from API using profileId as babyId
@@ -398,7 +396,9 @@ export default function BabyCareVaccines() {
 
     toast({
       title: "Booking confirmed!",
-      description: `${selectedVaccine.name} at ${selectedHospital.name} on ${format(new Date(selectedDate), "MMM d, yyyy")} at ${selectedSlot}`,
+      description: `${selectedVaccine.name} at ${
+        selectedHospital.name
+      } on ${format(new Date(selectedDate), "MMM d, yyyy")} at ${selectedSlot}`,
     });
     setShowBookingDialog(false);
     setSelectedHospital(null);
@@ -499,7 +499,9 @@ export default function BabyCareVaccines() {
                 stroke="white"
                 strokeWidth="6"
                 fill="none"
-                strokeDasharray={`${(completedCount / vaccines.length) * 176} 176`}
+                strokeDasharray={`${
+                  (completedCount / vaccines.length) * 176
+                } 176`}
                 strokeLinecap="round"
               />
             </svg>
@@ -604,7 +606,9 @@ export default function BabyCareVaccines() {
                         <p className="text-[12px] text-zinc-500">
                           {groupCompletedCount === groupVaccines.length
                             ? "All done! Great job!"
-                            : `${groupVaccines.length - groupCompletedCount} remaining`}
+                            : `${
+                                groupVaccines.length - groupCompletedCount
+                              } remaining`}
                         </p>
                       </div>
                     </div>
@@ -724,12 +728,16 @@ export default function BabyCareVaccines() {
                                               ? "Due tomorrow"
                                               : daysUntilDue && daysUntilDue > 0
                                                 ? `Due in ${daysUntilDue} days`
-                                                : `${Math.abs(daysUntilDue || 0)} days overdue`}
+                                                : `${Math.abs(
+                                                    daysUntilDue || 0,
+                                                  )} days overdue`}
                                         </span>
                                       ) : null}
 
                                       <Badge
-                                        className={`text-[10px] px-2 py-0.5 ${getStatusStyles(status.variant)}`}
+                                        className={`text-[10px] px-2 py-0.5 ${getStatusStyles(
+                                          status.variant,
+                                        )}`}
                                         data-testid={`badge-status-${vaccine.id}`}
                                       >
                                         {status.label}
@@ -739,36 +747,34 @@ export default function BabyCareVaccines() {
                                 </div>
                               </button>
 
-                              {/* Action Buttons - Only for pending vaccines */}
-                              {vaccine.status === "pending" && (
-                                <div className="px-4 pb-4 pt-0 flex gap-2">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="flex-1 text-[12px] rounded-xl h-9 border-violet-200 text-violet-600 hover:bg-violet-50"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      openHospitalSearch(vaccine);
-                                    }}
-                                    data-testid={`button-book-${vaccine.id}`}
-                                  >
-                                    <Building2 className="w-3.5 h-3.5 mr-1.5" />
-                                    Find hospital
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    className="flex-1 text-[12px] rounded-xl h-9 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      openLogDialog(vaccine);
-                                    }}
-                                    data-testid={`button-mark-${vaccine.id}`}
-                                  >
-                                    <Check className="w-3.5 h-3.5 mr-1.5" />
-                                    Mark done
-                                  </Button>
-                                </div>
-                              )}
+                              {/* Action Buttons */}
+                              <div className="px-4 pb-4 pt-0 flex gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="flex-1 text-[12px] rounded-xl h-9 border-violet-200 text-violet-600 hover:bg-violet-50"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openHospitalSearch(vaccine);
+                                  }}
+                                  data-testid={`button-book-${vaccine.id}`}
+                                >
+                                  <Building2 className="w-3.5 h-3.5 mr-1.5" />
+                                  Find hospital
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  className="flex-1 text-[12px] rounded-xl h-9 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openLogDialog(vaccine);
+                                  }}
+                                  data-testid={`button-mark-${vaccine.id}`}
+                                >
+                                  <Check className="w-3.5 h-3.5 mr-1.5" />
+                                  Mark done
+                                </Button>
+                              </div>
                             </CardContent>
                           </Card>
                         </motion.div>
@@ -1408,7 +1414,11 @@ export default function BabyCareVaccines() {
             </div>
 
             <div
-              className={`space-y-4 ${!reminderSettings.globalRemindersEnabled ? "opacity-50 pointer-events-none" : ""}`}
+              className={`space-y-4 ${
+                !reminderSettings.globalRemindersEnabled
+                  ? "opacity-50 pointer-events-none"
+                  : ""
+              }`}
             >
               {/* Notification Type */}
               <div className="bg-zinc-50 rounded-xl p-4 space-y-3">

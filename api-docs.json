@@ -294,6 +294,48 @@
         }
       }
     },
+    "/api/v1/profiles/{id}/baby-image": {
+      "put": {
+        "tags": ["Profile"],
+        "summary": "Update baby image URL",
+        "description": "Updates the baby image URL for a guardian profile. Accepts multipart/form-data with image file, uploads to S3, and updates the profile with the new image URL.",
+        "operationId": "updateBabyImage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": ["babyImage"],
+                "type": "object",
+                "properties": {
+                  "babyImage": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/plans/{id}": {
       "get": {
         "tags": ["Plan"],
@@ -718,6 +760,97 @@
         "parameters": [
           {
             "name": "recordId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospitals/{id}": {
+      "get": {
+        "tags": ["Hospital"],
+        "summary": "Get hospital by ID",
+        "description": "Retrieves a hospital by its ID",
+        "operationId": "getHospitalById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Hospital"],
+        "summary": "Update hospital",
+        "description": "Updates an existing hospital by ID",
+        "operationId": "updateHospital",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Hospital" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Hospital"],
+        "summary": "Delete hospital by ID",
+        "description": "Deletes a hospital by its ID",
+        "operationId": "deleteHospitalById",
+        "parameters": [
+          {
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": { "type": "string" }
@@ -1406,47 +1539,17 @@
         }
       }
     },
-    "/api/v1/profiles/with-image": {
-      "post": {
-        "tags": ["Profile"],
-        "summary": "Create profile with image",
-        "description": "Creates a new profile with image file upload",
-        "operationId": "createProfileWithImage",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "required": ["image", "profile"],
-                "type": "object",
-                "properties": {
-                  "profile": { "$ref": "#/components/schemas/Profile" },
-                  "image": { "type": "string", "format": "binary" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Profile" } }
-            }
-          }
-        }
-      }
-    },
     "/api/v1/profiles/onboard": {
       "post": {
         "tags": ["Profile"],
         "summary": "Onboard guardian with baby",
-        "description": "Creates a single profile for guardian (mother or father) with baby details. The profile type will be 'mother' or 'father' based on the guardian type. Baby details (name, DOB, gender, image) are stored in the profile along with guardian consent for communication. Milestone and vaccine schedules are automatically generated for the baby based on DOB. Accepts multipart/form-data with optional baby image file. The 'request' field should contain a JSON string with guardian and baby details.",
+        "description": "Creates a single profile for guardian (mother or father) with baby details. The profile type will be 'mother' or 'father' based on the guardian type. Baby details (name, DOB, gender, optional image) are stored in the profile along with guardian consent for communication. Milestone and vaccine schedules are automatically generated for the baby based on DOB. \n\n**Two ways to call this API:**\n1. **With image (multipart/form-data):** Send JSON in 'request' field and optional 'babyImage' file\n2. **Without image (application/json):** Send JSON body directly\n\n\n**Request fields:**\n- `name` (required): Guardian name\n- `type` (required): \"mother\" or \"father\"\n- `userId` (optional): Auto-generated if not provided\n- `consent` (required): true/false for communication\n- `babyName` (required): Baby name\n- `babyDob` (required): Baby date of birth (ISO format: YYYY-MM-DD)\n- `babyGender` (required): \"M\" or \"F\"",
         "operationId": "onboardParentAndBaby",
         "parameters": [
           {
             "name": "request",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": { "type": "string" }
           }
         ],
@@ -1456,7 +1559,21 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "babyImage": { "type": "string", "format": "binary" }
+                  "babyImage": { "type": "string", "format": "binary" },
+                  "requestBody": {
+                    "$ref": "#/components/schemas/OnboardingRequest"
+                  }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "babyImage": { "type": "string", "format": "binary" },
+                  "requestBody": {
+                    "$ref": "#/components/schemas/OnboardingRequest"
+                  }
                 }
               }
             }
@@ -2345,6 +2462,94 @@
             "schema": { "type": "string" }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospitals": {
+      "get": {
+        "tags": ["Hospital"],
+        "summary": "Get all hospitals",
+        "description": "Retrieves all hospitals",
+        "operationId": "getAllHospitals",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Hospital"],
+        "summary": "Create a new hospital",
+        "description": "Creates a new hospital record",
+        "operationId": "createHospital",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Hospital" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Hospital"],
+        "summary": "Delete all hospitals",
+        "description": "Deletes all hospitals from the database",
+        "operationId": "deleteAllHospitals",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospitals/seed": {
+      "post": {
+        "tags": ["Hospital"],
+        "summary": "Seed hospitals",
+        "description": "Loads hospitals from seed data file into the database",
+        "operationId": "seedHospitals",
         "responses": {
           "200": {
             "description": "OK",
@@ -4550,7 +4755,7 @@
       "get": {
         "tags": ["Hospital"],
         "summary": "Search hospitals",
-        "description": "Searches hospitals using external API with all supported filters",
+        "description": "Searches hospitals with filters and distance-based search using latLng",
         "operationId": "searchHospitals",
         "parameters": [
           {
@@ -4634,6 +4839,62 @@
             "name": "latLng",
             "in": "query",
             "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/hospitals/hospital-id/{hospitalId}": {
+      "get": {
+        "tags": ["Hospital"],
+        "summary": "Get hospital by hospitalId",
+        "description": "Retrieves a hospital by its hospitalId",
+        "operationId": "getHospitalByHospitalId",
+        "parameters": [
+          {
+            "name": "hospitalId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Hospital"],
+        "summary": "Delete hospital by hospitalId",
+        "description": "Deletes a hospital by its hospitalId",
+        "operationId": "deleteHospitalByHospitalId",
+        "parameters": [
+          {
+            "name": "hospitalId",
+            "in": "path",
+            "required": true,
             "schema": { "type": "string" }
           }
         ],
@@ -5367,22 +5628,6 @@
           "pincode": { "type": "string" },
           "badgeIds": { "type": "array", "items": { "type": "string" } },
           "totalBadgesEarned": { "type": "integer", "format": "int32" },
-          "milestoneProfileType": { "type": "string", "deprecated": true },
-          "milestoneScoreRatio": {
-            "type": "number",
-            "format": "double",
-            "deprecated": true
-          },
-          "milestoneCategoryRatios": {
-            "type": "object",
-            "additionalProperties": { "type": "number", "format": "double" },
-            "deprecated": true
-          },
-          "milestoneScoreUpdatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "deprecated": true
-          },
           "createdAt": { "type": "string", "format": "date-time" }
         }
       },
@@ -5515,6 +5760,43 @@
             "deprecated": true
           },
           "label": { "type": "string", "deprecated": true }
+        }
+      },
+      "Hospital": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "hospitalId": { "type": "string" },
+          "name": { "type": "string" },
+          "address": { "type": "string" },
+          "city": { "type": "string" },
+          "state": { "type": "string" },
+          "pinCode": { "type": "string" },
+          "phone": { "type": "string" },
+          "website": { "type": "string" },
+          "placeUrl": { "type": "string" },
+          "networkHospitalId": { "type": "string" },
+          "latitude": { "type": "number", "format": "double" },
+          "longitude": { "type": "number", "format": "double" },
+          "distanceValue": { "type": "number", "format": "double" },
+          "distanceUnit": { "type": "string" },
+          "hasCashless": { "type": "boolean" },
+          "hasExcluded": { "type": "boolean" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "OnboardingRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "type": { "type": "string" },
+          "userId": { "type": "string" },
+          "consent": { "type": "boolean" },
+          "babyName": { "type": "string" },
+          "babyDob": { "type": "string" },
+          "babyGender": { "type": "string" },
+          "babyImageUrl": { "type": "string" }
         }
       },
       "DummyRegistrationRequest": {

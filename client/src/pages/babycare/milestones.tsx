@@ -92,9 +92,7 @@ export default function BabyCareMilestones() {
   });
 
   // Find baby profile - route param babyId is actually profileId
-  const baby = profiles.find(
-    (p) => p.type === "baby" && p.profileId === babyId,
-  );
+  const baby = profiles.find((p) => p.profileId === babyId);
   const babyProfileId = baby?.profileId || babyId; // Use profileId for navigation
 
   const { data: progressData = [] } = useQuery<MilestoneProgress[]>({

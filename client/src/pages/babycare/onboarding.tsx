@@ -224,14 +224,14 @@ export default function BabyCareOnboarding() {
       // The baby profile is created separately and linked to the guardian
       // Fetch the baby profile using the guardian profileId
       const guardianProfileId = result.profile.profileId || result.profile.id;
-      
+
       // Get the baby profile that was created and linked to this guardian
       // Add a small delay to ensure the baby profile is created and linked
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       const { getBabiesByGuardianProfileId } = await import("@/lib/profileApi");
       const babies = await getBabiesByGuardianProfileId(guardianProfileId);
       const babyProfile = babies[0]; // Should be the baby we just created
-      
+
       // Use baby profileId for navigation, fallback to guardian profileId if baby not found
       const babyId = babyProfile?.profileId || guardianProfileId;
 
@@ -376,7 +376,11 @@ export default function BabyCareOnboarding() {
                           }`}
                         >
                           <User
-                            className={`w-6 h-6 ${data.caregiverRole === "mother" ? "text-pink-600" : "text-zinc-500"}`}
+                            className={`w-6 h-6 ${
+                              data.caregiverRole === "mother"
+                                ? "text-pink-600"
+                                : "text-zinc-500"
+                            }`}
                           />
                         </div>
                         <span className="text-[14px] font-medium">Mother</span>
@@ -405,7 +409,11 @@ export default function BabyCareOnboarding() {
                           }`}
                         >
                           <User
-                            className={`w-6 h-6 ${data.caregiverRole === "father" ? "text-violet-600" : "text-zinc-500"}`}
+                            className={`w-6 h-6 ${
+                              data.caregiverRole === "father"
+                                ? "text-violet-600"
+                                : "text-zinc-500"
+                            }`}
                           />
                         </div>
                         <span className="text-[14px] font-medium">Father</span>
@@ -530,9 +538,14 @@ export default function BabyCareOnboarding() {
                         if (digits.length <= 2) {
                           formatted = digits;
                         } else if (digits.length <= 4) {
-                          formatted = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+                          formatted = `${digits.slice(0, 2)}/${digits.slice(
+                            2,
+                          )}`;
                         } else {
-                          formatted = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4, 8)}`;
+                          formatted = `${digits.slice(0, 2)}/${digits.slice(
+                            2,
+                            4,
+                          )}/${digits.slice(4, 8)}`;
                         }
                         setDobDisplay(formatted);
                         const isoDate = formatDisplayToIso(formatted);
@@ -590,7 +603,11 @@ export default function BabyCareOnboarding() {
                           }`}
                         >
                           <Baby
-                            className={`w-5 h-5 ${data.babyGender === "boy" ? "text-violet-600" : "text-zinc-500"}`}
+                            className={`w-5 h-5 ${
+                              data.babyGender === "boy"
+                                ? "text-violet-600"
+                                : "text-zinc-500"
+                            }`}
                           />
                         </div>
                         <span className="text-[13px] font-medium">Boy</span>
@@ -616,7 +633,11 @@ export default function BabyCareOnboarding() {
                           }`}
                         >
                           <Baby
-                            className={`w-5 h-5 ${data.babyGender === "girl" ? "text-pink-600" : "text-zinc-500"}`}
+                            className={`w-5 h-5 ${
+                              data.babyGender === "girl"
+                                ? "text-pink-600"
+                                : "text-zinc-500"
+                            }`}
                           />
                         </div>
                         <span className="text-[13px] font-medium">Girl</span>
@@ -765,7 +786,7 @@ export default function BabyCareOnboarding() {
       </div>
 
       {currentStep < 4 && (
-        <div className="px-6 pb-8 pt-4 bg-gradient-to-t from-white to-transparent">
+        <div className="fixed bottom-0 left-0 right-0 px-6 pb-8 pt-4 bg-gradient-to-t from-white to-transparent">
           <Button
             onClick={currentStep === 3 ? handleComplete : handleNext}
             disabled={!canProceed()}

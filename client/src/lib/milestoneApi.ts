@@ -34,15 +34,28 @@ export interface BabyMilestoneSchedule {
   milestoneId: string;
   milestoneItemId: string;
   category: string;
-  label: string;
+  name: string;
   icon?: string;
-  ageRangeLabel: string;
-  ageMinMonths: number;
-  ageMaxMonths: number;
+  typicalWeek: number;
+  expectedWeek: number;
   expectedDate: string;
-  status: "PENDING" | "ACHIEVED" | "OVERDUE";
+  ageRangeLabel?: string; // deprecated
+  ageMinMonths?: number; // deprecated
+  ageMaxMonths?: number; // deprecated
+  label?: string; // deprecated
+  status: string;
   achievedDate?: string;
+  weekAchieved?: number;
   imageUrl?: string;
+  badgeId?: string;
+  achievementType?: string;
+}
+
+export interface MilestoneGroupedResponse {
+  now: BabyMilestoneSchedule[];
+  soon: BabyMilestoneSchedule[];
+  done: BabyMilestoneSchedule[];
+  currentWeek: number;
 }
 
 export interface MilestoneReport {
@@ -300,4 +313,91 @@ export async function getMilestoneProfile(
     `/api/v1/babies/${babyId}/milestone-profile`,
   );
   return response.json();
+}
+
+/**
+ * Get milestone progress for a baby profile
+ * Returns milestones grouped into 'now', 'soon', and 'done' categories
+ */
+export async function getMilestoneProgress(
+  profileId: string,
+  cutoffDate?: string,
+): Promise<MilestoneGroupedResponse> {
+  const url = cutoffDate
+    ? `/api/v1/baby-profiles/${profileId}/milestone-progress?cutoffDate=${encodeURIComponent(cutoffDate)}`
+    : `/api/v1/baby-profiles/${profileId}/milestone-progress`;
+  const response = await apiRequest("GET", url);
+  return response.json();
+}
+
+/**
+ * Get milestone schedule by babyId and milestoneItemId
+ */
+export async function getMilestoneScheduleByBabyIdAndMilestoneItemId(
+  babyId: string,
+  milestoneItemId: string,
+): Promise<BabyMilestoneSchedule> {
+  const response = await apiRequest(
+    "GET",
+    `/api/v1/milestone-schedules/baby/${babyId}/milestone/${milestoneItemId}`,
+  );
+  return response.json();
+}
+
+/**
+ * Mark milestone as achieved by babyId and milestoneItemId
+ */
+export async function markMilestoneAsAchievedByBabyIdAndMilestoneItemId(
+  babyId: string,
+  milestoneItemId: string,
+  achievedDate?: string,
+  imageFile?: File,
+): Promise<BabyMilestoneSchedule> {
+  const formData = new FormData();
+  if (imageFile) {
+    formData.append("image", imageFile);
+  }
+
+  const url = achievedDate
+    ? `/api/v1/milestone-schedules/baby/${babyId}/milestone/${milestoneItemId}/achieve?achievedDate=${encodeURIComponent(achievedDate)}`
+    : `/api/v1/milestone-schedules/baby/${babyId}/milestone/${milestoneItemId}/achieve`;
+
+  const response = await apiRequest("POST", url, formData);
+  const result = await response.json();
+
+  // Invalidate schedules query
+  queryClient.invalidateQueries({
+    queryKey: [`/api/v1/milestone-schedules/baby/${babyId}`],
+  });
+
+  return result;
+}
+
+/**
+ * Mark milestone as achieved by babyId and schedule id (UUID)
+ */
+export async function markMilestoneAsAchievedByBabyIdAndId(
+  babyId: string,
+  scheduleId: string,
+  achievedDate?: string,
+  imageFile?: File,
+): Promise<BabyMilestoneSchedule> {
+  const formData = new FormData();
+  if (imageFile) {
+    formData.append("image", imageFile);
+  }
+
+  const url = achievedDate
+    ? `/api/v1/milestone-schedules/baby/${babyId}/id/${scheduleId}/achieve?achievedDate=${encodeURIComponent(achievedDate)}`
+    : `/api/v1/milestone-schedules/baby/${babyId}/id/${scheduleId}/achieve`;
+
+  const response = await apiRequest("POST", url, formData);
+  const result = await response.json();
+
+  // Invalidate schedules query
+  queryClient.invalidateQueries({
+    queryKey: [`/api/v1/milestone-schedules/baby/${babyId}`],
+  });
+
+  return result;
 }

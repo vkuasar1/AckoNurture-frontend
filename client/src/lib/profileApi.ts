@@ -71,12 +71,12 @@ export async function getProfiles(): Promise<Profile[]> {
  * Get profiles by type for the current user
  */
 export async function getProfilesByType(
-  type: "mother" | "father" | "caregiver" | "baby"
+  type: "mother" | "father" | "caregiver" | "baby",
 ): Promise<Profile[]> {
   const userId = getUserId();
   const response = await apiRequest(
     "GET",
-    `/api/v1/profiles/user/${userId}/type/${type}`
+    `/api/v1/profiles/user/${userId}/type/${type}`,
   );
   return response.json();
 }
@@ -92,7 +92,7 @@ export interface OnboardingResponse {
 
 export async function onboardParentAndBaby(
   data: Omit<OnboardingRequest, "userId">,
-  babyImage?: File | null
+  babyImage?: File | null,
 ): Promise<OnboardingResponse> {
   const userId = getUserId();
 
@@ -115,7 +115,7 @@ export async function onboardParentAndBaby(
     body: JSON.stringify(requestData),
     headers: {
       "Content-Type": "application/json",
-    }
+    },
   });
 
   if (!response.ok) {
@@ -137,7 +137,7 @@ export async function onboardParentAndBaby(
  * Create a single profile
  */
 export async function createProfile(
-  data: Omit<CreateProfileRequest, "userId">
+  data: Omit<CreateProfileRequest, "userId">,
 ): Promise<Profile> {
   const userId = getUserId();
   // Explicitly construct requestData to ensure profileId is never included
@@ -168,11 +168,11 @@ export async function createProfile(
  * Get profile by profileId
  */
 export async function getProfileByProfileId(
-  profileId: string
+  profileId: string,
 ): Promise<Profile> {
   const response = await apiRequest(
     "GET",
-    `/api/v1/profiles/profile-id/${profileId}`
+    `/api/v1/profiles/profile-id/${profileId}`,
   );
   return response.json();
 }
@@ -181,11 +181,11 @@ export async function getProfileByProfileId(
  * Get all babies for a guardian
  */
 export async function getBabiesByGuardianProfileId(
-  guardianProfileId: string
+  guardianProfileId: string,
 ): Promise<Profile[]> {
   const response = await apiRequest(
     "GET",
-    `/api/v1/profiles/guardian/${guardianProfileId}/babies`
+    `/api/v1/profiles/guardian/${guardianProfileId}/babies`,
   );
   return response.json();
 }
