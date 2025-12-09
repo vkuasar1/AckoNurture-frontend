@@ -20,6 +20,7 @@ import {
   AlertCircle,
   Star,
   Users,
+  Calendar,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,6 +60,7 @@ import {
   createMemory,
   type Memory,
 } from "@/lib/memoryApi";
+import { getBookingsByUserId, type Booking } from "@/lib/hospitalApi";
 
 function calculateAge(dob: string): { display: string; months: number } {
   const birthDate = new Date(dob);
@@ -209,6 +211,20 @@ export default function BabyCareHome() {
     queryKey: [`/api/v1/memories/profile/${babyProfileId}`],
     enabled: !!babyProfileId,
     queryFn: () => getMemoriesByProfileId(babyProfileId!),
+  });
+
+  // Fetch bookings for the user
+  const { data: bookings = [] } = useQuery<Booking[]>({
+    queryKey: [`/api/v1/bookings/user/${userId}`],
+    enabled: !!userId,
+    queryFn: () => getBookingsByUserId(userId),
+  });
+
+  // Sort bookings by createdAt descending
+  const sortedBookings = [...bookings].sort((a, b) => {
+    const dateA = new Date(a.createdAt).getTime();
+    const dateB = new Date(b.createdAt).getTime();
+    return dateB - dateA; // Descending order
   });
 
   // Vaccines are already sorted and limited by the API, just take first 2
@@ -541,6 +557,32 @@ export default function BabyCareHome() {
                     </h3>
                     <p className="text-[11px] text-zinc-500 mt-0.5">
                       Prescriptions & reports
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+            )}
+
+            {/* Appointments Card */}
+            {baby && babyProfileId && (
+              <Link href={`/babycare/appointments/${babyProfileId}`}>
+                <Card
+                  className="bg-white border border-zinc-100 shadow-sm rounded-xl overflow-hidden hover-elevate"
+                  data-testid="card-appointments"
+                >
+                  <CardContent className="p-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center mb-3">
+                      <Calendar className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-[14px] font-bold text-zinc-800">
+                      Appointments
+                    </h3>
+                    <p className="text-[11px] text-zinc-500 mt-0.5">
+                      {sortedBookings.length > 0
+                        ? `${sortedBookings.length} booking${
+                            sortedBookings.length !== 1 ? "s" : ""
+                          }`
+                        : "View bookings"}
                     </p>
                   </CardContent>
                 </Card>

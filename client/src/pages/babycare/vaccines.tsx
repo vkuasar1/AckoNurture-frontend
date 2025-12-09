@@ -28,6 +28,7 @@ import {
   X,
   Settings,
   Stethoscope,
+  StarIcon,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,12 +51,18 @@ import { useToast } from "@/hooks/use-toast";
 import type { BabyProfile, Vaccine } from "@shared/schema";
 import { format, differenceInDays, isPast, isToday, addDays } from "date-fns";
 import VaccineCelebration from "@/components/VaccineCelebration";
+import { getVaccineInfo, VACCINE_MESSAGES } from "@/lib/vaccineData";
 import {
-  getVaccineInfo,
-  VACCINE_MESSAGES,
-  MOCK_HOSPITALS,
-  type PartnerHospital,
-} from "@/lib/vaccineData";
+  searchHospitals,
+  getCurrentLocation,
+  formatLatLng,
+  getAvailableSlots,
+  filterWorkingHoursSlots,
+  formatSlotTime,
+  createBooking,
+  type Hospital,
+  type BookingSlot,
+} from "@/lib/hospitalApi";
 import {
   getReminderSettings,
   setReminderSettings,
@@ -144,9 +151,18 @@ export default function BabyCareVaccines() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [celebrationData, setCelebrationData] =
     useState<CelebrationData | null>(null);
-  const [selectedHospital, setSelectedHospital] =
-    useState<PartnerHospital | null>(null);
-  const [selectedSlot, setSelectedSlot] = useState<string>("");
+  const [selectedHospital, setSelectedHospital] = useState<Hospital | null>(
+    null,
+  );
+  const [hospitals, setHospitals] = useState<Hospital[]>([]);
+  const [isLoadingHospitals, setIsLoadingHospitals] = useState(false);
+  const [hospitalError, setHospitalError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMoreHospitals, setHasMoreHospitals] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [availableSlots, setAvailableSlots] = useState<BookingSlot[]>([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<BookingSlot | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>("");
 
   // Reminder settings state
@@ -364,26 +380,126 @@ export default function BabyCareVaccines() {
     setShowLogDialog(true);
   };
 
-  const openHospitalSearch = (vaccine: Vaccine) => {
+  const openHospitalSearch = async (vaccine: Vaccine) => {
     setSelectedVaccine(vaccine);
     setShowHospitalSearch(true);
+    setHospitals([]);
+    setCurrentPage(1);
+    setHospitalError(null);
+    setLocationError(null);
+
+    // Request location and load hospitals
+    try {
+      setIsLoadingHospitals(true);
+      const position = await getCurrentLocation();
+      const latLng = formatLatLng(
+        position.coords.latitude,
+        position.coords.longitude,
+      );
+      const response = await searchHospitals({ latLng, page: 1, size: 10 });
+      setHospitals(response.hospitals);
+      setHasMoreHospitals(response.count > response.hospitals.length);
+    } catch (error: unknown) {
+      if (
+        error &&
+        typeof error === "object" &&
+        "code" in error &&
+        (error.code === 1 || error.code === 2 || error.code === 3)
+      ) {
+        // GeolocationPositionError
+        const geoError = error as { code: number; message: string };
+        if (geoError.code === 1) {
+          setLocationError(
+            "Location access denied. Please enable location permissions to find nearby hospitals.",
+          );
+        } else if (geoError.code === 2) {
+          setLocationError(
+            "Location unavailable. Please check your device settings.",
+          );
+        } else {
+          setLocationError("Failed to get your location. Please try again.");
+        }
+      } else {
+        setHospitalError(
+          error instanceof Error ? error.message : "Failed to load hospitals",
+        );
+      }
+    } finally {
+      setIsLoadingHospitals(false);
+    }
   };
 
-  const openBooking = (hospital: PartnerHospital) => {
+  const loadMoreHospitals = async () => {
+    if (isLoadingHospitals || !hasMoreHospitals) return;
+
+    try {
+      setIsLoadingHospitals(true);
+      const position = await getCurrentLocation();
+      const latLng = formatLatLng(
+        position.coords.latitude,
+        position.coords.longitude,
+      );
+      const nextPage = currentPage + 1;
+      const response = await searchHospitals({
+        latLng,
+        page: nextPage,
+        size: 10,
+      });
+      setHospitals((prev) => {
+        const updated = [...prev, ...response.hospitals];
+        const totalLoaded = updated.length;
+        setHasMoreHospitals(response.count > totalLoaded);
+        return updated;
+      });
+      setCurrentPage(nextPage);
+    } catch (error: unknown) {
+      setHospitalError(
+        error instanceof Error
+          ? error.message
+          : "Failed to load more hospitals",
+      );
+    } finally {
+      setIsLoadingHospitals(false);
+    }
+  };
+
+  const openBooking = async (hospital: Hospital) => {
     setSelectedHospital(hospital);
-    setSelectedDate(addDays(new Date(), 1).toISOString().split("T")[0]);
-    setSelectedSlot("");
+    const tomorrow = addDays(new Date(), 1).toISOString().split("T")[0];
+    setSelectedDate(tomorrow);
+    setSelectedSlot(null);
+    setAvailableSlots([]);
     setShowHospitalSearch(false);
     setShowBookingDialog(true);
+
+    // Fetch available slots for the selected date
+    if (hospital.hospitalId) {
+      try {
+        setIsLoadingSlots(true);
+        const response = await getAvailableSlots({
+          hospitalId: hospital.hospitalId,
+          startDate: tomorrow,
+          endDate: tomorrow,
+        });
+        const workingHoursSlots = filterWorkingHoursSlots(response.slots);
+        setAvailableSlots(workingHoursSlots);
+      } catch (error) {
+        console.error("Failed to load slots:", error);
+        // Continue with empty slots - user can still select date
+      } finally {
+        setIsLoadingSlots(false);
+      }
+    }
   };
 
-  const handleBookingConfirm = () => {
+  const handleBookingConfirm = async () => {
     // Guard: ensure date and slot are selected
     if (
       !selectedDate ||
       !selectedSlot ||
       !selectedHospital ||
-      !selectedVaccine
+      !selectedVaccine ||
+      !baby
     ) {
       toast({
         title: "Please select a date and time",
@@ -394,17 +510,54 @@ export default function BabyCareVaccines() {
       return;
     }
 
-    toast({
-      title: "Booking confirmed!",
-      description: `${selectedVaccine.name} at ${
-        selectedHospital.name
-      } on ${format(new Date(selectedDate), "MMM d, yyyy")} at ${selectedSlot}`,
-    });
-    setShowBookingDialog(false);
-    setSelectedHospital(null);
-    setSelectedVaccine(null);
-    setSelectedDate("");
-    setSelectedSlot("");
+    try {
+      // Build slotDate as ISO string (YYYY-MM-DDTHH:mm:ss)
+      const slotDateTime = `${selectedDate}T${selectedSlot.slotStartTime}:00`;
+
+      const bookingRequest = {
+        userId: getUserId(),
+        hospitalId: selectedHospital.hospitalId,
+        serviceName: "vaccine",
+        profileId: baby.profileId,
+        slotDate: slotDateTime,
+        slotStartTime: selectedSlot.slotStartTime, // Already in HH:mm format
+        slotEndTime: selectedSlot.slotEndTime, // Already in HH:mm format
+        slotType: "vaccination",
+        patientName: baby.babyName || baby.name,
+        patientPhone: undefined, // Optional
+        patientEmail: undefined, // Optional
+        reason: `${selectedVaccine.name} vaccination`,
+        notes: `Vaccine: ${selectedVaccine.name}`,
+        specialityId: "pediatrics",
+        bookingAmount: 1500, // Hardcoded price from earlier
+        currency: "INR",
+        forcePayment: !hasVaccinePack, // Force payment if no vaccine pack
+      };
+
+      await createBooking(bookingRequest);
+
+      toast({
+        title: "Booking confirmed!",
+        description: `${selectedVaccine.name} at ${
+          selectedHospital.name
+        } on ${format(new Date(selectedDate), "MMM d, yyyy")} at ${formatSlotTime(selectedSlot.slotStartTime)}`,
+      });
+
+      setShowBookingDialog(false);
+      setSelectedHospital(null);
+      setSelectedVaccine(null);
+      setSelectedDate("");
+      setSelectedSlot(null);
+    } catch (error) {
+      toast({
+        title: "Booking failed",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to confirm booking. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const updateReminderSettings = (
@@ -748,33 +901,35 @@ export default function BabyCareVaccines() {
                               </button>
 
                               {/* Action Buttons */}
-                              <div className="px-4 pb-4 pt-0 flex gap-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="flex-1 text-[12px] rounded-xl h-9 border-violet-200 text-violet-600 hover:bg-violet-50"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    openHospitalSearch(vaccine);
-                                  }}
-                                  data-testid={`button-book-${vaccine.id}`}
-                                >
-                                  <Building2 className="w-3.5 h-3.5 mr-1.5" />
-                                  Find hospital
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  className="flex-1 text-[12px] rounded-xl h-9 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    openLogDialog(vaccine);
-                                  }}
-                                  data-testid={`button-mark-${vaccine.id}`}
-                                >
-                                  <Check className="w-3.5 h-3.5 mr-1.5" />
-                                  Mark done
-                                </Button>
-                              </div>
+                              {vaccine.status !== "completed" && (
+                                <div className="px-4 pb-4 pt-0 flex gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="flex-1 text-[12px] rounded-xl h-9 border-violet-200 text-violet-600 hover:bg-violet-50"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openHospitalSearch(vaccine);
+                                    }}
+                                    data-testid={`button-book-${vaccine.id}`}
+                                  >
+                                    <Building2 className="w-3.5 h-3.5 mr-1.5" />
+                                    Find hospital
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    className="flex-1 text-[12px] rounded-xl h-9 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openLogDialog(vaccine);
+                                    }}
+                                    data-testid={`button-mark-${vaccine.id}`}
+                                  >
+                                    <Check className="w-3.5 h-3.5 mr-1.5" />
+                                    Mark done
+                                  </Button>
+                                </div>
+                              )}
                             </CardContent>
                           </Card>
                         </motion.div>
@@ -823,14 +978,6 @@ export default function BabyCareVaccines() {
                           </p>
                         </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-white/70 hover:text-white hover:bg-white/10 rounded-full h-8 w-8"
-                        onClick={() => setShowVaccineInfo(false)}
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
                     </div>
                     <p className="text-[14px] text-white/90 mt-3">
                       {info.tagline}
@@ -1138,7 +1285,7 @@ export default function BabyCareVaccines() {
                 className="text-white/70 hover:text-white hover:bg-white/10 rounded-full h-8 w-8"
                 onClick={() => setShowHospitalSearch(false)}
               >
-                <X className="w-4 h-4" />
+                {/* <X className="w-4 h-4" /> */}
               </Button>
             </div>
             {selectedVaccine && (
@@ -1185,68 +1332,181 @@ export default function BabyCareVaccines() {
               </div>
             )}
 
-            {MOCK_HOSPITALS.map((hospital) => (
-              <Card
-                key={hospital.id}
-                className="border border-zinc-100 overflow-hidden hover:shadow-md transition-shadow"
-                data-testid={`hospital-card-${hospital.id}`}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-[15px] font-semibold text-zinc-900">
-                          {hospital.name}
-                        </h3>
-                        {hospital.isPartner && (
-                          <Badge className="bg-violet-100 text-violet-700 text-[10px] px-1.5">
-                            Partner
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-[12px] text-zinc-500 mt-0.5">
-                        {hospital.address}
-                      </p>
+            {/* Loading State */}
+            {isLoadingHospitals && hospitals.length === 0 && (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full" />
+                <span className="ml-3 text-[13px] text-zinc-600">
+                  Finding nearby hospitals...
+                </span>
+              </div>
+            )}
 
-                      <div className="flex items-center gap-3 mt-2">
-                        <span className="text-[12px] text-zinc-600 flex items-center gap-1">
-                          <Navigation className="w-3 h-3" />
-                          {hospital.distance}
-                        </span>
-                        <span className="text-[12px] text-amber-600 flex items-center gap-1">
-                          <Star className="w-3 h-3 fill-amber-400" />
-                          {hospital.rating}
-                        </span>
-                      </div>
-
-                      {!hasVaccinePack && (
-                        <div className="mt-2 flex items-center gap-2">
-                          <span className="text-[14px] font-semibold text-zinc-900">
-                            ₹{hospital.vaccinePrice}
-                          </span>
-                          <span className="text-[11px] text-emerald-600 flex items-center gap-1">
-                            <Gift className="w-3 h-3" />+ Free pediatric visit
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
+            {/* Location Error */}
+            {locationError && (
+              <div className="bg-rose-50 border border-rose-100 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-[13px] font-semibold text-rose-800 mb-1">
+                      Location Access Required
+                    </p>
+                    <p className="text-[12px] text-rose-700">{locationError}</p>
                     <Button
                       size="sm"
-                      className={`rounded-xl h-9 px-4 ${
-                        hasVaccinePack
-                          ? "bg-emerald-500 hover:bg-emerald-600"
-                          : "bg-violet-500 hover:bg-violet-600"
-                      }`}
-                      onClick={() => openBooking(hospital)}
-                      data-testid={`button-select-hospital-${hospital.id}`}
+                      variant="outline"
+                      className="mt-3 border-rose-200 text-rose-700 hover:bg-rose-100 rounded-xl h-9"
+                      onClick={async () => {
+                        setLocationError(null);
+                        if (selectedVaccine) {
+                          await openHospitalSearch(selectedVaccine);
+                        }
+                      }}
                     >
-                      {hasVaccinePack ? "Walk in" : "Book"}
+                      Try Again
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              </div>
+            )}
+
+            {/* Hospital Error */}
+            {hospitalError && !locationError && (
+              <div className="bg-rose-50 border border-rose-100 rounded-xl p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-[13px] font-semibold text-rose-800 mb-1">
+                      Failed to Load Hospitals
+                    </p>
+                    <p className="text-[12px] text-rose-700">{hospitalError}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Hospital List */}
+            {hospitals.length > 0 && (
+              <>
+                {hospitals.map((hospital) => {
+                  const distanceText = `${hospital.distanceValue.toFixed(1)} ${
+                    hospital.distanceUnit
+                  }`;
+                  return (
+                    <Card
+                      key={hospital.hospitalId}
+                      className="border border-zinc-100 overflow-hidden hover:shadow-md transition-shadow"
+                      data-testid={`hospital-card-${hospital.hospitalId}`}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <h3 className="text-[15px] font-semibold text-zinc-900">
+                                {hospital.name}
+                              </h3>
+                              {hospital.hasCashless && (
+                                <Badge className="bg-violet-100 text-violet-700 text-[10px] px-1.5">
+                                  Cashless
+                                </Badge>
+                              )}
+                            </div>
+                            <p className="text-[12px] text-zinc-500 mt-0.5">
+                              {hospital.address}
+                            </p>
+                            {hospital.city && hospital.state && (
+                              <p className="text-[11px] text-zinc-400 mt-0.5">
+                                {hospital.city}, {hospital.state} -{" "}
+                                {hospital.pinCode}
+                              </p>
+                            )}
+
+                            <div className="flex items-center gap-3 mt-2">
+                              <span className="text-[12px] text-zinc-600 flex items-center gap-1">
+                                <Navigation className="w-3 h-3" />
+                                {distanceText}
+                              </span>
+                              <span className="text-[12px] flex gap-1 items-center justify-center font-semibold text-violet-600">
+                                <Star className="w-3 h-3 text-yellow-500" />
+                                {hospital.rating ? hospital.rating : "N/A"}
+                              </span>
+                              {hospital.phone && (
+                                <span className="text-[12px] text-zinc-600 flex items-center gap-1">
+                                  <Phone className="w-3 h-3" />
+                                  {hospital.phone}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-3 mt-2">
+                              <span className="text-[12px] font-semibold text-violet-600">
+                                {Intl.NumberFormat("en-IN", {
+                                  style: "currency",
+                                  currency: "INR",
+                                }).format(
+                                  hospital.rating ? hospital.rating * 500 : 0,
+                                )}
+                              </span>
+                            </div>
+                          </div>
+
+                          <Button
+                            size="sm"
+                            className={`rounded-xl h-9 px-4 ${
+                              hasVaccinePack
+                                ? "bg-emerald-500 hover:bg-emerald-600"
+                                : "bg-violet-500 hover:bg-violet-600"
+                            }`}
+                            onClick={() => openBooking(hospital)}
+                            data-testid={`button-select-hospital-${hospital.hospitalId}`}
+                          >
+                            {hasVaccinePack ? "Walk in" : "Book"}
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+
+                {/* Load More Button */}
+                {hasMoreHospitals && (
+                  <div className="pt-2">
+                    <Button
+                      variant="outline"
+                      className="w-full rounded-xl h-10 border-violet-200 text-violet-700 hover:bg-violet-50"
+                      onClick={loadMoreHospitals}
+                      disabled={isLoadingHospitals}
+                      data-testid="button-load-more-hospitals"
+                    >
+                      {isLoadingHospitals ? (
+                        <>
+                          <div className="animate-spin w-4 h-4 border-2 border-violet-500 border-t-transparent rounded-full mr-2" />
+                          Loading...
+                        </>
+                      ) : (
+                        "Load More Hospitals"
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Empty State */}
+            {!isLoadingHospitals &&
+              !locationError &&
+              !hospitalError &&
+              hospitals.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-8">
+                  <Building2 className="w-12 h-12 text-zinc-300 mb-3" />
+                  <p className="text-[14px] font-semibold text-zinc-700 mb-1">
+                    No hospitals found
+                  </p>
+                  <p className="text-[12px] text-zinc-500 text-center">
+                    Try adjusting your location or search again.
+                  </p>
+                </div>
+              )}
           </div>
         </DialogContent>
       </Dialog>
@@ -1284,15 +1544,10 @@ export default function BabyCareVaccines() {
                 <p className="text-[14px] font-semibold text-zinc-900">
                   {selectedVaccine?.name}
                 </p>
-                {!hasVaccinePack && (
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[14px] font-bold text-violet-600">
-                      ₹{selectedHospital.vaccinePrice}
-                    </span>
-                    <Badge className="bg-emerald-100 text-emerald-700 text-[10px]">
-                      + Free checkup
-                    </Badge>
-                  </div>
+                {selectedHospital && (
+                  <p className="text-[12px] text-zinc-500 mt-1">
+                    {selectedHospital.name}
+                  </p>
                 )}
               </div>
 
@@ -1305,7 +1560,32 @@ export default function BabyCareVaccines() {
                   type="date"
                   value={selectedDate}
                   min={addDays(new Date(), 1).toISOString().split("T")[0]}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                  onChange={async (e) => {
+                    const newDate = e.target.value;
+                    setSelectedDate(newDate);
+                    setSelectedSlot(null);
+                    setAvailableSlots([]);
+
+                    // Fetch slots for the new date
+                    if (selectedHospital?.hospitalId && newDate) {
+                      try {
+                        setIsLoadingSlots(true);
+                        const response = await getAvailableSlots({
+                          hospitalId: selectedHospital.hospitalId,
+                          startDate: newDate,
+                          endDate: newDate,
+                        });
+                        const workingHoursSlots = filterWorkingHoursSlots(
+                          response.slots,
+                        );
+                        setAvailableSlots(workingHoursSlots);
+                      } catch (error) {
+                        console.error("Failed to load slots:", error);
+                      } finally {
+                        setIsLoadingSlots(false);
+                      }
+                    }
+                  }}
                   className="h-12 rounded-xl"
                   data-testid="input-booking-date"
                 />
@@ -1316,23 +1596,56 @@ export default function BabyCareVaccines() {
                 <Label className="text-[14px] font-semibold text-zinc-700">
                   Select time slot
                 </Label>
-                <div className="grid grid-cols-2 gap-2">
-                  {selectedHospital.availableSlots.map((slot) => (
-                    <Button
-                      key={slot}
-                      variant={selectedSlot === slot ? "default" : "outline"}
-                      className={`h-10 rounded-xl text-[13px] ${
-                        selectedSlot === slot
-                          ? "bg-violet-500 hover:bg-violet-600 text-white"
-                          : "border-zinc-200 hover:bg-zinc-50"
-                      }`}
-                      onClick={() => setSelectedSlot(slot)}
-                      data-testid={`button-slot-${slot.replace(/\s+/g, "-")}`}
-                    >
-                      {slot}
-                    </Button>
-                  ))}
-                </div>
+                {isLoadingSlots ? (
+                  <div className="flex items-center justify-center py-6">
+                    <div className="animate-spin w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full" />
+                    <span className="ml-2 text-[13px] text-zinc-500">
+                      Loading slots...
+                    </span>
+                  </div>
+                ) : availableSlots.length === 0 ? (
+                  <div className="text-center py-6">
+                    <p className="text-[13px] text-zinc-500">
+                      No slots available for this date
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    {availableSlots.map((slot) => {
+                      const slotTime = formatSlotTime(slot.slotStartTime);
+                      const isSelected =
+                        selectedSlot?.slotDate === slot.slotDate &&
+                        selectedSlot?.slotStartTime === slot.slotStartTime;
+                      const isAvailable = slot.available;
+
+                      return (
+                        <Button
+                          key={`${slot.slotDate}-${slot.slotStartTime}`}
+                          variant={isSelected ? "default" : "outline"}
+                          disabled={!isAvailable}
+                          className={`h-10 rounded-xl text-[13px] ${
+                            isSelected
+                              ? "bg-violet-500 hover:bg-violet-600 text-white"
+                              : isAvailable
+                                ? "border-zinc-200 hover:bg-zinc-50"
+                                : "border-zinc-100 bg-zinc-50 text-zinc-400 cursor-not-allowed opacity-50"
+                          }`}
+                          onClick={() => {
+                            if (isAvailable) {
+                              setSelectedSlot(slot);
+                            }
+                          }}
+                          data-testid={`button-slot-${slot.slotStartTime.replace(
+                            ":",
+                            "-",
+                          )}`}
+                        >
+                          {slotTime}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Reminder Note */}
@@ -1361,9 +1674,7 @@ export default function BabyCareVaccines() {
               className="flex-1 bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 rounded-xl h-11"
               data-testid="button-confirm-booking"
             >
-              {hasVaccinePack
-                ? "Confirm"
-                : `Pay ₹${selectedHospital?.vaccinePrice}`}
+              {hasVaccinePack ? "Confirm" : "Book Appointment"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -15,6 +15,7 @@ import BabyCareGrowth from "@/pages/babycare/growth";
 import BabyCareMilestones from "@/pages/babycare/milestones";
 import MiraChat from "@/pages/babycare/mira";
 import BabyCareMedicalRecords from "@/pages/babycare/medical-records";
+import Appointments from "@/pages/babycare/appointments";
 import Resources from "@/pages/babycare/resources";
 import BabyCarePlans from "@/pages/babycare/plans";
 import ParentCommunity from "@/pages/babycare/parent-community";
@@ -43,6 +44,7 @@ function Router() {
         path="/babycare/records/:babyId"
         component={BabyCareMedicalRecords}
       />
+      <Route path="/babycare/appointments/:babyId" component={Appointments} />
       <Route path="/babycare/resources" component={Resources} />
       <Route path="/babycare/plans" component={BabyCarePlans} />
       <Route path="/babycare/community/:babyId" component={ParentCommunity} />
