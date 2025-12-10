@@ -246,7 +246,7 @@ export default function BabyCareGrowth() {
 
   // Calculate baby age in months
   const babyAgeMonths = baby
-    ? differenceInMonths(new Date(), new Date(baby.dob as string))
+    ? differenceInMonths(new Date(), new Date(baby.babyDob as string))
     : 0;
 
   if (!baby) {
@@ -279,7 +279,7 @@ export default function BabyCareGrowth() {
               Growth Journey
             </h1>
             <p className="text-[12px] text-white/80">
-              Track {baby.name}'s growth
+              Track {baby.babyName}'s growth
             </p>
           </div>
           <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
@@ -298,7 +298,7 @@ export default function BabyCareGrowth() {
                 "{randomQuote}"
               </p>
               <p className="text-[11px] text-white/70 mt-1">
-                {baby.name} is {babyAgeMonths} months old
+                {baby.babyName} is {babyAgeMonths} months old
               </p>
             </div>
           </div>
@@ -329,16 +329,22 @@ export default function BabyCareGrowth() {
                   }`}
                 >
                   <cfg.icon
-                    className={`w-4 h-4 ${isActive ? "text-white" : "text-white/80"}`}
+                    className={`w-4 h-4 ${
+                      isActive ? "text-white" : "text-white/80"
+                    }`}
                   />
                 </div>
                 <p
-                  className={`text-[18px] font-bold ${isActive ? "text-zinc-900" : "text-white"}`}
+                  className={`text-[18px] font-bold ${
+                    isActive ? "text-zinc-900" : "text-white"
+                  }`}
                 >
                   {latest ? latest.value : "—"}
                 </p>
                 <p
-                  className={`text-[10px] ${isActive ? "text-zinc-500" : "text-white/70"}`}
+                  className={`text-[10px] ${
+                    isActive ? "text-zinc-500" : "text-white/70"
+                  }`}
                 >
                   {cfg.unit}
                 </p>
@@ -490,7 +496,11 @@ export default function BabyCareGrowth() {
             {filteredEntries.map((entry, idx) => (
               <Card
                 key={entry.id}
-                className={`bg-white border ${idx === 0 ? config.borderColor : "border-zinc-100"} rounded-xl ${idx === 0 ? "ring-2 ring-offset-2 " + config.borderColor : ""}`}
+                className={`bg-white border ${
+                  idx === 0 ? config.borderColor : "border-zinc-100"
+                } rounded-xl ${
+                  idx === 0 ? "ring-2 ring-offset-2 " + config.borderColor : ""
+                }`}
                 data-testid={`growth-entry-${entry.id}`}
               >
                 <CardContent className="p-3 flex items-center justify-between">
@@ -503,7 +513,9 @@ export default function BabyCareGrowth() {
                       }`}
                     >
                       <config.icon
-                        className={`w-5 h-5 ${idx === 0 ? "text-white" : config.textColor}`}
+                        className={`w-5 h-5 ${
+                          idx === 0 ? "text-white" : config.textColor
+                        }`}
                       />
                     </div>
                     <div>
@@ -604,7 +616,7 @@ export default function BabyCareGrowth() {
               Add Growth Measurements
             </DialogTitle>
             <DialogDescription className="text-center text-[13px]">
-              Record measurements for {baby.name}
+              Record measurements for {baby.babyName}
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">

@@ -61,7 +61,7 @@ import {
   type Memory,
 } from "@/lib/memoryApi";
 import { getBookingsByUserId, type Booking } from "@/lib/hospitalApi";
-import { getUpcomingVaccines } from "@/lib/vaccinesApi";
+import { getUpcomingVaccines, getVaccinesByBabyId } from "@/lib/vaccinesApi";
 import { getGrowthByProfileId, type BabyGrowth } from "@/lib/growthApi";
 
 function calculateAge(dob: string): { display: string; months: number } {
@@ -100,7 +100,6 @@ export default function BabyCareHome() {
   const params = useParams();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [showUploadDialog, setShowUploadDialog] = useState(false);
   const [showCaregiverPitchModal, setShowCaregiverPitchModal] = useState(false);
   const [showReminderDialog, setShowReminderDialog] = useState(false);
   const [showPlanDetailsModal, setShowPlanDetailsModal] = useState<
@@ -191,10 +190,10 @@ export default function BabyCareHome() {
   const babyProfileId = baby?.profileId;
 
   // Fetch upcoming vaccines from API using profileId as babyId
-  const { data: vaccines = [] } = useQuery<Vaccine[]>({
-    queryKey: [`/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming`],
+  const { data: vaccines = [], isLoading } = useQuery<Vaccine[]>({
+    queryKey: [`/api/v1/vaccines/baby/${babyProfileId}`],
     enabled: !!babyProfileId,
-    queryFn: () => getUpcomingVaccines(babyProfileId as string, 10),
+    queryFn: () => getVaccinesByBabyId(babyProfileId as string, baby?.dob),
   });
 
   const { data: growthRecords = [] } = useQuery<BabyGrowth[]>({
@@ -264,7 +263,9 @@ export default function BabyCareHome() {
   const upcomingVaccines = vaccines.slice(0, 2);
 
   const babyAge =
-    baby && baby.dob ? calculateAge(baby.dob) : { display: "", months: 0 };
+    baby && baby.babyDob
+      ? calculateAge(baby.babyDob)
+      : { display: "", months: 0 };
 
   const latestWeight = growthEntries
     .filter((e) => e.type === "weight")
@@ -360,9 +361,9 @@ export default function BabyCareHome() {
                 className="text-[15px] font-bold text-white"
                 data-testid="text-header-title"
               >
-                {baby ? baby.name : "Nurture"}
+                {baby ? baby.babyName : "Nurture"}
               </h1>
-              {baby && baby.dob && (
+              {baby && baby.babyDob && (
                 <p
                   className="text-[11px] text-zinc-400"
                   data-testid="text-baby-age"

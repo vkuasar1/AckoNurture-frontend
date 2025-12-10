@@ -73,7 +73,7 @@ import { getActivePlans, hasChildPlan } from "@/lib/planStore";
 import { MiraFab } from "@/components/MiraFab";
 import { getProfiles, type Profile } from "@/lib/profileApi";
 import { getUserId } from "@/lib/userId";
-import { getVaccinesByBabyId } from "@/lib/vaccinesApi";
+import { getVaccinesByBabyId, markVaccineComplete } from "@/lib/vaccinesApi";
 
 function getVaccineStatus(vaccine: Vaccine): {
   label: string;
@@ -216,77 +216,41 @@ export default function BabyCareVaccines() {
   const markComplete = useMutation({
     mutationFn: async ({
       id,
-      date,
-      place,
-      vaccineName,
-      ageGroup,
+      completedDate,
       file,
     }: {
       id: string;
-      date: string;
-      place?: string;
-      vaccineName: string;
-      ageGroup: string;
+      completedDate: string;
       file?: File | null;
     }) => {
-      // Build URL with completedDate query parameter
-      const url = `/api/v1/vaccines/${id}/complete?completedDate=${date}`;
-
-      // Use multipart/form-data if file is provided, otherwise use JSON
-      if (file) {
-        // Validate file has content
-        if (file.size === 0) {
-          throw new Error(
-            "Selected file is empty. Please choose a different file.",
-          );
-        }
-
-        const formData = new FormData();
-        // Explicitly pass filename to ensure file content is included
-        formData.append("proofFile", file, file.name);
-
-        const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
-        const IS_DEV = import.meta.env.DEV;
-        const fullUrl = IS_DEV
-          ? url.startsWith("/")
-            ? url
-            : `/${url}`
-          : API_BASE_URL
-            ? `${API_BASE_URL}${url.startsWith("/") ? url : `/${url}`}`
-            : url;
-
-        const response = await fetch(fullUrl, {
-          method: "POST",
-          body: formData,
-          credentials: "include",
-        });
-
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(`${response.status}: ${text}`);
-        }
-
-        return { vaccineName, ageGroup, date };
-      } else {
-        // JSON request with empty body (completedDate is in query param)
-        const response = await apiRequest("POST", url, {});
-        return { vaccineName, ageGroup, date };
-      }
+      await markVaccineComplete({ id, completedDate, file });
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [`/api/v1/vaccines/baby/${babyProfileId}`],
       });
-      setCelebrationData({
-        vaccineName: data.vaccineName,
-        ageGroup: data.ageGroup,
-        completedDate: data.date,
-      });
+      if (selectedVaccine) {
+        setCelebrationData({
+          vaccineName: selectedVaccine.name,
+          ageGroup: selectedVaccine.ageGroup,
+          completedDate: completionDate,
+        });
+      }
       setShowLogDialog(false);
       setSelectedVaccine(null);
       setCompletionDate("");
       setPlace("");
       setSelectedFile(null);
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to save",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to mark vaccine as complete. Please try again.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -336,14 +300,10 @@ export default function BabyCareVaccines() {
 
       markComplete.mutate({
         id: selectedVaccine.id,
-        date: completionDate,
-        place,
-        vaccineName: selectedVaccine.name,
-        ageGroup: selectedVaccine.ageGroup,
+        completedDate: completionDate,
         file: fileToUpload,
       });
     }
-    setShowLogDialog(false);
   };
 
   const handleCloseCelebration = () => {
@@ -368,11 +328,11 @@ export default function BabyCareVaccines() {
         return;
       }
       // Validate file type
-      const validTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg"];
+      const validTypes = ["image/png", "image/jpeg", "image/jpg"];
       if (!validTypes.includes(file.type)) {
         toast({
           title: "Invalid file type",
-          description: "Please select any JPG, PNG, SVG file.",
+          description: "Please select any JPG, PNG file.",
           variant: "destructive",
         });
         return;
@@ -1235,7 +1195,7 @@ export default function BabyCareVaccines() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".jpg,.jpeg,.png,.svg"
+                accept=".jpg,.jpeg,.png"
                 className="hidden"
                 onChange={handleFileSelect}
                 data-testid="input-file"

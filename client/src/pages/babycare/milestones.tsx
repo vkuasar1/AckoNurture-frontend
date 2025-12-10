@@ -117,8 +117,8 @@ export default function BabyCareMilestones() {
   });
 
   const babyAgeWeeks =
-    baby && baby.dob
-      ? differenceInWeeks(new Date(), new Date(baby.dob as string))
+    baby && baby.babyDob
+      ? differenceInWeeks(new Date(), new Date(baby.babyDob as string))
       : 0;
 
   // Use API response directly - no manual sorting needed
@@ -428,7 +428,7 @@ export default function BabyCareMilestones() {
             <Baby className="w-7 h-7 text-white" />
           </div>
           <div className="flex-1">
-            <h1 className="text-[18px] font-bold">{baby.name}</h1>
+            <h1 className="text-[18px] font-bold">{baby.babyName}</h1>
             <div className="flex items-center gap-2 mt-0.5">
               <div className="flex items-center gap-1 text-[12px] text-purple-200">
                 <Cake className="w-3.5 h-3.5" />
@@ -683,27 +683,6 @@ export default function BabyCareMilestones() {
             </Link>
           </div>
         </div>
-
-        {/* Encouragement Card */}
-        {/* <div className="px-4 pb-4">
-          <Card className="border-pink-200 bg-gradient-to-r from-pink-50 to-purple-50">
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <p className="text-[13px] font-semibold text-zinc-800">
-                  You're doing great!
-                </p>
-                <p className="text-[11px] text-zinc-500 mt-0.5">
-                  Every milestone is unique. Keep celebrating the little moments
-                  with {baby.name}.
-                </p>
-              </div>
-              <ChevronRight className="w-5 h-5 text-zinc-300" />
-            </CardContent>
-          </Card>
-        </div> */}
 
         <div className="h-24" />
       </div>
