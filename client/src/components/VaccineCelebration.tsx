@@ -281,19 +281,6 @@ export default function VaccineCelebration({
     ctx.fillText("Great job keeping your", width / 2, 570);
     ctx.fillText("baby safe and healthy!", width / 2, 600);
 
-    // Bottom decorative line
-    ctx.strokeStyle = "#a78bfa";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(150, 650);
-    ctx.lineTo(450, 650);
-    ctx.stroke();
-
-    // BabyCare branding
-    ctx.fillStyle = "#7c3aed";
-    ctx.font = "bold 14px Inter, sans-serif";
-    ctx.fillText("BabyCare by Acko", width / 2, 700);
-
     ctx.fillStyle = "#a1a1aa";
     ctx.font = "12px Inter, sans-serif";
     ctx.fillText(
@@ -504,13 +491,6 @@ export default function VaccineCelebration({
               View next vaccines
               <ChevronRight className="w-4 h-4" />
             </Button>
-          </div>
-
-          {/* Branding */}
-          <div className="mt-6 pt-4 border-t border-violet-100">
-            <p className="text-[11px] text-violet-400 font-medium">
-              BabyCare by Acko
-            </p>
           </div>
         </CardContent>
       </Card>

@@ -324,7 +324,7 @@ export default function BabyCareOnboarding() {
         </div>
       )}
 
-      <div className="flex-1 px-6 pt-6 pb-4 overflow-y-auto">
+      <div className="flex-1 px-6 pt-6 pb-4 overflow-y-auto mb-24">
         <AnimatePresence mode="wait">
           {/* Step 1: Who is setting this up */}
           {currentStep === 1 && (
@@ -675,7 +675,7 @@ export default function BabyCareOnboarding() {
               </div>
 
               <motion.div
-                className="p-5 bg-gradient-to-r from-pink-50 to-violet-50 rounded-xl border border-pink-100/50"
+                className="flex flex-col space-y-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
@@ -820,7 +820,7 @@ export default function BabyCareOnboarding() {
       </div>
 
       {currentStep < 4 && (
-        <div className="fixed bottom-0 left-0 right-0 px-6 pb-8 pt-4 bg-gradient-to-t from-white to-transparent">
+        <div className="fixed bottom-0 left-0 right-0 px-6 pb-8 pt-4 bg-white shadow-md">
           <Button
             onClick={currentStep === 3 ? handleComplete : handleNext}
             disabled={!canProceed()}
