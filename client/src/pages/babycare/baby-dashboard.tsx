@@ -37,6 +37,12 @@ import {
 } from "@/lib/planStore";
 import { getUserId } from "@/lib/userId";
 import { getProfiles, Profile } from "@/lib/profileApi";
+import { getVaccinesByBabyId } from "@/lib/vaccinesApi";
+import { getGrowthByProfileId, type BabyGrowth } from "@/lib/growthApi";
+import {
+  getMilestoneProgress,
+  type MilestoneGroupedResponse,
+} from "@/lib/milestoneApi";
 
 function calculateAge(dob: string): {
   display: string;
@@ -57,7 +63,10 @@ function calculateAge(dob: string): {
     };
   } else if (totalMonths < 12) {
     return {
-      display: `${totalMonths} month${totalMonths !== 1 ? "s" : ""} ${Math.max(0, remainingDays)} days`,
+      display: `${totalMonths} month${totalMonths !== 1 ? "s" : ""} ${Math.max(
+        0,
+        remainingDays,
+      )} days`,
       months: totalMonths,
       days: remainingDays,
     };
@@ -119,19 +128,76 @@ export default function BabyDashboard() {
   const babyProfileId = baby?.profileId || baby?.id; // Use profileId as babyId for API calls
 
   const { data: vaccines = [] } = useQuery<Vaccine[]>({
-    queryKey: ["/api/baby-profiles", baby?.id, "vaccines"],
-    enabled: !!baby?.id,
+    queryKey: [`/api/v1/vaccines/baby/${babyProfileId}`],
+    enabled: !!babyProfileId,
+    queryFn: () => getVaccinesByBabyId(babyProfileId as string, baby?.dob),
   });
 
-  const { data: growthEntries = [] } = useQuery<GrowthEntry[]>({
-    queryKey: ["/api/baby-profiles", baby?.id, "growth"],
-    enabled: !!baby?.id,
+  const { data: growthRecords = [] } = useQuery<BabyGrowth[]>({
+    queryKey: [`/api/v1/baby-growth/profile/${babyProfileId}`],
+    enabled: !!babyProfileId,
+    queryFn: () => getGrowthByProfileId(babyProfileId as string),
   });
 
-  const { data: milestones = [] } = useQuery<Milestone[]>({
-    queryKey: ["/api/baby-profiles", baby?.id, "milestones"],
-    enabled: !!baby?.id,
+  // Transform BabyGrowth to GrowthEntry for compatibility
+  const growthEntries: GrowthEntry[] = growthRecords.flatMap((record) => {
+    const entries: GrowthEntry[] = [];
+    if (record.weight != null) {
+      entries.push({
+        id: `${record.growthId}-weight`,
+        babyId: record.profileId,
+        type: "weight",
+        value: record.weight.toString(),
+        recordedAt: record.measurementDate,
+        percentile: null,
+      });
+    }
+    if (record.height != null) {
+      entries.push({
+        id: `${record.growthId}-height`,
+        babyId: record.profileId,
+        type: "height",
+        value: record.height.toString(),
+        recordedAt: record.measurementDate,
+        percentile: null,
+      });
+    }
+    if (record.headCircumference != null) {
+      entries.push({
+        id: `${record.growthId}-head`,
+        babyId: record.profileId,
+        type: "head",
+        value: record.headCircumference.toString(),
+        recordedAt: record.measurementDate,
+        percentile: null,
+      });
+    }
+    return entries;
   });
+
+  const { data: milestoneProgress } = useQuery<MilestoneGroupedResponse>({
+    queryKey: [`/api/v1/baby-profiles/${babyProfileId}/milestone-progress`],
+    enabled: !!babyProfileId,
+    queryFn: () => getMilestoneProgress(babyProfileId as string),
+  });
+
+  // Transform milestone progress to Milestone[] for compatibility
+  const milestones: Milestone[] = milestoneProgress
+    ? [
+        ...milestoneProgress.now,
+        ...milestoneProgress.soon,
+        ...milestoneProgress.done,
+      ].map((schedule) => ({
+        id: schedule.id,
+        babyId: schedule.babyId,
+        title: schedule.name,
+        description: schedule.ageRangeLabel || null,
+        ageGroup: schedule.ageRangeLabel || "",
+        completed: schedule.status === "ACHIEVED",
+        completedAt: schedule.achievedDate || null,
+        lastPhotoUrl: schedule.imageUrl || null,
+      }))
+    : [];
 
   const upcomingVaccines = vaccines
     .filter((v) => v.status === "pending" && v.dueDate)
@@ -226,7 +292,9 @@ export default function BabyDashboard() {
                 </div>
                 {baby.gender && (
                   <div
-                    className={`px-2.5 py-1 rounded-full ${baby.gender === "M" ? "bg-blue-400/40" : "bg-pink-400/40"}`}
+                    className={`px-2.5 py-1 rounded-full ${
+                      baby.gender === "M" ? "bg-blue-400/40" : "bg-pink-400/40"
+                    }`}
                   >
                     <span className="text-[11px] font-semibold text-white capitalize">
                       {baby.gender}

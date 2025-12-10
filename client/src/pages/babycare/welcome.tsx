@@ -18,6 +18,10 @@ import {
   Check,
   ArrowLeft,
   Users,
+  Trophy,
+  TrendingUp,
+  Syringe,
+  UserCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -649,8 +653,8 @@ export default function BabyCareWelcome() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
-            Everything you need for the first 24 months — vaccines, sleep,
-            caregiver wellness, and AI guidance.
+            Clarity and confidence for your baby's early years, bringing ease
+            and joy to parenting.
           </motion.p>
 
           {/* Trust Line */}
@@ -662,7 +666,7 @@ export default function BabyCareWelcome() {
             data-testid="text-trust-line"
           >
             <Users className="w-3.5 h-3.5" />
-            Designed with pediatricians and new mothers.
+            Designed for your parenting needs with care.
           </motion.p>
 
           {/* Feature Pills */}
@@ -673,20 +677,24 @@ export default function BabyCareWelcome() {
             transition={{ duration: 0.5, delay: 0.6 }}
           >
             <div className="flex items-center gap-1.5 bg-pink-50 text-pink-700 px-3.5 py-2 rounded-full text-[12px] font-medium border border-pink-100/80 shadow-sm">
-              <Heart className="w-3.5 h-3.5" />
-              Caregiver wellness
+              <Users className="w-3.5 h-3.5" />
+              Parent support
+            </div>
+            <div className="flex items-center gap-1.5 bg-amber-50 text-amber-700 px-3.5 py-2 rounded-full text-[12px] font-medium border border-amber-100/80 shadow-sm">
+              <Trophy className="w-3.5 h-3.5" />
+              Milestones
+            </div>
+            <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3.5 py-2 rounded-full text-[12px] font-medium border border-emerald-100/80 shadow-sm">
+              <TrendingUp className="w-3.5 h-3.5" />
+              Growth
             </div>
             <div className="flex items-center gap-1.5 bg-violet-50 text-violet-700 px-3.5 py-2 rounded-full text-[12px] font-medium border border-violet-100/80 shadow-sm">
-              <Stethoscope className="w-3.5 h-3.5" />
-              Vaccine tracking
-            </div>
-            <div className="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 px-3.5 py-2 rounded-full text-[12px] font-medium border border-indigo-100/80 shadow-sm">
-              <Moon className="w-3.5 h-3.5" />
-              Sleep support
+              <Syringe className="w-3.5 h-3.5" />
+              Vaccines
             </div>
             <div className="flex items-center gap-1.5 bg-rose-50 text-rose-700 px-3.5 py-2 rounded-full text-[12px] font-medium border border-rose-100/80 shadow-sm">
-              <Sparkles className="w-3.5 h-3.5" />
-              AI
+              <UserCheck className="w-3.5 h-3.5" />
+              Nanny
             </div>
           </motion.div>
         </div>

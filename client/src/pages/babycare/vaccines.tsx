@@ -73,6 +73,7 @@ import { getActivePlans, hasChildPlan } from "@/lib/planStore";
 import { MiraFab } from "@/components/MiraFab";
 import { getProfiles, type Profile } from "@/lib/profileApi";
 import { getUserId } from "@/lib/userId";
+import { getVaccinesByBabyId } from "@/lib/vaccinesApi";
 
 function getVaccineStatus(vaccine: Vaccine): {
   label: string;
@@ -194,36 +195,7 @@ export default function BabyCareVaccines() {
   const { data: vaccines = [], isLoading } = useQuery<Vaccine[]>({
     queryKey: [`/api/v1/vaccines/baby/${babyProfileId}`],
     enabled: !!babyProfileId,
-    queryFn: async () => {
-      const response = await apiRequest(
-        "GET",
-        `/api/v1/vaccines/baby/${babyProfileId}`,
-      );
-      const vaccines = await response.json();
-
-      // If no vaccines found and baby has DOB, try to generate schedule
-      if (vaccines.length === 0 && baby?.dob) {
-        try {
-          const generateResponse = await apiRequest(
-            "POST",
-            `/api/v1/vaccines/generate/${babyProfileId}`,
-          );
-          if (generateResponse.ok) {
-            // Refetch vaccines after generation
-            const newResponse = await apiRequest(
-              "GET",
-              `/api/v1/vaccines/baby/${babyProfileId}`,
-            );
-            return newResponse.json();
-          }
-        } catch (error) {
-          // If generation fails, just return empty array
-          console.error("Failed to generate vaccine schedule:", error);
-        }
-      }
-
-      return vaccines;
-    },
+    queryFn: () => getVaccinesByBabyId(babyProfileId as string, baby?.dob),
   });
 
   // Handle openHospital query param from home page
@@ -262,8 +234,16 @@ export default function BabyCareVaccines() {
 
       // Use multipart/form-data if file is provided, otherwise use JSON
       if (file) {
+        // Validate file has content
+        if (file.size === 0) {
+          throw new Error(
+            "Selected file is empty. Please choose a different file.",
+          );
+        }
+
         const formData = new FormData();
-        formData.append("proofFile", file);
+        // Explicitly pass filename to ensure file content is included
+        formData.append("proofFile", file, file.name);
 
         const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
         const IS_DEV = import.meta.env.DEV;
@@ -340,20 +320,34 @@ export default function BabyCareVaccines() {
 
   const handleSave = () => {
     if (selectedVaccine && completionDate) {
+      // Store file reference before mutation to ensure it's not lost
+      const fileToUpload = selectedFile;
+
+      // Validate file if provided
+      if (fileToUpload && fileToUpload.size === 0) {
+        toast({
+          title: "Invalid file",
+          description:
+            "The selected file is empty. Please choose a different file.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       markComplete.mutate({
         id: selectedVaccine.id,
         date: completionDate,
         place,
         vaccineName: selectedVaccine.name,
         ageGroup: selectedVaccine.ageGroup,
-        file: selectedFile,
+        file: fileToUpload,
       });
     }
+    setShowLogDialog(false);
   };
 
   const handleCloseCelebration = () => {
     setCelebrationData(null);
-    setLocation(`/babycare/home/${babyProfileId}`);
   };
 
   const handleViewSchedule = () => {
@@ -363,6 +357,26 @@ export default function BabyCareVaccines() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file has content
+      if (file.size === 0) {
+        toast({
+          title: "Invalid file",
+          description:
+            "The selected file is empty. Please choose a different file.",
+          variant: "destructive",
+        });
+        return;
+      }
+      // Validate file type
+      const validTypes = ["image/png", "image/jpeg", "image/jpg", "image/svg"];
+      if (!validTypes.includes(file.type)) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select any JPG, PNG, SVG file.",
+          variant: "destructive",
+        });
+        return;
+      }
       setSelectedFile(file);
     }
   };
@@ -543,6 +557,10 @@ export default function BabyCareVaccines() {
           new Date(selectedDate),
           "MMM d, yyyy",
         )} at ${formatSlotTime(selectedSlot.slotStartTime)}`,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [`/api/v1/bookings/user/${userId}`],
       });
 
       setShowBookingDialog(false);
@@ -1217,7 +1235,7 @@ export default function BabyCareVaccines() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".pdf,.jpg,.jpeg,.png"
+                accept=".jpg,.jpeg,.png,.svg"
                 className="hidden"
                 onChange={handleFileSelect}
                 data-testid="input-file"
@@ -1232,7 +1250,9 @@ export default function BabyCareVaccines() {
                 {selectedFile ? (
                   <span className="flex items-center gap-2 text-violet-600">
                     <FileText className="w-4 h-4" />
-                    {selectedFile.name}
+                    {selectedFile.name.length > 20
+                      ? selectedFile.name.slice(0, 20) + "..."
+                      : selectedFile.name}
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
@@ -1516,7 +1536,7 @@ export default function BabyCareVaccines() {
       {/* Booking Dialog */}
       <Dialog open={showBookingDialog} onOpenChange={setShowBookingDialog}>
         <DialogContent
-          className="max-w-[340px] rounded-2xl"
+          className="max-w-[340px] max-h-[80vh] overflow-y-scroll rounded-2xl"
           data-testid="dialog-booking"
         >
           <DialogHeader>

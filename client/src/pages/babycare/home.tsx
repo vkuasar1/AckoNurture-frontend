@@ -61,6 +61,8 @@ import {
   type Memory,
 } from "@/lib/memoryApi";
 import { getBookingsByUserId, type Booking } from "@/lib/hospitalApi";
+import { getUpcomingVaccines } from "@/lib/vaccinesApi";
+import { getGrowthByProfileId, type BabyGrowth } from "@/lib/growthApi";
 
 function calculateAge(dob: string): { display: string; months: number } {
   const birthDate = new Date(dob);
@@ -192,18 +194,49 @@ export default function BabyCareHome() {
   const { data: vaccines = [] } = useQuery<Vaccine[]>({
     queryKey: [`/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming`],
     enabled: !!babyProfileId,
-    queryFn: async () => {
-      const response = await apiRequest(
-        "GET",
-        `/api/v1/vaccines/baby/${babyProfileId}/reminders/upcoming?limit=10`,
-      );
-      return response.json();
-    },
+    queryFn: () => getUpcomingVaccines(babyProfileId as string, 10),
   });
 
-  const { data: growthEntries = [] } = useQuery<GrowthEntry[]>({
-    queryKey: ["/api/baby-profiles", baby?.id, "growth"],
-    enabled: !!baby?.id,
+  const { data: growthRecords = [] } = useQuery<BabyGrowth[]>({
+    queryKey: [`/api/v1/baby-growth/profile/${babyProfileId}`],
+    enabled: !!babyProfileId,
+    queryFn: () => getGrowthByProfileId(babyProfileId as string),
+  });
+
+  // Transform BabyGrowth to GrowthEntry for compatibility
+  const growthEntries: GrowthEntry[] = growthRecords.flatMap((record) => {
+    const entries: GrowthEntry[] = [];
+    if (record.weight != null) {
+      entries.push({
+        id: `${record.growthId}-weight`,
+        babyId: record.profileId,
+        type: "weight",
+        value: record.weight.toString(),
+        recordedAt: record.measurementDate,
+        percentile: null,
+      });
+    }
+    if (record.height != null) {
+      entries.push({
+        id: `${record.growthId}-height`,
+        babyId: record.profileId,
+        type: "height",
+        value: record.height.toString(),
+        recordedAt: record.measurementDate,
+        percentile: null,
+      });
+    }
+    if (record.headCircumference != null) {
+      entries.push({
+        id: `${record.growthId}-head`,
+        babyId: record.profileId,
+        type: "head",
+        value: record.headCircumference.toString(),
+        recordedAt: record.measurementDate,
+        percentile: null,
+      });
+    }
+    return entries;
   });
 
   // Fetch memories by profileId

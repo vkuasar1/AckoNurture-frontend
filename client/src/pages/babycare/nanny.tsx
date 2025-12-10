@@ -246,13 +246,6 @@ export default function NannyRecommendation() {
         <div className="flex gap-3 mb-6">
           <div className="flex-1 aspect-square rounded-xl overflow-hidden">
             <img
-              src={nannyImg1}
-              alt="Trusted nanny"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="flex-1 aspect-square rounded-xl overflow-hidden">
-            <img
               src={nannyImg2}
               alt="Trusted nanny"
               className="w-full h-full object-cover"

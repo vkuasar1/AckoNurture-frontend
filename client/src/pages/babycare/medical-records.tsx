@@ -54,18 +54,19 @@ import {
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { Vaccine, GrowthEntry, Milestone } from "@shared/schema";
+import type { Vaccine } from "@shared/schema";
 import {
   getMedicalRecordsByProfileId,
   createMedicalRecord,
   type MedicalRecord,
 } from "@/lib/medicalRecordsApi";
+import { getVaccinesByBabyId } from "@/lib/vaccinesApi";
+import { getGrowthByProfileId } from "@/lib/growthApi";
 import {
-  format,
-  parseISO,
-  differenceInDays,
-  differenceInMonths,
-} from "date-fns";
+  getMilestoneProgress,
+  MilestoneGroupedResponse,
+} from "@/lib/milestoneApi";
+import { format, parseISO, differenceInMonths } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { MiraFab } from "@/components/MiraFab";
 import { getProfiles, type Profile } from "@/lib/profileApi";
@@ -200,18 +201,21 @@ export default function BabyCareMedicalRecords() {
   const babyProfileId = baby?.profileId || babyId; // Use profileId for navigation
 
   const { data: vaccines = [] } = useQuery<Vaccine[]>({
-    queryKey: ["/api/baby-profiles", babyId, "vaccines"],
-    enabled: !!babyId,
+    queryKey: [`/api/v1/vaccines/baby/${babyProfileId}`],
+    queryFn: () => getVaccinesByBabyId(babyProfileId as string, baby?.dob),
+    enabled: !!babyProfileId,
   });
 
-  const { data: growthEntries = [] } = useQuery<GrowthEntry[]>({
-    queryKey: ["/api/baby-profiles", babyId, "growth"],
-    enabled: !!babyId,
+  const { data: growthEntries = [] } = useQuery({
+    queryKey: [`/api/v1/baby-growth/profile/${babyProfileId}`],
+    queryFn: () => getGrowthByProfileId(babyProfileId as string),
+    enabled: !!babyProfileId,
   });
 
-  const { data: milestones = [] } = useQuery<Milestone[]>({
-    queryKey: ["/api/baby-profiles", babyId, "milestones"],
-    enabled: !!babyId,
+  const { data: milestoneProgress } = useQuery<MilestoneGroupedResponse>({
+    queryKey: [`/api/v1/baby-profiles/${babyProfileId}/milestone-progress`],
+    enabled: !!babyProfileId,
+    queryFn: () => getMilestoneProgress(babyProfileId!),
   });
 
   const { data: medicalRecords = [] } = useQuery<MedicalRecord[]>({
@@ -324,37 +328,67 @@ export default function BabyCareMedicalRecords() {
         });
       });
 
+    // Map growth entries from BabyGrowth API response
     growthEntries.forEach((entry) => {
-      const typeLabel =
-        entry.type === "weight"
-          ? "Weight"
-          : entry.type === "height"
-            ? "Height"
-            : "Head circumference";
-      const unit = entry.type === "weight" ? "kg" : "cm";
-      records.push({
-        id: `growth-${entry.id}`,
-        date: parseISO(entry.recordedAt),
-        type: "growth",
-        title: `${typeLabel}: ${entry.value} ${unit}`,
-        detail: entry.percentile
-          ? `${entry.percentile}th percentile`
-          : "Measurement recorded",
-      });
+      const measurements: string[] = [];
+      if (entry.weight) {
+        measurements.push(`Weight: ${entry.weight} kg`);
+      }
+      if (entry.height) {
+        measurements.push(`Height: ${entry.height} cm`);
+      }
+      if (entry.headCircumference) {
+        measurements.push(`Head: ${entry.headCircumference} cm`);
+      }
+
+      if (measurements.length > 0) {
+        const attachments: Attachment[] = [];
+        if (entry.documentAttachments && entry.documentAttachments.length > 0) {
+          entry.documentAttachments.forEach((doc) => {
+            attachments.push({
+              url: doc.documentUrl,
+              fileName: doc.fileName,
+            });
+          });
+        } else if (entry.documentUrls && entry.documentUrls.length > 0) {
+          entry.documentUrls.forEach((url) => {
+            const urlParts = url.split("/");
+            const fileName = urlParts[urlParts.length - 1] || undefined;
+            attachments.push({ url, fileName });
+          });
+        }
+
+        records.push({
+          id: `growth-${entry.growthId}`,
+          date: parseISO(entry.measurementDate),
+          type: "growth",
+          title: measurements.join(", "),
+          detail: entry.bmi
+            ? `BMI: ${entry.bmi.toFixed(1)}`
+            : "Growth measurement recorded",
+          attachments: attachments.length > 0 ? attachments : undefined,
+        });
+      }
     });
 
-    milestones
-      .filter((m) => m.completed && m.completedAt)
-      .forEach((milestone) => {
-        records.push({
-          id: `milestone-${milestone.id}`,
-          date: parseISO(milestone.completedAt!),
-          type: "milestone",
-          title: milestone.title,
-          detail:
-            milestone.description || `${milestone.ageGroup} milestone achieved`,
-        });
+    // Map milestone schedules from BabyMilestoneSchedule API response
+    milestoneProgress?.done.forEach((milestone) => {
+      const attachments: Attachment[] = [];
+      if (milestone.imageUrl) {
+        attachments.push({ url: milestone.imageUrl });
+      }
+
+      records.push({
+        id: `milestone-${milestone.id}`,
+        date: parseISO(milestone.achievedDate!),
+        type: "milestone",
+        title: milestone.name,
+        detail: milestone.ageRangeLabel
+          ? `${milestone.ageRangeLabel} milestone achieved`
+          : "Milestone achieved",
+        attachments: attachments.length > 0 ? attachments : undefined,
       });
+    });
 
     // Map medical records to timeline records
     medicalRecords.forEach((record) => {
@@ -407,7 +441,7 @@ export default function BabyCareMedicalRecords() {
 
     records.sort((a, b) => b.date.getTime() - a.date.getTime());
     return records;
-  }, [vaccines, growthEntries, milestones, medicalRecords]);
+  }, [vaccines, growthEntries, milestoneProgress, medicalRecords]);
 
   const filteredRecords = useMemo(() => {
     if (activeFilter === "all") return timelineRecords;
@@ -419,19 +453,25 @@ export default function BabyCareMedicalRecords() {
     () => ({
       vaccines: vaccines.filter((v) => v.status === "completed").length,
       growth: growthEntries.length,
-      milestones: milestones.filter((m) => m.completed).length,
+      milestones: milestoneProgress?.done.length,
       visits: medicalRecords.filter((r) => r.recordType === "visit").length,
       reports: medicalRecords.filter((r) => r.recordType === "report").length,
       total: timelineRecords.length,
     }),
-    [vaccines, growthEntries, milestones, medicalRecords, timelineRecords],
+    [
+      vaccines,
+      growthEntries,
+      milestoneProgress,
+      medicalRecords,
+      timelineRecords,
+    ],
   );
 
   const filters: { key: FilterType; label: string; count: number }[] = [
     { key: "all", label: "All", count: stats.total },
     { key: "vaccine", label: "Vaccines", count: stats.vaccines },
     { key: "growth", label: "Growth", count: stats.growth },
-    { key: "milestone", label: "Milestones", count: stats.milestones },
+    { key: "milestone", label: "Milestones", count: stats.milestones || 0 },
     { key: "visit", label: "Visits", count: stats.visits },
     { key: "report", label: "Reports", count: stats.reports },
   ];
@@ -826,7 +866,10 @@ export default function BabyCareMedicalRecords() {
                                           const displayName =
                                             attachment.fileName
                                               ? attachment.fileName.length > 20
-                                                ? `${attachment.fileName.substring(0, 20)}...`
+                                                ? `${attachment.fileName.substring(
+                                                    0,
+                                                    20,
+                                                  )}...`
                                                 : attachment.fileName
                                               : `File ${idx + 1}`;
                                           return (
@@ -863,59 +906,6 @@ export default function BabyCareMedicalRecords() {
             )}
           </div>
         )}
-
-        {/* Mira Card - Medical Questions */}
-        <Card
-          className="bg-gradient-to-r from-rose-50 to-pink-50 border border-rose-100 rounded-2xl mt-6 overflow-hidden"
-          data-testid="card-mira-medical"
-        >
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-600 flex items-center justify-center flex-shrink-0 shadow-lg">
-                <Brain className="w-6 h-6 text-white" />
-              </div>
-              <div className="flex-1">
-                <p className="text-[14px] font-bold text-rose-900 mb-0.5">
-                  Health questions?
-                </p>
-                <p className="text-[11px] text-rose-600">
-                  Ask AaI about your baby's medical care
-                </p>
-              </div>
-            </div>
-
-            {/* Sample Questions */}
-            <div className="space-y-2 mb-4">
-              <p className="text-[11px] font-semibold text-rose-500 uppercase tracking-wide">
-                Try asking:
-              </p>
-              <div className="flex flex-wrap gap-2">
-                <span className="text-[11px] bg-white text-rose-700 px-3 py-1.5 rounded-full border border-rose-200">
-                  When is the next vaccine due?
-                </span>
-                <span className="text-[11px] bg-white text-rose-700 px-3 py-1.5 rounded-full border border-rose-200">
-                  What vaccines are required for daycare?
-                </span>
-                <span className="text-[11px] bg-white text-rose-700 px-3 py-1.5 rounded-full border border-rose-200">
-                  How often should I visit the pediatrician?
-                </span>
-                <span className="text-[11px] bg-white text-rose-700 px-3 py-1.5 rounded-full border border-rose-200">
-                  What documents do I need for travel?
-                </span>
-              </div>
-            </div>
-
-            <Link href={`/babycare/mira/${babyProfileId}`}>
-              <Button
-                className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:opacity-90 text-white rounded-xl shadow-md h-11 font-semibold gap-2"
-                data-testid="button-ask-mira-medical"
-              >
-                <MessageCircle className="w-4 h-4" />
-                Chat with AaI
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Click outside to close menu */}
@@ -1087,7 +1077,7 @@ export default function BabyCareMedicalRecords() {
       {/* Add Report Dialog - Enhanced with File Upload */}
       <Dialog open={showReportDialog} onOpenChange={setShowReportDialog}>
         <DialogContent
-          className="max-w-[360px] rounded-2xl"
+          className="max-w-[360px] max-h-[80vh] overflow-y-scroll rounded-2xl"
           data-testid="dialog-add-report"
         >
           <DialogHeader>

@@ -157,7 +157,7 @@ export default function BabyCareGrowth() {
   };
 
   const { data: growthRecords = [], isLoading } = useQuery<BabyGrowth[]>({
-    queryKey: ["/api/v1/baby-growth/profile", babyProfileId],
+    queryKey: [`/api/v1/baby-growth/profile/${babyProfileId}`],
     queryFn: () => getGrowthByProfileId(babyProfileId as string),
     enabled: !!babyProfileId,
   });
@@ -176,7 +176,7 @@ export default function BabyCareGrowth() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["/api/v1/baby-growth/profile", babyProfileId],
+        queryKey: [`/api/v1/baby-growth/profile/${babyProfileId}`],
       });
       toast({
         title: "Measurements added!",
@@ -224,12 +224,7 @@ export default function BabyCareGrowth() {
     });
   };
 
-  const filteredEntries = growthEntries
-    .filter((e) => e.type === activeTab)
-    .sort(
-      (a, b) =>
-        new Date(b.recordedAt).getTime() - new Date(a.recordedAt).getTime(),
-    );
+  const filteredEntries = growthEntries.filter((e) => e.type === activeTab);
 
   const config = typeConfig[activeTab];
 
@@ -583,7 +578,7 @@ export default function BabyCareGrowth() {
 
       {/* Floating Add Button */}
       {filteredEntries.length > 0 && (
-        <div className="fixed bottom-6 left-0 right-0 px-6 max-w-md mx-auto">
+        <div className="fixed bottom-0 left-0 right-0 p-5 max-w-md mx-auto bg-white">
           <Button
             onClick={() => setShowAddModal(true)}
             className={`w-full bg-gradient-to-r ${config.gradient} hover:opacity-90 text-white rounded-2xl h-14 text-[15px] font-semibold shadow-xl gap-2`}

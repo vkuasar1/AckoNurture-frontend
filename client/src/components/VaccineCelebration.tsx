@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import {
-  X,
   Share2,
   ChevronRight,
   Shield,
@@ -10,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
 
@@ -375,125 +375,111 @@ export default function VaccineCelebration({
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-      data-testid="celebration-overlay"
-    >
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <Confetti />
 
       {/* Hidden canvas for image generation */}
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* Close button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={onClose}
-        className="absolute top-4 right-4 z-50 text-white hover:bg-white/20 rounded-full h-10 w-10"
-        data-testid="button-close-celebration"
-      >
-        <X className="h-6 w-6" />
-      </Button>
-
-      {/* Certificate Card */}
-      <Card
-        className="relative w-[340px] bg-gradient-to-b from-violet-50 to-purple-50 border-2 border-violet-200 rounded-3xl shadow-2xl overflow-hidden mx-4"
+      <DialogContent
+        className="max-w-[360px] p-0 bg-transparent border-0 shadow-none overflow-visible [&>button]:text-zinc-700 [&>button]:hover:text-zinc-900 [&>button]:hover:bg-zinc-100 [&>button]:rounded-full [&>button]:h-10 [&>button]:w-10 [&>button]:top-4 [&>button]:right-4 [&>button]:opacity-100"
         data-testid="celebration-certificate"
       >
-        {/* Top decoration */}
-        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-violet-400 via-purple-500 to-pink-400" />
+        {/* Certificate Card */}
+        <Card className="relative w-full bg-gradient-to-b from-violet-50 to-purple-50 border-2 border-violet-200 rounded-3xl shadow-2xl overflow-hidden">
+          {/* Top decoration */}
+          <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-violet-400 via-purple-500 to-pink-400" />
 
-        <CardContent className="p-6 pt-8 text-center">
-          {/* Badge - Baby face + Shield/Heart */}
-          <div className="relative mx-auto mb-5">
-            <div className="flex items-center justify-center gap-1">
-              {/* Baby face circle */}
-              <div className="w-14 h-14 bg-gradient-to-br from-pink-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
-                <Baby className="w-7 h-7 text-white" />
-              </div>
-              {/* Shield with heart */}
-              <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white -ml-3">
-                <div className="relative">
-                  <Shield className="w-7 h-7 text-white" />
-                  <Heart className="w-3 h-3 text-pink-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          <CardContent className="p-6 pt-8 text-center">
+            {/* Badge - Baby face + Shield/Heart */}
+            <div className="relative mx-auto mb-5">
+              <div className="flex items-center justify-center gap-1">
+                {/* Baby face circle */}
+                <div className="w-14 h-14 bg-gradient-to-br from-pink-400 to-pink-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                  <Baby className="w-7 h-7 text-white" />
+                </div>
+                {/* Shield with heart */}
+                <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white -ml-3">
+                  <div className="relative">
+                    <Shield className="w-7 h-7 text-white" />
+                    <Heart className="w-3 h-3 text-pink-300 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                  </div>
                 </div>
               </div>
+              <div className="absolute -top-1 right-16 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center shadow">
+                <Sparkles className="w-4 h-4 text-yellow-700" />
+              </div>
             </div>
-            <div className="absolute -top-1 right-16 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center shadow">
-              <Sparkles className="w-4 h-4 text-yellow-700" />
+
+            {/* Title */}
+            <h2
+              className="text-[22px] font-bold text-zinc-900 mb-2"
+              data-testid="text-celebration-title"
+            >
+              Protection milestone unlocked!
+            </h2>
+
+            {/* Subtitle */}
+            <p
+              className="text-[15px] text-zinc-600 mb-4"
+              data-testid="text-celebration-subtitle"
+            >
+              <span className="font-bold text-violet-600">{babyName}</span>{" "}
+              completed the{" "}
+              <span className="font-bold text-violet-600">{ageGroup}</span>{" "}
+              vaccine visit
+            </p>
+
+            {/* Vaccine name badge */}
+            <div
+              className="inline-block bg-violet-100 text-violet-700 text-[13px] font-medium px-3 py-1 rounded-full mb-4"
+              data-testid="text-vaccine-name"
+            >
+              {vaccineName}
             </div>
-          </div>
 
-          {/* Title */}
-          <h2
-            className="text-[22px] font-bold text-zinc-900 mb-2"
-            data-testid="text-celebration-title"
-          >
-            Protection milestone unlocked!
-          </h2>
-
-          {/* Subtitle */}
-          <p
-            className="text-[15px] text-zinc-600 mb-4"
-            data-testid="text-celebration-subtitle"
-          >
-            <span className="font-bold text-violet-600">{babyName}</span>{" "}
-            completed the{" "}
-            <span className="font-bold text-violet-600">{ageGroup}</span>{" "}
-            vaccine visit
-          </p>
-
-          {/* Vaccine name badge */}
-          <div
-            className="inline-block bg-violet-100 text-violet-700 text-[13px] font-medium px-3 py-1 rounded-full mb-4"
-            data-testid="text-vaccine-name"
-          >
-            {vaccineName}
-          </div>
-
-          {/* Date */}
-          <div
-            className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-[14px] font-bold py-2 px-4 rounded-xl inline-block mb-5"
-            data-testid="text-celebration-date"
-          >
-            {formattedDate}
-          </div>
-
-          {/* Praise */}
-          <p
-            className="text-[14px] text-zinc-500 italic mb-6"
-            data-testid="text-praise"
-          >
-            Great job keeping your baby safe and healthy!
-          </p>
-
-          {/* Buttons */}
-          <div className="space-y-3">
-            <Button
-              onClick={handleShare}
-              disabled={isSharing}
-              className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white rounded-xl h-12 text-[15px] font-semibold shadow-lg gap-2"
-              data-testid="button-share-certificate"
+            {/* Date */}
+            <div
+              className="bg-gradient-to-r from-violet-500 to-purple-600 text-white text-[14px] font-bold py-2 px-4 rounded-xl inline-block mb-5"
+              data-testid="text-celebration-date"
             >
-              <Share2 className="w-4 h-4" />
-              {isSharing ? "Preparing..." : "Share certificate"}
-            </Button>
+              {formattedDate}
+            </div>
 
-            <Button
-              onClick={onViewSchedule}
-              variant="outline"
-              className="w-full border-2 border-violet-200 text-violet-600 hover:bg-violet-50 rounded-xl h-12 text-[15px] font-semibold gap-2"
-              data-testid="button-view-schedule"
+            {/* Praise */}
+            <p
+              className="text-[14px] text-zinc-500 italic mb-6"
+              data-testid="text-praise"
             >
-              View next vaccines
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+              Great job keeping your baby safe and healthy!
+            </p>
+
+            {/* Buttons */}
+            <div className="space-y-3">
+              <Button
+                onClick={handleShare}
+                disabled={isSharing}
+                className="w-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 text-white rounded-xl h-12 text-[15px] font-semibold shadow-lg gap-2"
+                data-testid="button-share-certificate"
+              >
+                <Share2 className="w-4 h-4" />
+                {isSharing ? "Preparing..." : "Share certificate"}
+              </Button>
+
+              <Button
+                onClick={onViewSchedule}
+                variant="outline"
+                className="w-full border-2 border-violet-200 text-violet-600 hover:bg-violet-50 rounded-xl h-12 text-[15px] font-semibold gap-2"
+                data-testid="button-view-schedule"
+              >
+                View next vaccines
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </DialogContent>
+    </Dialog>
   );
 }
