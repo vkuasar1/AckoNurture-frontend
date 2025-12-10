@@ -391,12 +391,12 @@ export default function BabyCareVaccines() {
     // Request location and load hospitals
     try {
       setIsLoadingHospitals(true);
-      const position = await getCurrentLocation();
-      const latLng = formatLatLng(
-        position.coords.latitude,
-        position.coords.longitude,
-      );
-      const response = await searchHospitals({ latLng, page: 1, size: 10 });
+      // const position = await getCurrentLocation();
+      // const latLng = formatLatLng(
+      //   position.coords.latitude,
+      //   position.coords.longitude,
+      // );
+      const response = await searchHospitals({ page: 1, size: 10 });
       setHospitals(response.hospitals);
       setHasMoreHospitals(response.count > response.hospitals.length);
     } catch (error: unknown) {
@@ -434,14 +434,13 @@ export default function BabyCareVaccines() {
 
     try {
       setIsLoadingHospitals(true);
-      const position = await getCurrentLocation();
-      const latLng = formatLatLng(
-        position.coords.latitude,
-        position.coords.longitude,
-      );
+      // const position = await getCurrentLocation();
+      // const latLng = formatLatLng(
+      //   position.coords.latitude,
+      //   position.coords.longitude,
+      // );
       const nextPage = currentPage + 1;
       const response = await searchHospitals({
-        latLng,
         page: nextPage,
         size: 10,
       });
@@ -540,7 +539,10 @@ export default function BabyCareVaccines() {
         title: "Booking confirmed!",
         description: `${selectedVaccine.name} at ${
           selectedHospital.name
-        } on ${format(new Date(selectedDate), "MMM d, yyyy")} at ${formatSlotTime(selectedSlot.slotStartTime)}`,
+        } on ${format(
+          new Date(selectedDate),
+          "MMM d, yyyy",
+        )} at ${formatSlotTime(selectedSlot.slotStartTime)}`,
       });
 
       setShowBookingDialog(false);

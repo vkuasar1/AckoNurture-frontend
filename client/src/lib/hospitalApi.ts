@@ -33,7 +33,6 @@ export interface HospitalSearchResponse {
 }
 
 export interface HospitalSearchParams {
-  latLng: string; // Format: "lat,lng"
   page?: number;
   size?: number;
 }
@@ -44,8 +43,8 @@ export interface HospitalSearchParams {
 export async function searchHospitals(
   params: HospitalSearchParams,
 ): Promise<HospitalSearchResponse> {
-  const { latLng, page = 1, size = 10 } = params;
-  const encodedLatLng = encodeURIComponent(latLng);
+  const { page = 1, size = 10 } = params;
+  const encodedLatLng = "12.9081%2C77.6476";
   const url = `/api/v1/hospitals/search?latLng=${encodedLatLng}&page=${page}&size=${size}`;
 
   const response = await apiRequest("GET", url);
@@ -114,7 +113,9 @@ export async function getAvailableSlots(
   params: AvailableSlotsParams,
 ): Promise<AvailableSlotsResponse> {
   const { hospitalId, startDate, endDate } = params;
-  const url = `/api/v1/bookings/slots/available?hospitalId=${encodeURIComponent(hospitalId)}&startDate=${startDate}&endDate=${endDate}`;
+  const url = `/api/v1/bookings/slots/available?hospitalId=${encodeURIComponent(
+    hospitalId,
+  )}&startDate=${startDate}&endDate=${endDate}`;
 
   const response = await apiRequest("GET", url);
   return response.json();
