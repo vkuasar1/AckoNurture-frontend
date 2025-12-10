@@ -1,8 +1,26 @@
 import { useState } from "react";
 import { useParams, Link } from "wouter";
-import { ArrowLeft, ChevronRight, Star, ShieldCheck, BadgeCheck, MapPin, Camera, Filter, ChevronDown, X, User } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronRight,
+  Star,
+  ShieldCheck,
+  BadgeCheck,
+  MapPin,
+  Camera,
+  Filter,
+  ChevronDown,
+  X,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { MiraFab } from "@/components/MiraFab";
 
@@ -128,11 +146,14 @@ interface NannyCardProps {
 }
 
 function NannyCard({ nanny, babyId }: NannyCardProps) {
-  const initials = nanny.name.split(" ").map(n => n[0]).join("");
+  const initials = nanny.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
 
   return (
     <Link href={`/babycare/nanny-profile/${babyId}/${nanny.id}`}>
-      <div 
+      <div
         className="bg-white rounded-2xl p-4 shadow-sm border border-zinc-100 hover:shadow-md transition-shadow cursor-pointer"
         data-testid={`card-nanny-${nanny.id}`}
       >
@@ -145,18 +166,26 @@ function NannyCard({ nanny, babyId }: NannyCardProps) {
         )}
 
         <div className="flex gap-3 mb-3">
-          <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${nanny.avatarColor} flex items-center justify-center flex-shrink-0`}>
+          <div
+            className={`w-14 h-14 rounded-xl bg-gradient-to-br ${nanny.avatarColor} flex items-center justify-center flex-shrink-0`}
+          >
             <span className="text-white font-bold text-[16px]">{initials}</span>
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-[15px] font-semibold text-zinc-900 mb-0.5">{nanny.name}</h3>
+            <h3 className="text-[15px] font-semibold text-zinc-900 mb-0.5">
+              {nanny.name}
+            </h3>
             <p className="text-[13px] text-zinc-500">
               {nanny.yearsExperience} yrs • {nanny.specialty}
             </p>
             <div className="flex items-center gap-1 mt-1">
               <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-              <span className="text-[13px] font-medium text-zinc-700">{nanny.rating}</span>
-              <span className="text-[12px] text-zinc-400">({nanny.reviewCount})</span>
+              <span className="text-[13px] font-medium text-zinc-700">
+                {nanny.rating}
+              </span>
+              <span className="text-[12px] text-zinc-400">
+                ({nanny.reviewCount})
+              </span>
             </div>
           </div>
           <ChevronRight className="w-5 h-5 text-zinc-300 self-center flex-shrink-0" />
@@ -164,16 +193,25 @@ function NannyCard({ nanny, babyId }: NannyCardProps) {
 
         <div className="flex flex-wrap gap-1.5">
           {nanny.trustFlags.idVerified && (
-            <TrustChip icon={<BadgeCheck className="w-3 h-3" />} label="ID verified" />
+            <TrustChip
+              icon={<BadgeCheck className="w-3 h-3" />}
+              label="ID verified"
+            />
           )}
           {nanny.trustFlags.policeCheck && (
-            <TrustChip icon={<ShieldCheck className="w-3 h-3" />} label="Police check" />
+            <TrustChip
+              icon={<ShieldCheck className="w-3 h-3" />}
+              label="Police check"
+            />
           )}
           {nanny.trustFlags.locationTracking && (
             <TrustChip icon={<MapPin className="w-3 h-3" />} label="Tracking" />
           )}
           {nanny.trustFlags.cameraFriendly && (
-            <TrustChip icon={<Camera className="w-3 h-3" />} label="Camera OK" />
+            <TrustChip
+              icon={<Camera className="w-3 h-3" />}
+              label="Camera OK"
+            />
           )}
         </div>
       </div>
@@ -204,7 +242,9 @@ export default function NannyMatchesPage() {
         if (!matchesExp) return false;
       }
       if (languageFilter.length > 0) {
-        const hasLanguage = languageFilter.some((lang) => nanny.languages.includes(lang));
+        const hasLanguage = languageFilter.some((lang) =>
+          nanny.languages.includes(lang),
+        );
         if (!hasLanguage) return false;
       }
       return true;
@@ -224,9 +264,13 @@ export default function NannyMatchesPage() {
 
   const activeFilters = experienceFilter.length + languageFilter.length;
 
-  const toggleFilter = (list: string[], item: string, setter: React.Dispatch<React.SetStateAction<string[]>>) => {
+  const toggleFilter = (
+    list: string[],
+    item: string,
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
+  ) => {
     setter((prev) =>
-      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item],
     );
   };
 
@@ -240,11 +284,18 @@ export default function NannyMatchesPage() {
       <div className="bg-white border-b border-zinc-100 px-4 py-3 sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <Link href={`/babycare/nanny-needs/${babyId}`}>
-            <Button variant="ghost" size="icon" className="rounded-full" data-testid="button-back">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              data-testid="button-back"
+            >
               <ArrowLeft className="w-5 h-5 text-zinc-600" />
             </Button>
           </Link>
-          <h1 className="text-[16px] font-semibold text-zinc-900">Nanny Matches</h1>
+          <h1 className="text-[16px] font-semibold text-zinc-900">
+            Nanny Matches
+          </h1>
         </div>
       </div>
 
@@ -259,9 +310,9 @@ export default function NannyMatchesPage() {
         <div className="flex gap-2 mb-4">
           <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
             <SheetTrigger asChild>
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 className="rounded-full gap-1.5"
                 data-testid="button-filter"
               >
@@ -280,12 +331,20 @@ export default function NannyMatchesPage() {
               </SheetHeader>
               <div className="py-4 space-y-5">
                 <div>
-                  <h4 className="text-[13px] font-medium text-zinc-700 mb-2">Experience</h4>
+                  <h4 className="text-[13px] font-medium text-zinc-700 mb-2">
+                    Experience
+                  </h4>
                   <div className="flex flex-wrap gap-2">
                     {experienceOptions.map((opt) => (
                       <button
                         key={opt}
-                        onClick={() => toggleFilter(experienceFilter, opt, setExperienceFilter)}
+                        onClick={() =>
+                          toggleFilter(
+                            experienceFilter,
+                            opt,
+                            setExperienceFilter,
+                          )
+                        }
                         className={`px-3 py-1.5 rounded-full text-[13px] font-medium border transition-all ${
                           experienceFilter.includes(opt)
                             ? "bg-violet-600 text-white border-violet-600"
@@ -300,12 +359,16 @@ export default function NannyMatchesPage() {
                 </div>
 
                 <div>
-                  <h4 className="text-[13px] font-medium text-zinc-700 mb-2">Languages</h4>
+                  <h4 className="text-[13px] font-medium text-zinc-700 mb-2">
+                    Languages
+                  </h4>
                   <div className="flex flex-wrap gap-2">
                     {languageOptions.map((lang) => (
                       <button
                         key={lang}
-                        onClick={() => toggleFilter(languageFilter, lang, setLanguageFilter)}
+                        onClick={() =>
+                          toggleFilter(languageFilter, lang, setLanguageFilter)
+                        }
                         className={`px-3 py-1.5 rounded-full text-[13px] font-medium border transition-all ${
                           languageFilter.includes(lang)
                             ? "bg-violet-600 text-white border-violet-600"
@@ -362,7 +425,9 @@ export default function NannyMatchesPage() {
             {experienceFilter.map((exp) => (
               <button
                 key={exp}
-                onClick={() => toggleFilter(experienceFilter, exp, setExperienceFilter)}
+                onClick={() =>
+                  toggleFilter(experienceFilter, exp, setExperienceFilter)
+                }
                 className="inline-flex items-center gap-1 px-2 py-1 bg-violet-100 text-violet-700 rounded-full text-[12px] font-medium"
               >
                 {exp} yrs
@@ -372,7 +437,9 @@ export default function NannyMatchesPage() {
             {languageFilter.map((lang) => (
               <button
                 key={lang}
-                onClick={() => toggleFilter(languageFilter, lang, setLanguageFilter)}
+                onClick={() =>
+                  toggleFilter(languageFilter, lang, setLanguageFilter)
+                }
                 className="inline-flex items-center gap-1 px-2 py-1 bg-violet-100 text-violet-700 rounded-full text-[12px] font-medium"
               >
                 {lang}
@@ -389,7 +456,9 @@ export default function NannyMatchesPage() {
 
           {filteredNannies.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-zinc-500 text-[14px]">No nannies match your filters.</p>
+              <p className="text-zinc-500 text-[14px]">
+                No nannies match your filters.
+              </p>
               <Button
                 variant="ghost"
                 onClick={clearFilters}

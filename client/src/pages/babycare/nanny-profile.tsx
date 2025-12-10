@@ -1,6 +1,20 @@
 import { useState } from "react";
 import { useParams, Link, useLocation } from "wouter";
-import { ArrowLeft, Star, BadgeCheck, ShieldCheck, Heart, MapPin, Calendar, ChevronRight, Baby, Droplets, Moon, Sparkles, Clock } from "lucide-react";
+import {
+  ArrowLeft,
+  Star,
+  BadgeCheck,
+  ShieldCheck,
+  Heart,
+  MapPin,
+  Calendar,
+  ChevronRight,
+  Baby,
+  Droplets,
+  Moon,
+  Sparkles,
+  Clock,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MiraFab } from "@/components/MiraFab";
@@ -42,8 +56,17 @@ const mockNannyData: Record<string, NannyProfile> = {
     rating: 4.9,
     reviewCount: 142,
     bio: "I've been caring for babies and toddlers for over 5 years. Previously worked with families in Bangalore and Mumbai, specializing in newborn care and establishing healthy sleep routines.",
-    previousRoles: ["Full-time nanny for 2 families", "Daycare assistant for 3 years", "Certified infant care specialist"],
-    services: ["Feeding support", "Bath & hygiene", "Sleep routines", "Play & early learning"],
+    previousRoles: [
+      "Full-time nanny for 2 families",
+      "Daycare assistant for 3 years",
+      "Certified infant care specialist",
+    ],
+    services: [
+      "Feeding support",
+      "Bath & hygiene",
+      "Sleep routines",
+      "Play & early learning",
+    ],
     trustFlags: {
       idVerified: true,
       policeCheck: true,
@@ -84,8 +107,17 @@ const mockNannyData: Record<string, NannyProfile> = {
     rating: 4.8,
     reviewCount: 98,
     bio: "With 8 years of experience, I specialize in toddler development and early learning activities. I believe in nurturing curiosity and building independence.",
-    previousRoles: ["Preschool teacher for 4 years", "Full-time nanny for 3 families", "Early childhood development certified"],
-    services: ["Feeding support", "Bath & hygiene", "Sleep routines", "Play & early learning"],
+    previousRoles: [
+      "Preschool teacher for 4 years",
+      "Full-time nanny for 3 families",
+      "Early childhood development certified",
+    ],
+    services: [
+      "Feeding support",
+      "Bath & hygiene",
+      "Sleep routines",
+      "Play & early learning",
+    ],
     trustFlags: {
       idVerified: true,
       policeCheck: true,
@@ -119,8 +151,17 @@ const mockNannyData: Record<string, NannyProfile> = {
     rating: 4.7,
     reviewCount: 56,
     bio: "Specializing in newborn care, I help new parents navigate the first few months with confidence. I'm trained in infant massage and lactation support assistance.",
-    previousRoles: ["Maternity nurse assistant", "Newborn care specialist", "Infant massage certified"],
-    services: ["Feeding support", "Bath & hygiene", "Sleep routines", "Play & early learning"],
+    previousRoles: [
+      "Maternity nurse assistant",
+      "Newborn care specialist",
+      "Infant massage certified",
+    ],
+    services: [
+      "Feeding support",
+      "Bath & hygiene",
+      "Sleep routines",
+      "Play & early learning",
+    ],
     trustFlags: {
       idVerified: true,
       policeCheck: true,
@@ -154,8 +195,17 @@ const mockNannyData: Record<string, NannyProfile> = {
     rating: 4.9,
     reviewCount: 187,
     bio: "I'm a certified sleep consultant who helps families establish healthy sleep patterns. With 6 years of experience, I've helped over 100 families get better rest.",
-    previousRoles: ["Certified sleep consultant", "Night nanny specialist", "Parent educator"],
-    services: ["Feeding support", "Bath & hygiene", "Sleep routines", "Play & early learning"],
+    previousRoles: [
+      "Certified sleep consultant",
+      "Night nanny specialist",
+      "Parent educator",
+    ],
+    services: [
+      "Feeding support",
+      "Bath & hygiene",
+      "Sleep routines",
+      "Play & early learning",
+    ],
     trustFlags: {
       idVerified: true,
       policeCheck: true,
@@ -211,10 +261,15 @@ export default function NannyProfilePage() {
     );
   }
 
-  const initials = nanny.name.split(" ").map(n => n[0]).join("");
+  const initials = nanny.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("");
 
   const handleBook = () => {
-    setLocation(`/babycare/nanny-booking/${babyId}/${nannyId}?date=${selectedDate || nanny.availableDates[0]}`);
+    setLocation(
+      `/babycare/nanny-booking/${babyId}/${nannyId}?date=${selectedDate || nanny.availableDates[0]}`,
+    );
   };
 
   return (
@@ -222,38 +277,59 @@ export default function NannyProfilePage() {
       <div className="bg-white border-b border-zinc-100 px-4 py-3 sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <Link href={`/babycare/nanny-matches/${babyId}`}>
-            <Button variant="ghost" size="icon" className="rounded-full" data-testid="button-back">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              data-testid="button-back"
+            >
               <ArrowLeft className="w-5 h-5 text-zinc-600" />
             </Button>
           </Link>
-          <h1 className="text-[16px] font-semibold text-zinc-900">Nanny Profile</h1>
+          <h1 className="text-[16px] font-semibold text-zinc-900">
+            Nanny Profile
+          </h1>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto pb-28">
         <div className="bg-white px-5 py-6 border-b border-zinc-100">
           <div className="flex items-start gap-4">
-            <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${nanny.avatarColor} flex items-center justify-center flex-shrink-0 shadow-lg`}>
+            <div
+              className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${nanny.avatarColor} flex items-center justify-center flex-shrink-0 shadow-lg`}
+            >
               <span className="text-white font-bold text-2xl">{initials}</span>
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-[20px] font-bold text-zinc-900 mb-1">{nanny.name}</h2>
+              <h2 className="text-[20px] font-bold text-zinc-900 mb-1">
+                {nanny.name}
+              </h2>
               <Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100 text-[12px] font-medium mb-2">
                 {nanny.specialty}
               </Badge>
               <div className="flex items-center gap-1 mt-1">
                 <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                <span className="text-[15px] font-semibold text-zinc-800">{nanny.rating}</span>
-                <span className="text-[13px] text-zinc-500">({nanny.reviewCount} reviews)</span>
+                <span className="text-[15px] font-semibold text-zinc-800">
+                  {nanny.rating}
+                </span>
+                <span className="text-[13px] text-zinc-500">
+                  ({nanny.reviewCount} reviews)
+                </span>
               </div>
-              <p className="text-[13px] text-zinc-500 mt-1">{nanny.yearsExperience} years experience</p>
+              <p className="text-[13px] text-zinc-500 mt-1">
+                {nanny.yearsExperience} years experience
+              </p>
             </div>
           </div>
         </div>
 
         <div className="bg-white px-5 py-5 border-b border-zinc-100 mt-2">
-          <h3 className="text-[15px] font-semibold text-zinc-900 mb-3">About</h3>
-          <p className="text-[14px] text-zinc-600 leading-relaxed mb-4">{nanny.bio}</p>
+          <h3 className="text-[15px] font-semibold text-zinc-900 mb-3">
+            About
+          </h3>
+          <p className="text-[14px] text-zinc-600 leading-relaxed mb-4">
+            {nanny.bio}
+          </p>
           <div className="space-y-2">
             {nanny.previousRoles.map((role, idx) => (
               <div key={idx} className="flex items-start gap-2">
@@ -265,31 +341,39 @@ export default function NannyProfilePage() {
         </div>
 
         <div className="bg-white px-5 py-5 border-b border-zinc-100 mt-2">
-          <h3 className="text-[15px] font-semibold text-zinc-900 mb-3">Services offered</h3>
+          <h3 className="text-[15px] font-semibold text-zinc-900 mb-3">
+            Services offered
+          </h3>
           <div className="grid grid-cols-2 gap-2">
             {nanny.services.map((service) => (
-              <div 
-                key={service} 
+              <div
+                key={service}
                 className="flex items-center gap-2 bg-zinc-50 rounded-xl px-3 py-2.5 border border-zinc-100"
               >
                 <div className="text-violet-600">
                   {serviceIcons[service] || <Sparkles className="w-4 h-4" />}
                 </div>
-                <span className="text-[13px] text-zinc-700 font-medium">{service}</span>
+                <span className="text-[13px] text-zinc-700 font-medium">
+                  {service}
+                </span>
               </div>
             ))}
           </div>
         </div>
 
         <div className="bg-gradient-to-r from-violet-600 to-pink-500 mx-4 mt-4 rounded-2xl p-4 shadow-lg">
-          <h3 className="text-[15px] font-semibold text-white mb-3">Trust & Safety</h3>
+          <h3 className="text-[15px] font-semibold text-white mb-3">
+            Trust & Safety
+          </h3>
           <div className="grid grid-cols-2 gap-3">
             {nanny.trustFlags.idVerified && (
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                   <BadgeCheck className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-[12px] text-white font-medium">ID verified</span>
+                <span className="text-[12px] text-white font-medium">
+                  ID verified
+                </span>
               </div>
             )}
             {nanny.trustFlags.policeCheck && (
@@ -297,7 +381,9 @@ export default function NannyProfilePage() {
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                   <ShieldCheck className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-[12px] text-white font-medium">Police verified</span>
+                <span className="text-[12px] text-white font-medium">
+                  Police verified
+                </span>
               </div>
             )}
             {nanny.trustFlags.firstAidTrained && (
@@ -305,7 +391,9 @@ export default function NannyProfilePage() {
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                   <Heart className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-[12px] text-white font-medium">First-aid trained</span>
+                <span className="text-[12px] text-white font-medium">
+                  First-aid trained
+                </span>
               </div>
             )}
             {nanny.trustFlags.locationTracking && (
@@ -313,33 +401,44 @@ export default function NannyProfilePage() {
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                   <MapPin className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-[12px] text-white font-medium">Location tracking</span>
+                <span className="text-[12px] text-white font-medium">
+                  Location tracking
+                </span>
               </div>
             )}
           </div>
         </div>
 
         <div className="bg-white px-5 py-5 border-b border-zinc-100 mt-4">
-          <h3 className="text-[15px] font-semibold text-zinc-900 mb-3">Reviews</h3>
+          <h3 className="text-[15px] font-semibold text-zinc-900 mb-3">
+            Reviews
+          </h3>
           {nanny.reviews.slice(0, 1).map((review) => (
-            <div key={review.id} className="bg-zinc-50 rounded-xl p-3 border border-zinc-100">
+            <div
+              key={review.id}
+              className="bg-zinc-50 rounded-xl p-3 border border-zinc-100"
+            >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[13px] font-medium text-zinc-800">{review.parentName}</span>
+                <span className="text-[13px] font-medium text-zinc-800">
+                  {review.parentName}
+                </span>
                 <span className="text-[11px] text-zinc-400">{review.date}</span>
               </div>
               <div className="flex gap-0.5 mb-2">
                 {[...Array(5)].map((_, i) => (
-                  <Star 
-                    key={i} 
-                    className={`w-3 h-3 ${i < review.rating ? "text-amber-400 fill-amber-400" : "text-zinc-200"}`} 
+                  <Star
+                    key={i}
+                    className={`w-3 h-3 ${i < review.rating ? "text-amber-400 fill-amber-400" : "text-zinc-200"}`}
                   />
                 ))}
               </div>
-              <p className="text-[13px] text-zinc-600 leading-relaxed">{review.text}</p>
+              <p className="text-[13px] text-zinc-600 leading-relaxed">
+                {review.text}
+              </p>
             </div>
           ))}
           {nanny.reviews.length > 1 && (
-            <button 
+            <button
               className="w-full mt-3 py-2.5 text-[13px] text-violet-600 font-medium flex items-center justify-center gap-1 bg-violet-50 rounded-xl border border-violet-100"
               data-testid="button-see-more-reviews"
             >
@@ -350,7 +449,9 @@ export default function NannyProfilePage() {
         </div>
 
         <div className="bg-white px-5 py-5 mt-2">
-          <h3 className="text-[15px] font-semibold text-zinc-900 mb-1">Select a date</h3>
+          <h3 className="text-[15px] font-semibold text-zinc-900 mb-1">
+            Select a date
+          </h3>
           <p className="text-[12px] text-zinc-500 mb-3">Next available dates</p>
           <div className="flex gap-2 overflow-x-auto pb-2">
             {nanny.availableDates.map((date) => (

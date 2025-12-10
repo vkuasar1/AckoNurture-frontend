@@ -26,6 +26,7 @@ import {
   ChevronRight,
   Baby,
   Cake,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -90,6 +91,7 @@ export default function BabyCareMilestones() {
     badgeIcon?: string;
     isEarly?: boolean;
   } | null>(null);
+  const [isBookingAppointment, setIsBookingAppointment] = useState(false);
 
   // Fetch profiles from API
   const userId = getUserId();
@@ -322,6 +324,20 @@ export default function BabyCareMilestones() {
     setModalStep("detail");
     setSelectedMilestone(null);
     setPhotoUrl("");
+  };
+
+  const handleConsultPediatrician = async () => {
+    setIsBookingAppointment(true);
+
+    // Simulate booking delay (2 seconds)
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    setIsBookingAppointment(false);
+    toast({
+      title: "Appointment booked!",
+      description:
+        "Your pediatrician consultation has been scheduled. You'll receive a confirmation shortly.",
+    });
   };
 
   const getNotSeenMessage = () => {
@@ -669,7 +685,7 @@ export default function BabyCareMilestones() {
         </div>
 
         {/* Encouragement Card */}
-        <div className="px-4 pb-4">
+        {/* <div className="px-4 pb-4">
           <Card className="border-pink-200 bg-gradient-to-r from-pink-50 to-purple-50">
             <CardContent className="p-4 flex items-center gap-3">
               <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-purple-400 rounded-full flex items-center justify-center flex-shrink-0">
@@ -687,7 +703,7 @@ export default function BabyCareMilestones() {
               <ChevronRight className="w-5 h-5 text-zinc-300" />
             </CardContent>
           </Card>
-        </div>
+        </div> */}
 
         <div className="h-24" />
       </div>
@@ -703,14 +719,6 @@ export default function BabyCareMilestones() {
                 exit={{ opacity: 0, y: -20 }}
                 className="p-6"
               >
-                <button
-                  onClick={handleCloseModal}
-                  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center"
-                  data-testid="button-close-modal"
-                >
-                  <X className="w-4 h-4 text-zinc-500" />
-                </button>
-
                 <div className="text-center mb-6">
                   <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Star className="w-7 h-7 text-purple-500" />
@@ -903,18 +911,27 @@ export default function BabyCareMilestones() {
                         </p>
                       </div>
 
-                      <div className="space-y-3">
+                      <div className="flex flex-col space-y-3">
                         {showDoctor && (
-                          <Link href="/consult-doctor?specialty=pediatrician">
-                            <Button
-                              variant="outline"
-                              className="w-full rounded-xl h-12 border-purple-200 text-purple-600 font-medium"
-                              data-testid="button-consult-doctor"
-                            >
-                              <Stethoscope className="w-4 h-4 mr-2" />
-                              Consult a pediatrician
-                            </Button>
-                          </Link>
+                          <Button
+                            variant="outline"
+                            onClick={handleConsultPediatrician}
+                            disabled={isBookingAppointment}
+                            className="w-full rounded-xl h-12 border-purple-200 text-purple-600 font-medium"
+                            data-testid="button-consult-doctor"
+                          >
+                            {isBookingAppointment ? (
+                              <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Booking...
+                              </>
+                            ) : (
+                              <>
+                                <Stethoscope className="w-4 h-4 mr-2" />
+                                Consult a pediatrician
+                              </>
+                            )}
+                          </Button>
                         )}
 
                         <Link href={`/babycare/community/${babyProfileId}`}>
@@ -1038,10 +1055,18 @@ export default function BabyCareMilestones() {
                       {celebrationData.badgeIcon &&
                         renderIcon(
                           celebrationData.badgeIcon,
-                          `w-4 h-4 ${celebrationData.isEarly ? "text-amber-600" : "text-purple-600"}`,
+                          `w-4 h-4 ${
+                            celebrationData.isEarly
+                              ? "text-amber-600"
+                              : "text-purple-600"
+                          }`,
                         )}
                       <span
-                        className={`text-[13px] font-semibold ${celebrationData.isEarly ? "text-amber-700" : "text-purple-700"}`}
+                        className={`text-[13px] font-semibold ${
+                          celebrationData.isEarly
+                            ? "text-amber-700"
+                            : "text-purple-700"
+                        }`}
                       >
                         {celebrationData.badgeTitle}
                       </span>

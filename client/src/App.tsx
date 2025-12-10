@@ -53,10 +53,22 @@ function Router() {
       <Route path="/babycare/appointments/:babyId" component={Appointments} />
       <Route path="/babycare/nanny/:babyId" component={NannyRecommendation} />
       <Route path="/babycare/nanny-needs/:babyId" component={NannyNeedsPage} />
-      <Route path="/babycare/nanny-matches/:babyId" component={NannyMatchesPage} />
-      <Route path="/babycare/nanny-profile/:babyId/:nannyId" component={NannyProfilePage} />
-      <Route path="/babycare/nanny-booking/:babyId/:nannyId" component={NannyBookingPage} />
-      <Route path="/babycare/nanny-dashboard/:babyId" component={NannyDashboardPage} />
+      <Route
+        path="/babycare/nanny-matches/:babyId"
+        component={NannyMatchesPage}
+      />
+      <Route
+        path="/babycare/nanny-profile/:babyId/:nannyId"
+        component={NannyProfilePage}
+      />
+      <Route
+        path="/babycare/nanny-booking/:babyId/:nannyId"
+        component={NannyBookingPage}
+      />
+      <Route
+        path="/babycare/nanny-dashboard/:babyId"
+        component={NannyDashboardPage}
+      />
       <Route path="/babycare/resources" component={Resources} />
       <Route path="/babycare/plans" component={BabyCarePlans} />
       <Route path="/babycare/community/:babyId" component={ParentCommunity} />

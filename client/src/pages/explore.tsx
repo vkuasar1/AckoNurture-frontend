@@ -115,27 +115,49 @@ export default function ExplorePage() {
         </div>
 
         {/* Promotional Banner */}
-        <Card className="mt-5 bg-gradient-to-r from-violet-700 via-violet-600 to-purple-600 border-0 rounded-2xl shadow-lg shadow-violet-900/30">
-          <CardContent className="p-4 flex items-center justify-between">
-            <div className="flex-1">
-              <p className="text-[11px] text-violet-200 font-medium mb-0.5">
-                Acko Health Plan
-              </p>
-              <p className="text-[14px] font-bold text-white leading-tight">
-                Get your family health e-cards
-              </p>
-              <p className="text-[11px] text-violet-200 mt-0.5">
-                Limited time only
-              </p>
-            </div>
-            <Button
-              className="bg-white text-zinc-900 hover:bg-zinc-100 rounded-full px-4 h-9 text-[13px] font-semibold shadow-md"
-              data-testid="button-get-ecards"
-            >
-              Get e-cards
-            </Button>
-          </CardContent>
-        </Card>
+
+        <Link href="/babycare">
+          <Card
+            className="bg-gradient-to-br from-pink-50 via-violet-50 to-white 
+             border border-pink-100 
+             shadow-[0_4px_12px_rgba(255,255,255,0.8)] 
+             rounded-2xl mb-4 cursor-pointer 
+             hover:shadow-[0_6px_18px_rgba(255,255,255,1)] 
+             transition-shadow"
+            data-testid="card-featured-nurture"
+          >
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-pink-400 to-violet-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                  <Heart className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <h3 className="text-[16px] font-bold text-zinc-900 leading-tight">
+                      Nurture
+                    </h3>
+                    <Badge className="bg-gradient-to-r from-pink-500 to-violet-500 text-white hover:from-pink-500 hover:to-violet-500 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase">
+                      New
+                    </Badge>
+                  </div>
+                  <p className="text-[13px] text-zinc-600 leading-relaxed font-medium">
+                    Complete care for new moms & babies
+                  </p>
+                  <p className="text-[11px] text-zinc-500 mt-1">
+                    Vaccines, growth tracking, recovery support & more
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="flex-shrink-0 h-8 w-8"
+                >
+                  <ArrowRight className="w-5 h-5 text-violet-500" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       {/* White Content Area */}

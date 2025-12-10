@@ -150,7 +150,7 @@ export default function BabyCareOnboarding() {
           babyGender: onboardingData.babyGender,
           hospitalName: onboardingData.hospitalName,
         },
-        onboardingData.babyImage
+        onboardingData.babyImage,
       );
     },
     onSuccess: () => {
@@ -541,12 +541,12 @@ export default function BabyCareOnboarding() {
                           formatted = digits;
                         } else if (digits.length <= 4) {
                           formatted = `${digits.slice(0, 2)}/${digits.slice(
-                            2
+                            2,
                           )}`;
                         } else {
                           formatted = `${digits.slice(0, 2)}/${digits.slice(
                             2,
-                            4
+                            4,
                           )}/${digits.slice(4, 8)}`;
                         }
                         setDobDisplay(formatted);

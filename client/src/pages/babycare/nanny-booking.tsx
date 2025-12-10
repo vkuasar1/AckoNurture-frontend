@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { useParams, useLocation } from "wouter";
-import { 
-  ArrowLeft, 
-  Check, 
-  ChevronRight, 
-  MapPin, 
-  Clock, 
+import {
+  ArrowLeft,
+  Check,
+  ChevronRight,
+  MapPin,
+  Clock,
   Calendar,
   CreditCard,
   Phone,
   CheckCircle2,
   MapPinned,
   FileText,
-  Sparkles
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,9 +32,27 @@ interface BookingData {
 }
 
 const SHIFT_TYPES = [
-  { id: "half-day", label: "Half Day", hours: "4 hours", dailyRate: 600, monthlyRate: 15000 },
-  { id: "full-day", label: "Full Day", hours: "8 hours", dailyRate: 1000, monthlyRate: 25000 },
-  { id: "night", label: "Night Shift", hours: "10 hours", dailyRate: 1200, monthlyRate: 30000 },
+  {
+    id: "half-day",
+    label: "Half Day",
+    hours: "4 hours",
+    dailyRate: 600,
+    monthlyRate: 15000,
+  },
+  {
+    id: "full-day",
+    label: "Full Day",
+    hours: "8 hours",
+    dailyRate: 1000,
+    monthlyRate: 25000,
+  },
+  {
+    id: "night",
+    label: "Night Shift",
+    hours: "10 hours",
+    dailyRate: 1200,
+    monthlyRate: 30000,
+  },
 ];
 
 const ADDRESSES = [
@@ -52,14 +70,14 @@ const mockNannyNames: Record<string, string> = {
 export default function NannyBookingPage() {
   const { babyId, nannyId } = useParams<{ babyId: string; nannyId: string }>();
   const [, navigate] = useLocation();
-  
+
   const urlParams = new URLSearchParams(window.location.search);
   const selectedDate = urlParams.get("date") || "Dec 10";
-  
+
   const [step, setStep] = useState<BookingStep>(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [bookingId, setBookingId] = useState<string | null>(null);
-  
+
   const [data, setData] = useState<BookingData>({
     shiftType: "half-day",
     duration: "1 day",
@@ -70,7 +88,8 @@ export default function NannyBookingPage() {
   });
 
   const nannyName = mockNannyNames[nannyId || "1"] || "Priya S.";
-  const selectedShift = SHIFT_TYPES.find(s => s.id === data.shiftType) || SHIFT_TYPES[0];
+  const selectedShift =
+    SHIFT_TYPES.find((s) => s.id === data.shiftType) || SHIFT_TYPES[0];
 
   const handleBack = () => {
     if (step === 1) {
@@ -88,22 +107,33 @@ export default function NannyBookingPage() {
 
   const handlePayment = async () => {
     setIsProcessing(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     const id = `NB${Date.now().toString().slice(-6)}`;
     setBookingId(id);
-    
+
     const bookingData = {
       nannyName,
-      nannyInitials: nannyName.split(" ").map(n => n[0]).join(""),
+      nannyInitials: nannyName
+        .split(" ")
+        .map((n) => n[0])
+        .join(""),
       shiftType: selectedShift.label,
       shiftHours: selectedShift.hours,
       startTime: "09:00 AM",
-      endTime: selectedShift.id === "half-day" ? "01:00 PM" : selectedShift.id === "full-day" ? "05:00 PM" : "07:00 AM",
+      endTime:
+        selectedShift.id === "half-day"
+          ? "01:00 PM"
+          : selectedShift.id === "full-day"
+            ? "05:00 PM"
+            : "07:00 AM",
       isOnDuty: true,
       bookingId: id,
     };
-    localStorage.setItem(`nanny_booking_${babyId}`, JSON.stringify(bookingData));
-    
+    localStorage.setItem(
+      `nanny_booking_${babyId}`,
+      JSON.stringify(bookingData),
+    );
+
     setIsProcessing(false);
     setStep(4);
   };
@@ -116,10 +146,10 @@ export default function NannyBookingPage() {
     <div className="app-container min-h-screen bg-zinc-50 flex flex-col">
       <div className="bg-white border-b border-zinc-100 px-4 py-3 sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full" 
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full"
             onClick={handleBack}
             data-testid="button-back"
           >
@@ -129,14 +159,18 @@ export default function NannyBookingPage() {
             {step === 4 ? "Booking Confirmed" : "Book Nanny"}
           </h1>
         </div>
-        
+
         {step < 4 && (
           <div className="flex items-center gap-2 mt-3 px-2">
             {[1, 2, 3].map((s) => (
               <div key={s} className="flex-1 flex items-center gap-2">
-                <div 
+                <div
                   className={`w-full h-1.5 rounded-full transition-all ${
-                    s < step ? "bg-violet-600" : s === step ? "bg-violet-600" : "bg-zinc-200"
+                    s < step
+                      ? "bg-violet-600"
+                      : s === step
+                        ? "bg-violet-600"
+                        : "bg-zinc-200"
                   }`}
                 />
               </div>
@@ -156,8 +190,12 @@ export default function NannyBookingPage() {
               className="p-4"
             >
               <div className="mb-5">
-                <h2 className="text-[18px] font-bold text-zinc-900">Confirm details</h2>
-                <p className="text-[13px] text-zinc-500 mt-1">Review your booking information</p>
+                <h2 className="text-[18px] font-bold text-zinc-900">
+                  Confirm details
+                </h2>
+                <p className="text-[13px] text-zinc-500 mt-1">
+                  Review your booking information
+                </p>
               </div>
 
               <Card className="border-zinc-200 mb-4">
@@ -165,21 +203,32 @@ export default function NannyBookingPage() {
                   <div className="flex items-center gap-3 mb-4 pb-4 border-b border-zinc-100">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center">
                       <span className="text-white font-bold text-lg">
-                        {nannyName.split(" ").map(n => n[0]).join("")}
+                        {nannyName
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
                       </span>
                     </div>
                     <div>
-                      <h3 className="text-[15px] font-semibold text-zinc-900">{nannyName}</h3>
-                      <p className="text-[12px] text-zinc-500">Verified nanny</p>
+                      <h3 className="text-[15px] font-semibold text-zinc-900">
+                        {nannyName}
+                      </h3>
+                      <p className="text-[12px] text-zinc-500">
+                        Verified nanny
+                      </p>
                     </div>
                   </div>
-                  
+
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-[13px] text-zinc-500">Start Date</span>
+                      <span className="text-[13px] text-zinc-500">
+                        Start Date
+                      </span>
                       <div className="flex items-center gap-1.5">
                         <Calendar className="w-4 h-4 text-violet-500" />
-                        <span className="text-[13px] font-medium text-zinc-800">{data.startDate}</span>
+                        <span className="text-[13px] font-medium text-zinc-800">
+                          {data.startDate}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -187,12 +236,19 @@ export default function NannyBookingPage() {
               </Card>
 
               <div className="mb-4">
-                <h3 className="text-[14px] font-semibold text-zinc-800 mb-3">Select shift type</h3>
+                <h3 className="text-[14px] font-semibold text-zinc-800 mb-3">
+                  Select shift type
+                </h3>
                 <div className="space-y-2">
                   {SHIFT_TYPES.map((shift) => (
                     <button
                       key={shift.id}
-                      onClick={() => setData(prev => ({ ...prev, shiftType: shift.id as BookingData["shiftType"] }))}
+                      onClick={() =>
+                        setData((prev) => ({
+                          ...prev,
+                          shiftType: shift.id as BookingData["shiftType"],
+                        }))
+                      }
                       className={`w-full p-4 rounded-xl border-2 flex items-center justify-between transition-all ${
                         data.shiftType === shift.id
                           ? "border-violet-500 bg-violet-50"
@@ -203,12 +259,18 @@ export default function NannyBookingPage() {
                       <div className="flex items-center gap-3">
                         <Clock className="w-5 h-5 text-violet-500" />
                         <div className="text-left">
-                          <span className="text-[14px] font-medium text-zinc-800 block">{shift.label}</span>
-                          <span className="text-[12px] text-zinc-500">{shift.hours}</span>
+                          <span className="text-[14px] font-medium text-zinc-800 block">
+                            {shift.label}
+                          </span>
+                          <span className="text-[12px] text-zinc-500">
+                            {shift.hours}
+                          </span>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-[14px] font-semibold text-violet-600">₹{shift.dailyRate}</span>
+                        <span className="text-[14px] font-semibold text-violet-600">
+                          ₹{shift.dailyRate}
+                        </span>
                         {data.shiftType === shift.id && (
                           <Check className="w-5 h-5 text-violet-600" />
                         )}
@@ -219,12 +281,16 @@ export default function NannyBookingPage() {
               </div>
 
               <div className="mb-4">
-                <h3 className="text-[14px] font-semibold text-zinc-800 mb-3">Location</h3>
+                <h3 className="text-[14px] font-semibold text-zinc-800 mb-3">
+                  Location
+                </h3>
                 <div className="space-y-2">
                   {ADDRESSES.map((addr) => (
                     <button
                       key={addr.id}
-                      onClick={() => setData(prev => ({ ...prev, address: addr.address }))}
+                      onClick={() =>
+                        setData((prev) => ({ ...prev, address: addr.address }))
+                      }
                       className={`w-full p-4 rounded-xl border-2 flex items-start gap-3 transition-all ${
                         data.address === addr.address
                           ? "border-violet-500 bg-violet-50"
@@ -234,8 +300,12 @@ export default function NannyBookingPage() {
                     >
                       <MapPin className="w-5 h-5 text-violet-500 flex-shrink-0 mt-0.5" />
                       <div className="text-left flex-1">
-                        <span className="text-[14px] font-medium text-zinc-800 block">{addr.label}</span>
-                        <span className="text-[12px] text-zinc-500">{addr.address}</span>
+                        <span className="text-[14px] font-medium text-zinc-800 block">
+                          {addr.label}
+                        </span>
+                        <span className="text-[12px] text-zinc-500">
+                          {addr.address}
+                        </span>
                       </div>
                       {data.address === addr.address && (
                         <Check className="w-5 h-5 text-violet-600 flex-shrink-0" />
@@ -257,15 +327,24 @@ export default function NannyBookingPage() {
             >
               <div className="mb-5">
                 <h2 className="text-[18px] font-bold text-zinc-900">Add-ons</h2>
-                <p className="text-[13px] text-zinc-500 mt-1">Optional features for peace of mind</p>
+                <p className="text-[13px] text-zinc-500 mt-1">
+                  Optional features for peace of mind
+                </p>
               </div>
 
               <div className="space-y-3">
-                <Card 
+                <Card
                   className={`border-2 transition-all cursor-pointer ${
-                    data.liveLocation ? "border-violet-500 bg-violet-50" : "border-zinc-200"
+                    data.liveLocation
+                      ? "border-violet-500 bg-violet-50"
+                      : "border-zinc-200"
                   }`}
-                  onClick={() => setData(prev => ({ ...prev, liveLocation: !prev.liveLocation }))}
+                  onClick={() =>
+                    setData((prev) => ({
+                      ...prev,
+                      liveLocation: !prev.liveLocation,
+                    }))
+                  }
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
@@ -274,25 +353,35 @@ export default function NannyBookingPage() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-[14px] font-semibold text-zinc-900">Live location sharing</h3>
-                          <Checkbox 
+                          <h3 className="text-[14px] font-semibold text-zinc-900">
+                            Live location sharing
+                          </h3>
+                          <Checkbox
                             checked={data.liveLocation}
                             data-testid="checkbox-live-location"
                           />
                         </div>
                         <p className="text-[12px] text-zinc-500 mt-1">
-                          Track nanny's location during the shift for added safety
+                          Track nanny's location during the shift for added
+                          safety
                         </p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card 
+                <Card
                   className={`border-2 transition-all cursor-pointer ${
-                    data.dailySummary ? "border-violet-500 bg-violet-50" : "border-zinc-200"
+                    data.dailySummary
+                      ? "border-violet-500 bg-violet-50"
+                      : "border-zinc-200"
                   }`}
-                  onClick={() => setData(prev => ({ ...prev, dailySummary: !prev.dailySummary }))}
+                  onClick={() =>
+                    setData((prev) => ({
+                      ...prev,
+                      dailySummary: !prev.dailySummary,
+                    }))
+                  }
                 >
                   <CardContent className="p-4">
                     <div className="flex items-start gap-4">
@@ -301,8 +390,10 @@ export default function NannyBookingPage() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
-                          <h3 className="text-[14px] font-semibold text-zinc-900">Daily summary in app</h3>
-                          <Checkbox 
+                          <h3 className="text-[14px] font-semibold text-zinc-900">
+                            Daily summary in app
+                          </h3>
+                          <Checkbox
                             checked={data.dailySummary}
                             data-testid="checkbox-daily-summary"
                           />
@@ -333,29 +424,45 @@ export default function NannyBookingPage() {
               className="p-4"
             >
               <div className="mb-5">
-                <h2 className="text-[18px] font-bold text-zinc-900">Price & Payment</h2>
-                <p className="text-[13px] text-zinc-500 mt-1">Secure payment powered by Acko</p>
+                <h2 className="text-[18px] font-bold text-zinc-900">
+                  Price & Payment
+                </h2>
+                <p className="text-[13px] text-zinc-500 mt-1">
+                  Secure payment powered by Acko
+                </p>
               </div>
 
               <Card className="border-zinc-200 mb-4">
                 <CardContent className="p-4">
-                  <h3 className="text-[14px] font-semibold text-zinc-800 mb-3">Booking Summary</h3>
+                  <h3 className="text-[14px] font-semibold text-zinc-800 mb-3">
+                    Booking Summary
+                  </h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-[13px] text-zinc-600">Nanny</span>
-                      <span className="text-[13px] font-medium text-zinc-900">{nannyName}</span>
+                      <span className="text-[13px] font-medium text-zinc-900">
+                        {nannyName}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-[13px] text-zinc-600">Shift</span>
-                      <span className="text-[13px] font-medium text-zinc-900">{selectedShift.label} ({selectedShift.hours})</span>
+                      <span className="text-[13px] font-medium text-zinc-900">
+                        {selectedShift.label} ({selectedShift.hours})
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-[13px] text-zinc-600">Date</span>
-                      <span className="text-[13px] font-medium text-zinc-900">{data.startDate}</span>
+                      <span className="text-[13px] font-medium text-zinc-900">
+                        {data.startDate}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[13px] text-zinc-600">Location</span>
-                      <span className="text-[13px] font-medium text-zinc-900 text-right max-w-[180px] truncate">{data.address.split(",")[0]}</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Location
+                      </span>
+                      <span className="text-[13px] font-medium text-zinc-900 text-right max-w-[180px] truncate">
+                        {data.address.split(",")[0]}
+                      </span>
                     </div>
                   </div>
                 </CardContent>
@@ -363,19 +470,31 @@ export default function NannyBookingPage() {
 
               <Card className="border-zinc-200 mb-4">
                 <CardContent className="p-4">
-                  <h3 className="text-[14px] font-semibold text-zinc-800 mb-3">Price Breakdown</h3>
+                  <h3 className="text-[14px] font-semibold text-zinc-800 mb-3">
+                    Price Breakdown
+                  </h3>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-[13px] text-zinc-600">{selectedShift.label} rate</span>
-                      <span className="text-[13px] text-zinc-800">₹{selectedShift.dailyRate}</span>
+                      <span className="text-[13px] text-zinc-600">
+                        {selectedShift.label} rate
+                      </span>
+                      <span className="text-[13px] text-zinc-800">
+                        ₹{selectedShift.dailyRate}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[13px] text-zinc-600">Platform fee</span>
+                      <span className="text-[13px] text-zinc-600">
+                        Platform fee
+                      </span>
                       <span className="text-[13px] text-zinc-800">₹49</span>
                     </div>
                     <div className="flex items-center justify-between pt-2 border-t border-zinc-100">
-                      <span className="text-[14px] font-semibold text-zinc-900">Total</span>
-                      <span className="text-[16px] font-bold text-violet-600">₹{selectedShift.dailyRate + 49}</span>
+                      <span className="text-[14px] font-semibold text-zinc-900">
+                        Total
+                      </span>
+                      <span className="text-[16px] font-bold text-violet-600">
+                        ₹{selectedShift.dailyRate + 49}
+                      </span>
                     </div>
                   </div>
                 </CardContent>
@@ -385,14 +504,18 @@ export default function NannyBookingPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <CreditCard className="w-4 h-4 text-zinc-500" />
-                    <span className="text-[13px] font-medium text-zinc-700">Payment Method</span>
+                    <span className="text-[13px] font-medium text-zinc-700">
+                      Payment Method
+                    </span>
                   </div>
                   <div className="p-3 bg-violet-50 border-2 border-violet-500 rounded-xl flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center">
                         <Phone className="w-4 h-4 text-white" />
                       </div>
-                      <span className="text-[13px] font-medium text-zinc-800">UPI / Google Pay</span>
+                      <span className="text-[13px] font-medium text-zinc-800">
+                        UPI / Google Pay
+                      </span>
                     </div>
                     <Check className="w-5 h-5 text-violet-600" />
                   </div>
@@ -416,7 +539,9 @@ export default function NannyBookingPage() {
                 <CheckCircle2 className="w-10 h-10 text-white" />
               </div>
 
-              <h2 className="text-[22px] font-bold text-zinc-900 text-center">Booking Confirmed!</h2>
+              <h2 className="text-[22px] font-bold text-zinc-900 text-center">
+                Booking Confirmed!
+              </h2>
               <p className="text-[14px] text-zinc-500 text-center mt-2">
                 Your nanny is on the way
               </p>
@@ -424,39 +549,61 @@ export default function NannyBookingPage() {
               <Card className="border-violet-200 mt-6 w-full bg-gradient-to-br from-violet-50 to-pink-50">
                 <CardContent className="p-4 text-center">
                   <p className="text-[12px] text-zinc-500 mb-1">Booking ID</p>
-                  <p className="text-[18px] font-bold text-violet-600">{bookingId}</p>
+                  <p className="text-[18px] font-bold text-violet-600">
+                    {bookingId}
+                  </p>
                 </CardContent>
               </Card>
 
               <Card className="border-zinc-200 mt-4 w-full">
                 <CardContent className="p-4">
-                  <h3 className="text-[14px] font-semibold text-zinc-800 mb-4">What happens next</h3>
+                  <h3 className="text-[14px] font-semibold text-zinc-800 mb-4">
+                    What happens next
+                  </h3>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-violet-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[11px] font-bold text-violet-600">1</span>
+                        <span className="text-[11px] font-bold text-violet-600">
+                          1
+                        </span>
                       </div>
                       <div>
-                        <p className="text-[13px] font-medium text-zinc-800">{nannyName} will contact you</p>
-                        <p className="text-[12px] text-zinc-500">Within 30 minutes to confirm arrival details</p>
+                        <p className="text-[13px] font-medium text-zinc-800">
+                          {nannyName} will contact you
+                        </p>
+                        <p className="text-[12px] text-zinc-500">
+                          Within 30 minutes to confirm arrival details
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-violet-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[11px] font-bold text-violet-600">2</span>
+                        <span className="text-[11px] font-bold text-violet-600">
+                          2
+                        </span>
                       </div>
                       <div>
-                        <p className="text-[13px] font-medium text-zinc-800">Expected arrival</p>
-                        <p className="text-[12px] text-zinc-500">{data.startDate} by 9:00 AM</p>
+                        <p className="text-[13px] font-medium text-zinc-800">
+                          Expected arrival
+                        </p>
+                        <p className="text-[12px] text-zinc-500">
+                          {data.startDate} by 9:00 AM
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full bg-violet-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-[11px] font-bold text-violet-600">3</span>
+                        <span className="text-[11px] font-bold text-violet-600">
+                          3
+                        </span>
                       </div>
                       <div>
-                        <p className="text-[13px] font-medium text-zinc-800">Track in real-time</p>
-                        <p className="text-[12px] text-zinc-500">You'll see live location once she starts</p>
+                        <p className="text-[13px] font-medium text-zinc-800">
+                          Track in real-time
+                        </p>
+                        <p className="text-[12px] text-zinc-500">
+                          You'll see live location once she starts
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -467,7 +614,9 @@ export default function NannyBookingPage() {
                 <div className="flex items-start gap-3">
                   <Sparkles className="w-5 h-5 text-amber-600 flex-shrink-0" />
                   <div>
-                    <p className="text-[12px] font-medium text-amber-800">Need help?</p>
+                    <p className="text-[12px] font-medium text-amber-800">
+                      Need help?
+                    </p>
                     <p className="text-[11px] text-amber-600 mt-0.5">
                       Contact us anytime via the app. We're here 24/7.
                     </p>
@@ -484,8 +633,12 @@ export default function NannyBookingPage() {
           {step === 1 && (
             <>
               <div className="flex items-center justify-between mb-3">
-                <p className="text-[13px] text-zinc-600">{selectedShift.label} ({selectedShift.hours})</p>
-                <p className="text-[16px] font-bold text-violet-600">₹{selectedShift.dailyRate}</p>
+                <p className="text-[13px] text-zinc-600">
+                  {selectedShift.label} ({selectedShift.hours})
+                </p>
+                <p className="text-[16px] font-bold text-violet-600">
+                  ₹{selectedShift.dailyRate}
+                </p>
               </div>
               <Button
                 onClick={handleNext}
@@ -500,8 +653,12 @@ export default function NannyBookingPage() {
           {step === 2 && (
             <>
               <div className="flex items-center justify-between mb-3">
-                <p className="text-[13px] text-zinc-600">{selectedShift.label} ({selectedShift.hours})</p>
-                <p className="text-[16px] font-bold text-violet-600">₹{selectedShift.dailyRate}</p>
+                <p className="text-[13px] text-zinc-600">
+                  {selectedShift.label} ({selectedShift.hours})
+                </p>
+                <p className="text-[16px] font-bold text-violet-600">
+                  ₹{selectedShift.dailyRate}
+                </p>
               </div>
               <Button
                 onClick={handleNext}

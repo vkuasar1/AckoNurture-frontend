@@ -1,7 +1,16 @@
 import { useState, useEffect } from "react";
 import { useParams, useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Baby, BadgeCheck, ChevronRight, Shield, UserCheck, Clock, Phone } from "lucide-react";
+import {
+  ArrowLeft,
+  Baby,
+  BadgeCheck,
+  ChevronRight,
+  Shield,
+  UserCheck,
+  Clock,
+  Phone,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { BabyProfile } from "@shared/schema";
@@ -13,8 +22,9 @@ import { MiraFab } from "@/components/MiraFab";
 function calculateBabyAgeInMonths(dob: string): number {
   const birthDate = new Date(dob);
   const today = new Date();
-  const months = (today.getFullYear() - birthDate.getFullYear()) * 12 + 
-                 (today.getMonth() - birthDate.getMonth());
+  const months =
+    (today.getFullYear() - birthDate.getFullYear()) * 12 +
+    (today.getMonth() - birthDate.getMonth());
   const dayDiff = today.getDate() - birthDate.getDate();
   return dayDiff < 0 ? Math.max(0, months - 1) : months;
 }
@@ -86,16 +96,23 @@ export default function NannyRecommendation() {
         <div className="border-b border-zinc-100 px-4 py-3">
           <div className="flex items-center gap-3">
             <Link href={`/babycare/home/${babyId}`}>
-              <Button variant="ghost" size="icon" className="rounded-full" data-testid="button-back">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full"
+                data-testid="button-back"
+              >
                 <ArrowLeft className="w-5 h-5 text-zinc-600" />
               </Button>
             </Link>
-            <h1 className="text-[16px] font-semibold text-zinc-900">Nanny Care</h1>
+            <h1 className="text-[16px] font-semibold text-zinc-900">
+              Nanny Care
+            </h1>
           </div>
         </div>
 
         <div className="flex-1 px-5 pt-6 pb-6">
-          <Card 
+          <Card
             className="border-violet-200 bg-gradient-to-br from-violet-50 to-pink-50 cursor-pointer hover:shadow-md transition-shadow"
             onClick={handleViewDashboard}
             data-testid="card-nanny-today"
@@ -103,19 +120,27 @@ export default function NannyRecommendation() {
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">{booking.nannyInitials}</span>
+                  <span className="text-white font-bold text-lg">
+                    {booking.nannyInitials}
+                  </span>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-[16px] font-semibold text-zinc-900">{booking.nannyName}</h3>
-                    <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                      booking.isOnDuty 
-                        ? "bg-emerald-100 text-emerald-700" 
-                        : "bg-zinc-100 text-zinc-500"
-                    }`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${
-                        booking.isOnDuty ? "bg-emerald-500" : "bg-zinc-400"
-                      }`} />
+                    <h3 className="text-[16px] font-semibold text-zinc-900">
+                      {booking.nannyName}
+                    </h3>
+                    <div
+                      className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                        booking.isOnDuty
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-zinc-100 text-zinc-500"
+                      }`}
+                    >
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          booking.isOnDuty ? "bg-emerald-500" : "bg-zinc-400"
+                        }`}
+                      />
                       {booking.isOnDuty ? "On Duty" : "Off Duty"}
                     </div>
                   </div>
@@ -135,7 +160,9 @@ export default function NannyRecommendation() {
           </Card>
 
           <div className="mt-6">
-            <h3 className="text-[14px] font-semibold text-zinc-800 mb-3">Quick Actions</h3>
+            <h3 className="text-[14px] font-semibold text-zinc-800 mb-3">
+              Quick Actions
+            </h3>
             <div className="grid grid-cols-2 gap-3">
               <Button
                 variant="outline"
@@ -181,11 +208,18 @@ export default function NannyRecommendation() {
       <div className="border-b border-zinc-100 px-4 py-3">
         <div className="flex items-center gap-3">
           <Link href={`/babycare/home/${babyId}`}>
-            <Button variant="ghost" size="icon" className="rounded-full" data-testid="button-back">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full"
+              data-testid="button-back"
+            >
               <ArrowLeft className="w-5 h-5 text-zinc-600" />
             </Button>
           </Link>
-          <h1 className="text-[16px] font-semibold text-zinc-900">Nanny Care</h1>
+          <h1 className="text-[16px] font-semibold text-zinc-900">
+            Nanny Care
+          </h1>
         </div>
       </div>
 
@@ -204,25 +238,42 @@ export default function NannyRecommendation() {
 
         <div className="mb-5">
           <p className="text-[16px] text-zinc-700 leading-relaxed">
-            For your <span className="font-semibold">{ageDisplayText}</span> child, we've curated nannies trained for their specific needs.
+            For your <span className="font-semibold">{ageDisplayText}</span>{" "}
+            child, we've curated nannies trained for their specific needs.
           </p>
         </div>
 
         <div className="flex gap-3 mb-6">
           <div className="flex-1 aspect-square rounded-xl overflow-hidden">
-            <img src={nannyImg1} alt="Trusted nanny" className="w-full h-full object-cover" />
+            <img
+              src={nannyImg1}
+              alt="Trusted nanny"
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="flex-1 aspect-square rounded-xl overflow-hidden">
-            <img src={nannyImg2} alt="Trusted nanny" className="w-full h-full object-cover" />
+            <img
+              src={nannyImg2}
+              alt="Trusted nanny"
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="flex-1 aspect-square rounded-xl overflow-hidden">
-            <img src={nannyImg3} alt="Trusted nanny" className="w-full h-full object-cover" />
+            <img
+              src={nannyImg3}
+              alt="Trusted nanny"
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
 
         <div className="bg-gradient-to-r from-violet-50 to-pink-50 rounded-2xl p-4 mb-5 border border-violet-100">
           <p className="text-[13px] text-zinc-700 text-center leading-relaxed">
-            Lots of great options await — <span className="font-semibold text-violet-700">explore freely</span> until you find your perfect nanny match.
+            Lots of great options await —{" "}
+            <span className="font-semibold text-violet-700">
+              explore freely
+            </span>{" "}
+            until you find your perfect nanny match.
           </p>
         </div>
 
@@ -244,7 +295,8 @@ export default function NannyRecommendation() {
         <div className="flex-1" />
 
         <p className="text-[13px] text-zinc-500 leading-relaxed text-center mb-4">
-          In the next steps, we'll guide you to find the nanny that suits you and your baby best.
+          In the next steps, we'll guide you to find the nanny that suits you
+          and your baby best.
         </p>
 
         <Button
